@@ -9,9 +9,6 @@ import com.fanwe.lib.http.SDHttpRequest;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
 import com.fanwe.lib.task.SDTask;
 
-import java.net.HttpCookie;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity
 {
     public static final String TAG = "MainActivity";
@@ -31,13 +28,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onRun() throws Exception
             {
-                SDHttpRequest request = (SDHttpRequest) new SDHttpRequest(URL, HttpRequest.METHOD_POST).form("ctl", "app").form("act", "init");
-
-                if (request.ok())
-                {
-                    List<HttpCookie> listCookie = request.getResponseCookie();
-                    Log.i(TAG, "cookie:" + listCookie);
-                }
+                HttpRequest request = new SDHttpRequest(URL, HttpRequest.METHOD_POST).form("ctl", "app").form("act", "init");
 
                 Log.i(TAG, request.body());
             }
