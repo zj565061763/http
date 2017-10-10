@@ -2,6 +2,8 @@ package com.fanwe.lib.http;
 
 import android.text.TextUtils;
 
+import com.fanwe.lib.http.cookie.CookieJar;
+
 import java.net.HttpCookie;
 import java.net.URL;
 import java.util.List;
@@ -33,6 +35,19 @@ public class SDHttpRequest extends HttpRequest
      * 'Cookie' header name
      */
     public static final String HEADER_COOKIE = "Cookie";
+
+    private static CookieJar sCookieJar = CookieJar.EMPTY_COOKIE_JAR;
+
+    public static void setCookieJar(CookieJar cookieJar)
+    {
+        if (cookieJar == null)
+        {
+            sCookieJar = CookieJar.EMPTY_COOKIE_JAR;
+        } else
+        {
+            sCookieJar = cookieJar;
+        }
+    }
 
     public SDHttpRequest addRequestCookie(HttpCookie httpCookie)
     {
@@ -82,4 +97,21 @@ public class SDHttpRequest extends HttpRequest
         return null;
     }
 
+    //---------- Override start ----------
+
+    @Override
+    public int code() throws HttpRequestException
+    {
+        List<HttpCookie> listRequest = sCookieJar.loadForRequest(url());
+        setRequestCookie(listRequest);
+
+        int code = super.code();
+
+        List<HttpCookie> listResponse = getResponseCookie();
+        sCookieJar.saveFromResponse(url(), listResponse);
+
+        return code;
+    }
+
+    //---------- Override end ----------
 }
