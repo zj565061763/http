@@ -3,6 +3,7 @@ package com.fanwe.lib.http.cookie;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.net.HttpCookie;
@@ -48,32 +49,33 @@ public class SharedPreferencesCookieJar implements CookieJar
         sb.deleteCharAt(sb.lastIndexOf(";"));
 
         String host = url.getHost();
-        String urlString = url.toString();
         String cookie = sb.toString();
 
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(host, cookie);
-        editor.putString(urlString, cookie);
         editor.commit();
 
-        Log.i(TAG, "saveFromResponse:" + urlString + ":" + cookie);
+        Log.i(TAG, "saveFromResponse:" + url + ":" + cookie);
     }
 
     @Override
     public List<HttpCookie> loadForRequest(URL url)
     {
+        List<HttpCookie> lisCookie = null;
+
         String host = url.getHost();
-        String urlString = url.toString();
         String cookie = null;
 
-        if (getSharedPreferences().contains(urlString))
+        if (getSharedPreferences().contains(host))
         {
+            cookie = getSharedPreferences().getString(host, null);
+            if (!TextUtils.isEmpty(cookie))
+            {
+                lisCookie = HttpCookie.parse(cookie);
+            }
         }
 
-
-
-
-        Log.i(TAG, "loadForRequest:" + host);
-        return null;
+        Log.i(TAG, "loadForRequest:" + url + ":" + cookie);
+        return lisCookie;
     }
 }
