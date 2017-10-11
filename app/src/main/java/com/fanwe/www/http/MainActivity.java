@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
             public void onError(Exception e)
             {
                 super.onError(e);
-                Log.i(TAG, "onError");
+                Log.i(TAG, "onError:" + e);
             }
 
             @Override
