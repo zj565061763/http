@@ -1,6 +1,4 @@
-package com.fanwe.lib.http.core;
-
-import com.fanwe.lib.http.HttpRequest;
+package com.fanwe.lib.http;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +12,7 @@ public class PostRequest extends HttpRequestImpl
 {
     private List<FileRequestBody> mListFilePart;
 
-    protected PostRequest(String url)
+    public PostRequest(String url)
     {
         super(url);
     }

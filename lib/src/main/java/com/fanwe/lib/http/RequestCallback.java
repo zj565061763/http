@@ -1,4 +1,4 @@
-package com.fanwe.lib.http.core;
+package com.fanwe.lib.http;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -54,6 +54,14 @@ public abstract class RequestCallback
     public void onFinish()
     {
     }
+
+    public static final RequestCallback EMPTY_CALLBACK = new RequestCallback()
+    {
+        @Override
+        public void onSuccess()
+        {
+        }
+    };
 
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 

@@ -1,4 +1,4 @@
-package com.fanwe.lib.http.core;
+package com.fanwe.lib.http;
 
 import android.text.TextUtils;
 

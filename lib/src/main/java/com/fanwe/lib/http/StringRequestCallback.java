@@ -1,4 +1,4 @@
-package com.fanwe.lib.http.core;
+package com.fanwe.lib.http;
 
 /**
  * Created by zhengjun on 2017/10/11.

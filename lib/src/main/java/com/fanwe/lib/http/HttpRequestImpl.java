@@ -1,7 +1,4 @@
-package com.fanwe.lib.http.core;
-
-import com.fanwe.lib.http.HttpRequest;
-import com.fanwe.lib.http.SDHttpRequest;
+package com.fanwe.lib.http;
 
 /**
  * Created by zhengjun on 2017/10/11.

@@ -1,13 +1,11 @@
-package com.fanwe.lib.http.core;
-
-import com.fanwe.lib.http.HttpRequest;
+package com.fanwe.lib.http;
 
 /**
  * Created by zhengjun on 2017/10/11.
  */
 public class GetRequest extends HttpRequestImpl
 {
-    protected GetRequest(String url)
+    public GetRequest(String url)
     {
         super(url);
     }

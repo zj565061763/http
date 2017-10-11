@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.fanwe.lib.http.SDHttpRequest;
+import com.fanwe.lib.http.GetRequest;
+import com.fanwe.lib.http.Request;
+import com.fanwe.lib.http.RequestManager;
+import com.fanwe.lib.http.StringRequestCallback;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
-import com.fanwe.lib.http.core.Request;
-import com.fanwe.lib.http.core.StringRequestCallback;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -21,53 +22,52 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SDHttpRequest.setCookieJar(new SharedPreferencesCookieJar(this));
+        RequestManager.getInstance().setCookieJar(new SharedPreferencesCookieJar(this));
 
-        Request.post(URL)
-                .param("ctl", "app")
-                .param("act", "init")
-                .execute(new StringRequestCallback()
-                {
-                    @Override
-                    public void onStart()
-                    {
-                        super.onStart();
-                        Log.i(TAG, "onStart");
-                    }
+        Request request = new GetRequest(URL).param("ctl", "app").param("act", "init");
 
-                    @Override
-                    public void onSuccessBackground() throws Exception
-                    {
-                        super.onSuccessBackground();
-                        Log.i(TAG, "onSuccessBackground:" + getResult());
-                    }
+        RequestManager.getInstance().execute(request, new StringRequestCallback()
+        {
+            @Override
+            public void onStart()
+            {
+                super.onStart();
+                Log.i(TAG, "onStart");
+            }
 
-                    @Override
-                    public void onSuccess()
-                    {
-                        Log.i(TAG, "onSuccess");
-                    }
+            @Override
+            public void onSuccessBackground() throws Exception
+            {
+                super.onSuccessBackground();
+                Log.i(TAG, "onSuccessBackground:" + getResult());
+            }
 
-                    @Override
-                    public void onError(Exception e)
-                    {
-                        super.onError(e);
-                        Log.i(TAG, "onError:" + e);
-                    }
+            @Override
+            public void onSuccess()
+            {
+                Log.i(TAG, "onSuccess");
+            }
 
-                    @Override
-                    public void onCancel()
-                    {
-                        super.onCancel();
-                        Log.i(TAG, "onCancel");
-                    }
+            @Override
+            public void onError(Exception e)
+            {
+                super.onError(e);
+                Log.i(TAG, "onError:" + e);
+            }
 
-                    @Override
-                    public void onFinish()
-                    {
-                        super.onFinish();
-                        Log.i(TAG, "onFinish");
-                    }
-                });
+            @Override
+            public void onCancel()
+            {
+                super.onCancel();
+                Log.i(TAG, "onCancel");
+            }
+
+            @Override
+            public void onFinish()
+            {
+                super.onFinish();
+                Log.i(TAG, "onFinish");
+            }
+        });
     }
 }
