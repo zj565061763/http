@@ -9,7 +9,18 @@ import android.os.Looper;
 
 public abstract class RequestCallback
 {
+    private Request mRequest;
     private Response mResponse;
+
+    final void setRequest(Request request)
+    {
+        mRequest = request;
+    }
+
+    public final Request getRequest()
+    {
+        return mRequest;
+    }
 
     final void setResponse(Response response)
     {

@@ -7,7 +7,7 @@ import com.fanwe.lib.http.HttpRequest;
  */
 public class GetRequest extends HttpRequestImpl
 {
-    public GetRequest(String url)
+    protected GetRequest(String url)
     {
         super(url);
     }

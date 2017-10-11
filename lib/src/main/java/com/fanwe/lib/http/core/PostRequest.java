@@ -14,7 +14,7 @@ public class PostRequest extends HttpRequestImpl
 {
     private List<FileRequestBody> mListFilePart;
 
-    public PostRequest(String url)
+    protected PostRequest(String url)
     {
         super(url);
     }

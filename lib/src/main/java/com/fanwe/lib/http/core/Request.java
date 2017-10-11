@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by zhengjun on 2017/10/11.
  */
-public abstract class BaseRequest
+public abstract class Request
 {
     private String mUrl;
 
@@ -25,24 +25,24 @@ public abstract class BaseRequest
         return new PostRequest(url);
     }
 
-    public BaseRequest(String url)
+    protected Request(String url)
     {
         setUrl(url);
     }
 
-    public BaseRequest setUrl(String url)
+    public Request setUrl(String url)
     {
         mUrl = url;
         return this;
     }
 
-    public BaseRequest param(Object name, Object value)
+    public Request param(Object name, Object value)
     {
         getMapParam().put(name, value);
         return this;
     }
 
-    public BaseRequest header(String name, String value)
+    public Request header(String name, String value)
     {
         getMapHeader().put(name, value);
         return this;
@@ -86,6 +86,7 @@ public abstract class BaseRequest
         {
             throw new IllegalArgumentException("enqueue can not be invoke more than once");
         }
+        callback.setRequest(this);
         callback.onStart();
         mTask = new SDTask()
         {

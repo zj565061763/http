@@ -7,9 +7,9 @@ import com.fanwe.lib.http.SDHttpRequest;
  * Created by zhengjun on 2017/10/11.
  */
 
-public abstract class HttpRequestImpl extends BaseRequest
+public abstract class HttpRequestImpl extends Request
 {
-    public HttpRequestImpl(String url)
+    protected HttpRequestImpl(String url)
     {
         super(url);
     }
