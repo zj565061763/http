@@ -1,7 +1,5 @@
 package com.fanwe.lib.http.core;
 
-import com.fanwe.lib.http.HttpRequest;
-import com.fanwe.lib.http.SDHttpRequest;
 import com.fanwe.lib.task.SDTask;
 
 import java.util.LinkedHashMap;
@@ -10,20 +8,43 @@ import java.util.Map;
 /**
  * Created by zhengjun on 2017/10/11.
  */
-
 public abstract class BaseRequest
 {
     private String mUrl;
-    private Map<Object, Object> mMapParam = new LinkedHashMap<>();
+
+    private Map<Object, Object> mMapParam;
+    private Map<String, String> mMapHeader;
+
+    public static GetRequest get(String url)
+    {
+        return new GetRequest(url);
+    }
+
+    public static PostRequest post(String url)
+    {
+        return new PostRequest(url);
+    }
 
     public BaseRequest(String url)
     {
-        mUrl = url;
+        setUrl(url);
     }
 
-    public BaseRequest param(Object key, Object value)
+    public BaseRequest setUrl(String url)
     {
-        mMapParam.put(key, value);
+        mUrl = url;
+        return this;
+    }
+
+    public BaseRequest param(Object name, Object value)
+    {
+        getMapParam().put(name, value);
+        return this;
+    }
+
+    public BaseRequest header(String name, String value)
+    {
+        getMapHeader().put(name, value);
         return this;
     }
 
@@ -34,12 +55,20 @@ public abstract class BaseRequest
 
     public Map<Object, Object> getMapParam()
     {
+        if (mMapParam == null)
+        {
+            mMapParam = new LinkedHashMap<>();
+        }
         return mMapParam;
     }
 
-    protected HttpRequest newHttpRequest(String url, String method)
+    public Map<String, String> getMapHeader()
     {
-        return new SDHttpRequest(url, method);
+        if (mMapHeader == null)
+        {
+            mMapHeader = new LinkedHashMap<>();
+        }
+        return mMapHeader;
     }
 
     public final Response execute() throws Exception

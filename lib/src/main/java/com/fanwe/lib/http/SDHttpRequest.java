@@ -16,11 +16,13 @@ public class SDHttpRequest extends HttpRequest
     public SDHttpRequest(CharSequence url, String method) throws HttpRequestException
     {
         super(url, method);
+        loadCookieForRequest();
     }
 
     public SDHttpRequest(URL url, String method) throws HttpRequestException
     {
         super(url, method);
+        loadCookieForRequest();
     }
 
     /**
@@ -98,13 +100,23 @@ public class SDHttpRequest extends HttpRequest
         return null;
     }
 
+    private void loadCookieForRequest()
+    {
+        List<HttpCookie> listRequest = sCookieJar.loadForRequest(url());
+        setRequestCookie(listRequest);
+    }
+
+    private void saveCookieFromResponse()
+    {
+        List<HttpCookie> listResponse = getResponseCookie();
+        sCookieJar.saveFromResponse(url(), listResponse);
+    }
+
     private void setCode(int code)
     {
         if (mCode == 0 && code != 0)
         {
-            List<HttpCookie> listResponse = getResponseCookie();
-            sCookieJar.saveFromResponse(url(), listResponse);
-
+            saveCookieFromResponse();
             mCode = code;
         }
     }
@@ -114,12 +126,6 @@ public class SDHttpRequest extends HttpRequest
     @Override
     public int code() throws HttpRequestException
     {
-        if (mCode == 0)
-        {
-            List<HttpCookie> listRequest = sCookieJar.loadForRequest(url());
-            setRequestCookie(listRequest);
-        }
-
         int code = super.code();
         setCode(code);
         return code;

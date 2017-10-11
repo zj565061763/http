@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.fanwe.lib.http.SDHttpRequest;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
-import com.fanwe.lib.http.core.GetRequest;
+import com.fanwe.lib.http.core.PostRequest;
 import com.fanwe.lib.http.core.StringRequestCallback;
 
 public class MainActivity extends AppCompatActivity
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity
 
         SDHttpRequest.setCookieJar(new SharedPreferencesCookieJar(this));
 
-        new GetRequest(URL).param("ctl", "app").param("act", "init").execute(new StringRequestCallback()
+        new PostRequest(URL).param("ctl", "app").param("act", "init").execute(new StringRequestCallback()
         {
             @Override
             public void onStart()

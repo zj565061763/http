@@ -20,6 +20,10 @@ public class Response
 
     public void fillValue(HttpRequest request)
     {
+        if (request == null)
+        {
+            return;
+        }
         setCode(request.code());
         setContentLength(request.contentLength());
 
