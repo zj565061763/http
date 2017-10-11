@@ -3,6 +3,7 @@ package com.fanwe.www.http;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.fanwe.lib.http.GetRequest;
 import com.fanwe.lib.http.Request;
@@ -23,9 +24,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         RequestManager.getInstance().setCookieJar(new SharedPreferencesCookieJar(this));
+    }
 
-        Request request = new GetRequest(URL).param("ctl", "app").param("act", "init");
-
+    public void onClickRequest(View view)
+    {
+        Request request = new GetRequest(URL).param("ctl", "app").param("act", "init").setTag(this);
         RequestManager.getInstance().execute(request, new StringRequestCallback()
         {
             @Override
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity
             public void onSuccessBackground() throws Exception
             {
                 super.onSuccessBackground();
-                Log.i(TAG, "onSuccessBackground:" + getResult());
+                Log.i(TAG, "onSuccessBackground");
             }
 
             @Override
@@ -69,5 +72,10 @@ public class MainActivity extends AppCompatActivity
                 Log.i(TAG, "onFinish");
             }
         });
+    }
+
+    public void onClickCancelRequest(View view)
+    {
+        RequestManager.getInstance().cancelRequest(this);
     }
 }
