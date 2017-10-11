@@ -26,21 +26,23 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         RequestManager.getInstance().setCookieJar(new SharedPreferencesCookieJar(this));
-        RequestManager.getInstance().addRequestInterceptor(new RequestInterceptor()
-        {
-            @Override
-            public void beforeExecute(Request request)
-            {
-                Log.i(TAG, "beforeExecute:" + request);
-            }
-
-            @Override
-            public void afterExcute(Request request, Response response)
-            {
-                Log.i(TAG, "afterExcute:" + request);
-            }
-        });
+        RequestManager.getInstance().addRequestInterceptor(mRequestInterceptor);
     }
+
+    private RequestInterceptor mRequestInterceptor = new RequestInterceptor()
+    {
+        @Override
+        public void beforeExecute(Request request)
+        {
+            Log.i(TAG, "beforeExecute:" + request);
+        }
+
+        @Override
+        public void afterExcute(Request request, Response response)
+        {
+            Log.i(TAG, "afterExcute:" + request);
+        }
+    };
 
     public void onClickRequest(View view)
     {
@@ -93,5 +95,13 @@ public class MainActivity extends AppCompatActivity
     public void onClickCancelRequest(View view)
     {
         RequestManager.getInstance().cancelRequest(this);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        RequestManager.getInstance().cancelRequest(this);
+        RequestManager.getInstance().removeRequestInterceptor(mRequestInterceptor);
     }
 }
