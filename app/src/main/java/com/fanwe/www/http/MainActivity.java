@@ -8,8 +8,10 @@ import android.view.View;
 import com.fanwe.lib.http.GetRequest;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.RequestManager;
+import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.StringRequestCallback;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
+import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -24,6 +26,20 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         RequestManager.getInstance().setCookieJar(new SharedPreferencesCookieJar(this));
+        RequestManager.getInstance().addRequestInterceptor(new RequestInterceptor()
+        {
+            @Override
+            public void beforeExecute(Request request)
+            {
+                Log.i(TAG, "beforeExecute:" + request);
+            }
+
+            @Override
+            public void afterExcute(Request request, Response response)
+            {
+                Log.i(TAG, "afterExcute:" + request);
+            }
+        });
     }
 
     public void onClickRequest(View view)

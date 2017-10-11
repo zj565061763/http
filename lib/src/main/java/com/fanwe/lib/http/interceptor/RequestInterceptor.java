@@ -8,6 +8,19 @@ import com.fanwe.lib.http.Response;
  */
 public interface RequestInterceptor
 {
+    RequestInterceptor EMPTY_REQUEST_INTERCEPTOR = new RequestInterceptor()
+    {
+        @Override
+        public void beforeExecute(Request request)
+        {
+        }
+
+        @Override
+        public void afterExcute(Request request, Response response)
+        {
+        }
+    };
+
     void beforeExecute(Request request);
 
     void afterExcute(Request request, Response response);

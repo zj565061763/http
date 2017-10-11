@@ -74,7 +74,10 @@ public abstract class Request
 
     public final Response execute() throws Exception
     {
-        return onExecute();
+        RequestManager.getInstance().beforeExecute(this);
+        Response response = onExecute();
+        RequestManager.getInstance().afterExcute(this, response);
+        return response;
     }
 
     protected abstract Response onExecute() throws Exception;

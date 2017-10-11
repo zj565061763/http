@@ -3,6 +3,7 @@ package com.fanwe.lib.http;
 import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -11,7 +12,7 @@ import java.util.WeakHashMap;
  * Created by zhengjun on 2017/10/11.
  */
 
-public class RequestManager
+public class RequestManager implements RequestInterceptor
 {
     private static RequestManager sInstance;
 
@@ -109,6 +110,66 @@ public class RequestManager
             {
                 task.cancel();
             }
+        }
+    }
+
+    private List<RequestInterceptor> getListRequestInterceptor()
+    {
+        if (mListRequestInterceptor == null)
+        {
+            mListRequestInterceptor = new ArrayList<>();
+        }
+        return mListRequestInterceptor;
+    }
+
+    public void addRequestInterceptor(RequestInterceptor interceptor)
+    {
+        if (interceptor == null)
+        {
+            return;
+        }
+        if (!getListRequestInterceptor().contains(interceptor))
+        {
+            getListRequestInterceptor().add(interceptor);
+        }
+    }
+
+    public void removeRequestInterceptor(RequestInterceptor interceptor)
+    {
+        if (interceptor == null || mListRequestInterceptor == null)
+        {
+            return;
+        }
+        mListRequestInterceptor.remove(interceptor);
+        if (mListRequestInterceptor.isEmpty())
+        {
+            mListRequestInterceptor = null;
+        }
+    }
+
+    @Override
+    public synchronized void beforeExecute(Request request)
+    {
+        if (mListRequestInterceptor == null)
+        {
+            return;
+        }
+        for (RequestInterceptor item : mListRequestInterceptor)
+        {
+            item.beforeExecute(request);
+        }
+    }
+
+    @Override
+    public synchronized void afterExcute(Request request, Response response)
+    {
+        if (mListRequestInterceptor == null)
+        {
+            return;
+        }
+        for (RequestInterceptor item : mListRequestInterceptor)
+        {
+            item.afterExcute(request, response);
         }
     }
 }

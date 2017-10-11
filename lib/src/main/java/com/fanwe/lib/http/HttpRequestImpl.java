@@ -17,4 +17,11 @@ public abstract class HttpRequestImpl extends Request
         request.headers(getMapHeader());
         return request;
     }
+
+    @Override
+    public String toString()
+    {
+        String url = HttpRequest.append(getUrl(), getMapParam());
+        return url;
+    }
 }
