@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by zhengjun on 2017/10/10.
  */
-public class SDHttpRequest extends HttpRequest
+class SDHttpRequest extends HttpRequest
 {
     public SDHttpRequest(CharSequence url, String method) throws HttpRequestException
     {
