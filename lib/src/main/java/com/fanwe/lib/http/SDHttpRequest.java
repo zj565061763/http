@@ -37,6 +37,7 @@ public class SDHttpRequest extends HttpRequest
     public static final String HEADER_COOKIE = "Cookie";
 
     private static CookieJar sCookieJar = CookieJar.EMPTY_COOKIE_JAR;
+    private int mCode;
 
     public static void setCookieJar(CookieJar cookieJar)
     {
@@ -97,19 +98,30 @@ public class SDHttpRequest extends HttpRequest
         return null;
     }
 
+    private void setCode(int code)
+    {
+        if (mCode == 0 && code != 0)
+        {
+            List<HttpCookie> listResponse = getResponseCookie();
+            sCookieJar.saveFromResponse(url(), listResponse);
+
+            mCode = code;
+        }
+    }
+
     //---------- Override start ----------
 
     @Override
     public int code() throws HttpRequestException
     {
-        List<HttpCookie> listRequest = sCookieJar.loadForRequest(url());
-        setRequestCookie(listRequest);
+        if (mCode == 0)
+        {
+            List<HttpCookie> listRequest = sCookieJar.loadForRequest(url());
+            setRequestCookie(listRequest);
+        }
 
         int code = super.code();
-
-        List<HttpCookie> listResponse = getResponseCookie();
-        sCookieJar.saveFromResponse(url(), listResponse);
-
+        setCode(code);
         return code;
     }
 

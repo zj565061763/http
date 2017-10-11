@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.fanwe.lib.http.HttpRequest;
 import com.fanwe.lib.http.SDHttpRequest;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
-import com.fanwe.lib.task.SDTask;
+import com.fanwe.lib.http.core.GetRequest;
+import com.fanwe.lib.http.core.StringRequestCallback;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -23,15 +23,48 @@ public class MainActivity extends AppCompatActivity
 
         SDHttpRequest.setCookieJar(new SharedPreferencesCookieJar(this));
 
-        new SDTask()
+        new GetRequest(URL).param("ctl", "app").param("act", "init").execute(new StringRequestCallback()
         {
             @Override
-            protected void onRun() throws Exception
+            public void onStart()
             {
-                HttpRequest request = new SDHttpRequest(URL, HttpRequest.METHOD_POST).form("ctl", "app").form("act", "init");
-
-                Log.i(TAG, request.body());
+                super.onStart();
+                Log.i(TAG, "onStart");
             }
-        }.submit();
+
+            @Override
+            public void onSuccessBackground() throws Exception
+            {
+                super.onSuccessBackground();
+                Log.i(TAG, "onSuccessBackground:" + getResult());
+            }
+
+            @Override
+            public void onSuccess()
+            {
+                Log.i(TAG, "onSuccess");
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+                super.onError(e);
+                Log.i(TAG, "onError");
+            }
+
+            @Override
+            public void onCancel()
+            {
+                super.onCancel();
+                Log.i(TAG, "onCancel");
+            }
+
+            @Override
+            public void onFinish()
+            {
+                super.onFinish();
+                Log.i(TAG, "onFinish");
+            }
+        });
     }
 }
