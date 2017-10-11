@@ -7,10 +7,9 @@ import android.os.Looper;
  * Created by zhengjun on 2017/10/10.
  */
 
-public abstract class RequestCallback<T>
+public abstract class RequestCallback
 {
     private Response mResponse;
-    private T mResult;
 
     final void setResponse(Response response)
     {
@@ -20,16 +19,6 @@ public abstract class RequestCallback<T>
     public final Response getResponse()
     {
         return mResponse;
-    }
-
-    final void setResult(T result)
-    {
-        mResult = result;
-    }
-
-    public final T getResult()
-    {
-        return mResult;
     }
 
     public void onStart()
