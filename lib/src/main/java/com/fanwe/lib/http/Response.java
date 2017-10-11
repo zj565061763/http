@@ -2,7 +2,6 @@ package com.fanwe.lib.http;
 
 import android.text.TextUtils;
 
-import com.fanwe.lib.http.HttpRequest;
 import com.fanwe.lib.http.utils.IOUtil;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public class Response
     private String charset;
     private InputStream inputStream;
 
-    public void fillValue(HttpRequest request)
+    void fillValue(HttpRequest request)
     {
         if (request == null)
         {
