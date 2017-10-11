@@ -13,7 +13,6 @@ import java.util.Map;
 
 public abstract class BaseRequest
 {
-
     private String mUrl;
     private Map<Object, Object> mMapParam = new LinkedHashMap<>();
 
@@ -43,7 +42,12 @@ public abstract class BaseRequest
         return new SDHttpRequest(url, method);
     }
 
-    public abstract Response execute() throws Exception;
+    public final Response execute() throws Exception
+    {
+        return onExecute();
+    }
+
+    protected abstract Response onExecute() throws Exception;
 
     private SDTask mTask;
 

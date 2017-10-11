@@ -13,7 +13,7 @@ public class GetRequest extends BaseRequest
     }
 
     @Override
-    public Response execute() throws Exception
+    protected Response onExecute() throws Exception
     {
         String url = HttpRequest.append(getUrl(), getMapParam());
         HttpRequest httpRequest = newHttpRequest(url, HttpRequest.METHOD_GET);
