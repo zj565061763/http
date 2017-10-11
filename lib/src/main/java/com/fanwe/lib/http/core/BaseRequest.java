@@ -60,6 +60,7 @@ public abstract class BaseRequest
             protected void onRun() throws Exception
             {
                 Response response = execute();
+
                 callback.setResponse(response);
                 callback.onSuccessBackground();
                 callback.runOnUiThread(new Runnable()
