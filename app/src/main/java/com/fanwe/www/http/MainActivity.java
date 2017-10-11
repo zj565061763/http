@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.fanwe.lib.http.GetRequest;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onClickRequest(View view)
     {
-        Request request = new GetRequest(URL).param("ctl", "app").param("act", "init").setTag(this);
+        Request request = Request.get(URL).param("ctl", "app").param("act", "init").setTag(this);
         RequestManager.getInstance().execute(request, new StringRequestCallback()
         {
             @Override

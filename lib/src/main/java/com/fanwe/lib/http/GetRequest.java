@@ -5,7 +5,7 @@ package com.fanwe.lib.http;
  */
 public class GetRequest extends HttpRequestImpl
 {
-    public GetRequest(String url)
+    protected GetRequest(String url)
     {
         super(url);
     }

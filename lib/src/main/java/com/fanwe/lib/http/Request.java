@@ -20,6 +20,16 @@ public abstract class Request
         setUrl(url);
     }
 
+    public static GetRequest get(String url)
+    {
+        return new GetRequest(url);
+    }
+
+    public static PostRequest post(String url)
+    {
+        return new PostRequest(url);
+    }
+
     public Request setUrl(String url)
     {
         mUrl = url;
