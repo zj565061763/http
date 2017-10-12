@@ -128,7 +128,7 @@ public abstract class Request
     {
         RequestManager.getInstance().beforeExecute(this);
         Response response = onExecute();
-        RequestManager.getInstance().afterExcute(this, response);
+        RequestManager.getInstance().afterExecute(this, response);
         return response;
     }
 

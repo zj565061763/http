@@ -16,12 +16,12 @@ public interface RequestInterceptor
         }
 
         @Override
-        public void afterExcute(Request request, Response response)
+        public void afterExecute(Request request, Response response)
         {
         }
     };
 
     void beforeExecute(Request request);
 
-    void afterExcute(Request request, Response response);
+    void afterExecute(Request request, Response response);
 }

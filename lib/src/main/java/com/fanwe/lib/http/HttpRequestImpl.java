@@ -4,7 +4,7 @@ package com.fanwe.lib.http;
  * Created by zhengjun on 2017/10/11.
  */
 
-public abstract class HttpRequestImpl extends Request
+abstract class HttpRequestImpl extends Request
 {
     protected HttpRequestImpl(String url)
     {

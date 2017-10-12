@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public void afterExcute(Request request, Response response)
+        public void afterExecute(Request request, Response response)
         {
-            Log.i(TAG, "afterExcute:" + request);
+            Log.i(TAG, "afterExecute:" + request);
         }
     };
 
