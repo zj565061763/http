@@ -4,6 +4,7 @@ import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -17,7 +18,7 @@ public class RequestManager implements RequestInterceptor
     private static RequestManager sInstance;
 
     private CookieJar mCookieJar;
-    private Map<RequestTask, Integer> mMapRequest;
+    private Map<RequestTask, Integer> mMapRequest = new WeakHashMap<>();
     private List<RequestInterceptor> mListRequestInterceptor;
 
     private RequestManager()
@@ -63,22 +64,13 @@ public class RequestManager implements RequestInterceptor
         return mCookieJar;
     }
 
-    private Map<RequestTask, Integer> getMapRequest()
-    {
-        if (mMapRequest == null)
-        {
-            mMapRequest = new WeakHashMap<>();
-        }
-        return mMapRequest;
-    }
-
     /**
      * 异步执行请求
      *
      * @param request
      * @param callback
      */
-    public void execute(Request request, RequestCallback callback)
+    public synchronized void execute(Request request, RequestCallback callback)
     {
         if (request == null)
         {
@@ -88,7 +80,7 @@ public class RequestManager implements RequestInterceptor
         RequestTask task = new RequestTask(request, callback);
         task.submit();
 
-        getMapRequest().put(task, 0);
+        mMapRequest.put(task, 0);
     }
 
     /**
@@ -96,19 +88,22 @@ public class RequestManager implements RequestInterceptor
      *
      * @param tag
      */
-    public void cancelRequest(Object tag)
+    public synchronized void cancelRequest(Object tag)
     {
-        if (mMapRequest == null || mMapRequest.isEmpty() || tag == null)
+        if (mMapRequest.isEmpty() || tag == null)
         {
             return;
         }
 
-        for (Map.Entry<RequestTask, Integer> item : mMapRequest.entrySet())
+        Iterator<Map.Entry<RequestTask, Integer>> it = mMapRequest.entrySet().iterator();
+        while (it.hasNext())
         {
+            Map.Entry<RequestTask, Integer> item = it.next();
             RequestTask task = item.getKey();
             if (tag.equals(task.getRequest().getTag()))
             {
                 task.cancel();
+                it.remove();
             }
         }
     }
@@ -122,7 +117,7 @@ public class RequestManager implements RequestInterceptor
         return mListRequestInterceptor;
     }
 
-    public void addRequestInterceptor(RequestInterceptor interceptor)
+    public synchronized void addRequestInterceptor(RequestInterceptor interceptor)
     {
         if (interceptor == null)
         {
@@ -134,7 +129,7 @@ public class RequestManager implements RequestInterceptor
         }
     }
 
-    public void removeRequestInterceptor(RequestInterceptor interceptor)
+    public synchronized void removeRequestInterceptor(RequestInterceptor interceptor)
     {
         if (interceptor == null || mListRequestInterceptor == null)
         {

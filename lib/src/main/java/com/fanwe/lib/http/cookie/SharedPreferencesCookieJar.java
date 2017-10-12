@@ -30,7 +30,7 @@ public class SharedPreferencesCookieJar implements CookieJar
     }
 
     @Override
-    public void saveFromResponse(URL url, List<HttpCookie> listCookie)
+    public synchronized void saveFromResponse(URL url, List<HttpCookie> listCookie)
     {
         if (url == null)
         {
@@ -59,7 +59,7 @@ public class SharedPreferencesCookieJar implements CookieJar
     }
 
     @Override
-    public List<HttpCookie> loadForRequest(URL url)
+    public synchronized List<HttpCookie> loadForRequest(URL url)
     {
         List<HttpCookie> lisCookie = null;
 
