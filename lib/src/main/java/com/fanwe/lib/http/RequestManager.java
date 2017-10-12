@@ -3,12 +3,10 @@ package com.fanwe.lib.http;
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
+import com.fanwe.lib.task.SDTask;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -19,7 +17,6 @@ public class RequestManager implements RequestInterceptor
     private static RequestManager sInstance;
 
     private CookieJar mCookieJar;
-    private Map<RequestTask, Integer> mMapRequest = new WeakHashMap<>();
     private List<RequestInterceptor> mListRequestInterceptor;
 
     private RequestManager()
@@ -71,7 +68,7 @@ public class RequestManager implements RequestInterceptor
      * @param request
      * @param callback
      */
-    public synchronized void execute(Request request, IRequestCallback callback)
+    public void execute(Request request, IRequestCallback callback)
     {
         if (request == null)
         {
@@ -80,8 +77,6 @@ public class RequestManager implements RequestInterceptor
 
         RequestTask task = new RequestTask(request, callback);
         task.submit(request.getTag());
-
-        mMapRequest.put(task, 0);
     }
 
     /**
@@ -89,24 +84,9 @@ public class RequestManager implements RequestInterceptor
      *
      * @param tag
      */
-    public synchronized void cancelRequest(Object tag)
+    public void cancelRequest(Object tag)
     {
-        if (mMapRequest.isEmpty() || tag == null)
-        {
-            return;
-        }
-
-        Iterator<Map.Entry<RequestTask, Integer>> it = mMapRequest.entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry<RequestTask, Integer> item = it.next();
-            RequestTask task = item.getKey();
-            if (tag.equals(task.getRequest().getTag()))
-            {
-                task.cancel();
-                it.remove();
-            }
-        }
+        SDTask.cancel(tag);
     }
 
     private List<RequestInterceptor> getListRequestInterceptor()
