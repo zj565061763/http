@@ -1,8 +1,5 @@
 package com.fanwe.lib.http.callback;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.fanwe.lib.http.Response;
 
 /**
@@ -52,18 +49,5 @@ public abstract class RequestCallback implements IRequestCallback
     @Override
     public void onFinish()
     {
-    }
-
-    private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
-
-    public static void runOnUiThread(Runnable runnable)
-    {
-        if (Looper.myLooper() == Looper.getMainLooper())
-        {
-            runnable.run();
-        } else
-        {
-            MAIN_HANDLER.post(runnable);
-        }
     }
 }

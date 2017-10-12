@@ -19,8 +19,6 @@ class RequestTask extends SDTask
             callback = IRequestCallback.EMPTY_CALLBACK;
         }
         mCallback = callback;
-
-        callback.onStart();
     }
 
     public Request getRequest()
@@ -31,6 +29,13 @@ class RequestTask extends SDTask
     public IRequestCallback getCallback()
     {
         return mCallback;
+    }
+
+    @Override
+    protected void onSubmit()
+    {
+        super.onSubmit();
+        getCallback().onStart();
     }
 
     @Override

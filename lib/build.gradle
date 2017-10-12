@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.zj565061763'
@@ -28,22 +27,5 @@ android {
 }
 
 dependencies {
-    compile 'com.fanwe.android:lib:task-1.0.4'
-}
-
-publish {
-    userOrg = 'zj565061763'
-    groupId = 'com.fanwe.android'
-    artifactId = 'lib'
-    publishVersion = 'http-1.0.0'
-    desc = 'fanwe android library'
-    website = 'https://github.com/zj565061763'
-}
-
-tasks.withType(Javadoc) {
-    options {
-        encoding "UTF-8"
-        charSet 'UTF-8'
-        failOnError false
-    }
+    compile 'com.github.zj565061763:task:1.0.5'
 }
