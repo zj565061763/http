@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 /**
  * Created by zhengjun on 2017/10/12.
  */
-public abstract class ModelRequestCallback<T> extends StringRequestCallback
+public abstract class ModelRequestCallback<T> extends RequestCallback
 {
     private T mModel;
 
@@ -15,10 +15,12 @@ public abstract class ModelRequestCallback<T> extends StringRequestCallback
     {
         super.onSuccessBackground();
 
+        String content = getResponse().getBody();
+
         Type type = getType(getClass(), 0);
         if (type instanceof Class)
         {
-            mModel = parseToModel(getResult(), (Class<T>) type);
+            mModel = parseToModel(content, (Class<T>) type);
         }
     }
 

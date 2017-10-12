@@ -19,6 +19,8 @@ public class Response
     private String charset;
     private InputStream inputStream;
 
+    private String body;
+
     void setRequest(Request request)
     {
         this.request = request;
@@ -44,14 +46,18 @@ public class Response
     }
 
     /**
-     * 将请求结果转为字符串，此方法必须在非ui线程中执行
+     * 将请求结果转为字符串，第一次执行对象的此方法必须在非ui线程中执行
      *
      * @return
      * @throws IOException
      */
-    public String parseToString() throws IOException
+    public String getBody() throws IOException
     {
-        return new String(IOUtil.readBytes(getInputStream()), getCharset());
+        if (TextUtils.isEmpty(body))
+        {
+            body = new String(IOUtil.readBytes(getInputStream()), getCharset());
+        }
+        return body;
     }
 
     public Request getRequest()
