@@ -27,6 +27,13 @@ public abstract class ModelRequestCallback<T> extends StringRequestCallback
         return mModel;
     }
 
+    /**
+     * 将字符串解析为实体
+     *
+     * @param content
+     * @param clazz
+     * @return
+     */
     protected abstract T parseToModel(String content, Class<T> clazz);
 
     private Type getType(Class<?> clazz, int index)
