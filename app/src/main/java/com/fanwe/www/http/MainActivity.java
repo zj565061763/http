@@ -5,10 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.fanwe.lib.http.callback.ModelRequestCallback;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;
+import com.fanwe.lib.http.callback.ModelRequestCallback;
+import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 import com.fanwe.www.http.model.InitActModel;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     public void onClickRequest(View view)
     {
         Request request = Request.get(URL).param("ctl", "app").param("act", "init").setTag(this);
-        request.execute(new ModelRequestCallback<InitActModel>()
+        request.execute(RequestCallbackProxy.get(new ModelRequestCallback<InitActModel>()
         {
             @Override
             public void onStart()
@@ -97,7 +98,21 @@ public class MainActivity extends AppCompatActivity
                 super.onFinish();
                 Log.i(TAG, "onFinish");
             }
-        });
+        }, new ModelRequestCallback<InitActModel>()
+        {
+            @Override
+            protected InitActModel parseToModel(String content, Class<InitActModel> clazz)
+            {
+                return new Gson().fromJson(content, clazz);
+            }
+
+            @Override
+            public void onSuccess()
+            {
+                InitActModel model = getModel();
+                Log.i(TAG, "onSuccess 1:" + model.getCity());
+            }
+        }));
     }
 
     public void onClickCancelRequest(View view)
