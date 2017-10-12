@@ -132,7 +132,7 @@ public abstract class Request
         response.setRequest(this);
         doExecute(response);
 
-        RequestManager.getInstance().afterExecute(this, response);
+        RequestManager.getInstance().afterExecute(response);
         return response;
     }
 
