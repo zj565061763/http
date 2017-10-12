@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     public void onClickRequest(View view)
     {
         Request request = Request.get(URL).param("ctl", "app").param("act", "init").setTag(this);
-        RequestManager.getInstance().execute(request, new StringRequestCallback()
+        request.execute(new StringRequestCallback()
         {
             @Override
             public void onStart()

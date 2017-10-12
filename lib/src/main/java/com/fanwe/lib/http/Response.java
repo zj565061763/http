@@ -36,6 +36,12 @@ public class Response
         setInputStream(request.stream());
     }
 
+    /**
+     * 将请求结果转为字符串，此方法必须在非ui线程中执行
+     *
+     * @return
+     * @throws IOException
+     */
     public String parseToString() throws IOException
     {
         return new String(IOUtil.readBytes(getInputStream()), getCharset());

@@ -30,24 +30,50 @@ public abstract class Request
         return new PostRequest(url);
     }
 
+    /**
+     * 设置请求的url
+     *
+     * @param url
+     * @return
+     */
     public Request setUrl(String url)
     {
         mUrl = url;
         return this;
     }
 
+    /**
+     * 设置请求参数
+     *
+     * @param name
+     * @param value
+     * @return
+     */
     public Request param(Object name, Object value)
     {
         getMapParam().put(name, value);
         return this;
     }
 
+    /**
+     * 设置header参数
+     *
+     * @param name
+     * @param value
+     * @return
+     */
     public Request header(String name, String value)
     {
         getMapHeader().put(name, value);
         return this;
     }
 
+    /**
+     * 设置请求对应的tag
+     *
+     * @param tag
+     * @return
+     */
     public Request setTag(Object tag)
     {
         mTag = tag;
@@ -82,6 +108,22 @@ public abstract class Request
         return mMapHeader;
     }
 
+    /**
+     * 异步请求
+     *
+     * @param callback
+     */
+    public final void execute(RequestCallback callback)
+    {
+        RequestManager.getInstance().execute(this, callback);
+    }
+
+    /**
+     * 同步请求
+     *
+     * @return
+     * @throws Exception
+     */
     public final Response execute() throws Exception
     {
         RequestManager.getInstance().beforeExecute(this);
