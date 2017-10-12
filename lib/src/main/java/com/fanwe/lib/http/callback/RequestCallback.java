@@ -1,56 +1,58 @@
-package com.fanwe.lib.http;
+package com.fanwe.lib.http.callback;
 
 import android.os.Handler;
 import android.os.Looper;
+
+import com.fanwe.lib.http.Response;
 
 /**
  * Created by zhengjun on 2017/10/10.
  */
 
-public abstract class RequestCallback
+public abstract class RequestCallback implements IRequestCallback
 {
     private Response mResponse;
 
-    final void setResponse(Response response)
+    @Override
+    public final void setResponse(Response response)
     {
         mResponse = response;
     }
 
+    @Override
     public final Response getResponse()
     {
         return mResponse;
     }
 
+    @Override
     public void onStart()
     {
     }
 
+    @Override
     public void onSuccessBackground() throws Exception
     {
 
     }
 
+    @Override
     public abstract void onSuccess();
 
+    @Override
     public void onError(Exception e)
     {
     }
 
+    @Override
     public void onCancel()
     {
     }
 
+    @Override
     public void onFinish()
     {
     }
-
-    public static final RequestCallback EMPTY_CALLBACK = new RequestCallback()
-    {
-        @Override
-        public void onSuccess()
-        {
-        }
-    };
 
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 

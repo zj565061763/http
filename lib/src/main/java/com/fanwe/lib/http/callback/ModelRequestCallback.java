@@ -1,4 +1,4 @@
-package com.fanwe.lib.http;
+package com.fanwe.lib.http.callback;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

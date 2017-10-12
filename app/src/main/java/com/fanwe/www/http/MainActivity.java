@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.fanwe.lib.http.ModelRequestCallback;
+import com.fanwe.lib.http.callback.ModelRequestCallback;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;

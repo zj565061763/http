@@ -1,5 +1,7 @@
 package com.fanwe.lib.http;
 
+import com.fanwe.lib.http.callback.IRequestCallback;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -113,7 +115,7 @@ public abstract class Request
      *
      * @param callback
      */
-    public final void execute(RequestCallback callback)
+    public final void execute(IRequestCallback callback)
     {
         RequestManager.getInstance().execute(this, callback);
     }

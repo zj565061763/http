@@ -1,5 +1,6 @@
 package com.fanwe.lib.http;
 
+import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
@@ -70,7 +71,7 @@ public class RequestManager implements RequestInterceptor
      * @param request
      * @param callback
      */
-    public synchronized void execute(Request request, RequestCallback callback)
+    public synchronized void execute(Request request, IRequestCallback callback)
     {
         if (request == null)
         {

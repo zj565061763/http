@@ -1,5 +1,7 @@
 package com.fanwe.lib.http;
 
+import com.fanwe.lib.http.callback.IRequestCallback;
+import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.task.SDTask;
 
 /**
@@ -8,14 +10,14 @@ import com.fanwe.lib.task.SDTask;
 class RequestTask extends SDTask
 {
     private Request mRequest;
-    private RequestCallback mCallback;
+    private IRequestCallback mCallback;
 
-    public RequestTask(Request request, RequestCallback callback)
+    public RequestTask(Request request, IRequestCallback callback)
     {
         mRequest = request;
         if (callback == null)
         {
-            callback = RequestCallback.EMPTY_CALLBACK;
+            callback = IRequestCallback.EMPTY_CALLBACK;
         }
         mCallback = callback;
 
@@ -27,7 +29,7 @@ class RequestTask extends SDTask
         return mRequest;
     }
 
-    public RequestCallback getCallback()
+    public IRequestCallback getCallback()
     {
         return mCallback;
     }
