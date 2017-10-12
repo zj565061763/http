@@ -127,10 +127,20 @@ public abstract class Request
     public final Response execute() throws Exception
     {
         RequestManager.getInstance().beforeExecute(this);
-        Response response = onExecute();
+
+        Response response = new Response();
+        response.setRequest(this);
+        doExecute(response);
+
         RequestManager.getInstance().afterExecute(this, response);
         return response;
     }
 
-    protected abstract Response onExecute() throws Exception;
+    /**
+     * 发起请求，并将请求结果填充到response
+     *
+     * @param response
+     * @throws Exception
+     */
+    protected abstract void doExecute(Response response) throws Exception;
 }

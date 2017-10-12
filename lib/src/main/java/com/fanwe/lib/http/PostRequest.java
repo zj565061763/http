@@ -43,8 +43,9 @@ public class PostRequest extends HttpRequestImpl
         return this;
     }
 
+
     @Override
-    protected Response onExecute() throws Exception
+    protected void doExecute(Response response) throws Exception
     {
         HttpRequest request = newHttpRequest(getUrl(), HttpRequest.METHOD_POST);
 
@@ -56,9 +57,8 @@ public class PostRequest extends HttpRequestImpl
                 request.part(item.name, item.filename, item.contentType, item.part);
             }
         }
-        Response response = new Response();
+
         response.fillValue(request);
-        return response;
     }
 
     private static class RequestBody

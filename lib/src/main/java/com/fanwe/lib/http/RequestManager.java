@@ -156,7 +156,7 @@ public class RequestManager implements RequestInterceptor
     }
 
     @Override
-    public synchronized void afterExecute(Request request, Response response)
+    public synchronized void afterExecute(Response response)
     {
         if (mListRequestInterceptor == null)
         {
@@ -164,7 +164,7 @@ public class RequestManager implements RequestInterceptor
         }
         for (RequestInterceptor item : mListRequestInterceptor)
         {
-            item.afterExecute(request, response);
+            item.afterExecute(response);
         }
     }
 }

@@ -12,10 +12,17 @@ import java.io.InputStream;
  */
 public class Response
 {
+    private Request request;
+
     private int code;
     private int contentLength;
     private String charset;
     private InputStream inputStream;
+
+    void setRequest(Request request)
+    {
+        this.request = request;
+    }
 
     void fillValue(HttpRequest request)
     {
@@ -45,6 +52,11 @@ public class Response
     public String parseToString() throws IOException
     {
         return new String(IOUtil.readBytes(getInputStream()), getCharset());
+    }
+
+    public Request getRequest()
+    {
+        return request;
     }
 
     public int getCode()

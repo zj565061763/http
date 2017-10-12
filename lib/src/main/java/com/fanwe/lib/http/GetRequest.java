@@ -11,12 +11,9 @@ public class GetRequest extends HttpRequestImpl
     }
 
     @Override
-    protected Response onExecute() throws Exception
+    protected void doExecute(Response response) throws Exception
     {
         HttpRequest request = newHttpRequest(HttpRequest.append(getUrl(), getMapParam()), HttpRequest.METHOD_GET);
-
-        Response response = new Response();
         response.fillValue(request);
-        return response;
     }
 }

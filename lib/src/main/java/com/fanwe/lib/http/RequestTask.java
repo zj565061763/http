@@ -19,7 +19,6 @@ class RequestTask extends SDTask
         }
         mCallback = callback;
 
-        callback.setRequest(request);
         callback.onStart();
     }
 
