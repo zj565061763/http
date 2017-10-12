@@ -79,7 +79,7 @@ public class RequestManager implements RequestInterceptor
         }
 
         RequestTask task = new RequestTask(request, callback);
-        task.submit();
+        task.submit(request.getTag());
 
         mMapRequest.put(task, 0);
     }

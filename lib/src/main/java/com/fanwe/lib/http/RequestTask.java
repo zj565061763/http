@@ -1,7 +1,6 @@
 package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
-import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.task.SDTask;
 
 /**
@@ -41,7 +40,7 @@ class RequestTask extends SDTask
 
         getCallback().setResponse(response);
         getCallback().onSuccessBackground();
-        RequestCallback.runOnUiThread(new Runnable()
+        runOnUiThread(new Runnable()
         {
             @Override
             public void run()
@@ -56,7 +55,7 @@ class RequestTask extends SDTask
     protected void onError(final Exception e)
     {
         super.onError(e);
-        RequestCallback.runOnUiThread(new Runnable()
+        runOnUiThread(new Runnable()
         {
             @Override
             public void run()
@@ -68,10 +67,10 @@ class RequestTask extends SDTask
     }
 
     @Override
-    protected void onCancelCalled()
+    protected void onCancel()
     {
-        super.onCancelCalled();
-        RequestCallback.runOnUiThread(new Runnable()
+        super.onCancel();
+        runOnUiThread(new Runnable()
         {
             @Override
             public void run()

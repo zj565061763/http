@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    compile 'com.github.zj565061763:task:1.0.0'
+    compile 'com.fanwe.android:lib:task-1.0.4'
 }
 
 publish {
