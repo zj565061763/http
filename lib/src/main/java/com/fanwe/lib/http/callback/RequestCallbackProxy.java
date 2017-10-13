@@ -7,7 +7,7 @@ import java.lang.reflect.Proxy;
 /**
  * Created by zhengjun on 2017/10/12.
  */
-public class RequestCallbackProxy
+public final class RequestCallbackProxy
 {
     private RequestCallbackProxy()
     {
