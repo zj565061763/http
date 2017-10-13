@@ -59,26 +59,19 @@ class RequestTask extends SDTask
     protected void onError(final Exception e)
     {
         super.onError(e);
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                getCallback().onError(e);
-            }
-        });
-    }
 
-    @Override
-    protected void onCancel()
-    {
-        super.onCancel();
         runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                getCallback().onCancel();
+                if (isCancelled())
+                {
+                    getCallback().onCancel();
+                } else
+                {
+                    getCallback().onError(e);
+                }
             }
         });
     }

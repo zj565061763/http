@@ -99,7 +99,7 @@ public class RequestManager implements RequestInterceptor
      */
     public void cancelRequest(Object tag)
     {
-        SDTask.cancel(tag);
+        SDTask.cancelTag(tag, true);
     }
 
     private List<RequestInterceptor> getListRequestInterceptor()
