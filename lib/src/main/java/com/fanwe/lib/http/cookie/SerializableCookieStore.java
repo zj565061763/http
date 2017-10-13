@@ -74,7 +74,7 @@ public class SerializableCookieStore implements PersistableCookieStore, Serializ
         try
         {
             IOUtil.serializeObject(getMemoryCookieStore(), getFile());
-            LogUtils.e("cookie save cookiestore success");
+            LogUtils.i("cookie save cookiestore success");
         } catch (Exception e)
         {
             LogUtils.e("cookie save cookiestore error:" + e);
