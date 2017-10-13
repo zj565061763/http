@@ -1,6 +1,5 @@
 package com.fanwe.lib.http.utils;
 
-import android.database.Cursor;
 import android.text.TextUtils;
 
 import java.io.BufferedInputStream;
@@ -19,32 +18,6 @@ public class IOUtil
 {
     private IOUtil()
     {
-    }
-
-    public static void closeQuietly(Closeable closeable)
-    {
-        if (closeable != null)
-        {
-            try
-            {
-                closeable.close();
-            } catch (Throwable ignored)
-            {
-            }
-        }
-    }
-
-    public static void closeQuietly(Cursor cursor)
-    {
-        if (cursor != null)
-        {
-            try
-            {
-                cursor.close();
-            } catch (Throwable ignored)
-            {
-            }
-        }
     }
 
     public static byte[] readBytes(InputStream in) throws IOException
@@ -95,12 +68,12 @@ public class IOUtil
         }
     }
 
-    public static String readStr(InputStream in) throws IOException
+    public static String readString(InputStream in) throws IOException
     {
-        return readStr(in, "UTF-8");
+        return readString(in, "UTF-8");
     }
 
-    public static String readStr(InputStream in, String charset) throws IOException
+    public static String readString(InputStream in, String charset) throws IOException
     {
         if (TextUtils.isEmpty(charset)) charset = "UTF-8";
 
@@ -119,12 +92,12 @@ public class IOUtil
         return sb.toString();
     }
 
-    public static void writeStr(OutputStream out, String str) throws IOException
+    public static void writeString(OutputStream out, String str) throws IOException
     {
-        writeStr(out, str, "UTF-8");
+        writeString(out, str, "UTF-8");
     }
 
-    public static void writeStr(OutputStream out, String str, String charset) throws IOException
+    public static void writeString(OutputStream out, String str, String charset) throws IOException
     {
         if (TextUtils.isEmpty(charset)) charset = "UTF-8";
 
@@ -150,5 +123,18 @@ public class IOUtil
             out.write(buffer, 0, len);
         }
         out.flush();
+    }
+
+    public static void closeQuietly(Closeable closeable)
+    {
+        if (closeable != null)
+        {
+            try
+            {
+                closeable.close();
+            } catch (Throwable ignored)
+            {
+            }
+        }
     }
 }
