@@ -1,6 +1,5 @@
 package com.fanwe.lib.http.cookie;
 
-import java.io.Serializable;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -13,10 +12,8 @@ import java.util.Map;
 /**
  * Created by zhengjun on 2017/10/13.
  */
-public class SerializableCookieStore implements CookieStore, Serializable
+public class MemoryCookieStore implements CookieStore
 {
-    static final long serialVersionUID = 0L;
-
     private Map<String, List<CookieModel>> mMapCookie = new HashMap<>();
 
     private String getUriString(URI uri)

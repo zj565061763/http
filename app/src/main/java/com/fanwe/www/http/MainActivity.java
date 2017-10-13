@@ -9,7 +9,7 @@ import android.view.View;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;
-import com.fanwe.lib.http.cookie.SerializableCookieStore;
+import com.fanwe.lib.http.cookie.MemoryCookieStore;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
 public class MainActivity extends AppCompatActivity
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //设置cookie管理对象
-        RequestManager.getInstance().setCookieStore(new SerializableCookieStore());
+        RequestManager.getInstance().setCookieStore(new MemoryCookieStore());
 
         //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑
         RequestManager.getInstance().addRequestInterceptor(mRequestInterceptor);
