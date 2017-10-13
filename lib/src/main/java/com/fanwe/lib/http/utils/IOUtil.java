@@ -106,7 +106,7 @@ public class IOUtil
         writer.flush();
     }
 
-    public static void copy(InputStream in, OutputStream out) throws IOException
+    public static void copy(InputStream in, OutputStream out, ProgressCallback callback) throws IOException
     {
         if (!(in instanceof BufferedInputStream))
         {
@@ -116,11 +116,18 @@ public class IOUtil
         {
             out = new BufferedOutputStream(out);
         }
+        long count = 0;
         int len = 0;
         byte[] buffer = new byte[1024];
         while ((len = in.read(buffer)) != -1)
         {
             out.write(buffer, 0, len);
+
+            count += len;
+            if (callback != null)
+            {
+                callback.onProgress(count);
+            }
         }
         out.flush();
     }
@@ -136,5 +143,10 @@ public class IOUtil
             {
             }
         }
+    }
+
+    public interface ProgressCallback
+    {
+        void onProgress(long count);
     }
 }
