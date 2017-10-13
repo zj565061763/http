@@ -3,6 +3,7 @@ package com.fanwe.lib.http;
 import android.text.TextUtils;
 
 import java.net.HttpCookie;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
@@ -88,14 +89,34 @@ class SDHttpRequest extends HttpRequest
 
     private void loadCookieForRequest()
     {
-        List<HttpCookie> listRequest = RequestManager.getInstance().getCookieJar().loadForRequest(url());
-        setRequestCookie(listRequest);
+        try
+        {
+            URI uri = url().toURI();
+            List<HttpCookie> listRequest = RequestManager.getInstance().getCookieStore().get(uri);
+            setRequestCookie(listRequest);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void saveCookieFromResponse()
     {
-        List<HttpCookie> listResponse = getResponseCookie();
-        RequestManager.getInstance().getCookieJar().saveFromResponse(url(), listResponse);
+        try
+        {
+            List<HttpCookie> listResponse = getResponseCookie();
+            if (listResponse != null)
+            {
+                URI uri = url().toURI();
+                for (HttpCookie item : listResponse)
+                {
+                    RequestManager.getInstance().getCookieStore().add(uri, item);
+                }
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void setCode(int code)

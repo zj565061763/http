@@ -2,9 +2,11 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.RequestCallbackProxy;
-import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
+import java.net.CookieStore;
+import java.net.HttpCookie;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +23,7 @@ public class RequestManager implements RequestInterceptor
 
     private Map<RequestTask, Integer> mMapRequest = new WeakHashMap<>();
 
-    private CookieJar mCookieJar;
+    private CookieStore mCookieStore;
     private List<RequestInterceptor> mListRequestInterceptor;
 
     private RequestManager()
@@ -46,11 +48,11 @@ public class RequestManager implements RequestInterceptor
     /**
      * 设置cookie管理对象
      *
-     * @param cookieJar
+     * @param cookieStore
      */
-    public void setCookieJar(CookieJar cookieJar)
+    public void setCookieStore(CookieStore cookieStore)
     {
-        mCookieJar = cookieJar;
+        mCookieStore = cookieStore;
     }
 
     /**
@@ -58,13 +60,13 @@ public class RequestManager implements RequestInterceptor
      *
      * @return
      */
-    public CookieJar getCookieJar()
+    public CookieStore getCookieStore()
     {
-        if (mCookieJar == null)
+        if (mCookieStore == null)
         {
-            mCookieJar = CookieJar.EMPTY_COOKIE_JAR;
+            mCookieStore = EMPTY_COOKIE_STORE;
         }
-        return mCookieJar;
+        return mCookieStore;
     }
 
     /**
@@ -190,4 +192,42 @@ public class RequestManager implements RequestInterceptor
             item.afterExecute(response);
         }
     }
+
+    private static final CookieStore EMPTY_COOKIE_STORE = new CookieStore()
+    {
+        @Override
+        public void add(URI uri, HttpCookie cookie)
+        {
+        }
+
+        @Override
+        public List<HttpCookie> get(URI uri)
+        {
+            return null;
+        }
+
+        @Override
+        public List<HttpCookie> getCookies()
+        {
+            return null;
+        }
+
+        @Override
+        public List<URI> getURIs()
+        {
+            return null;
+        }
+
+        @Override
+        public boolean remove(URI uri, HttpCookie cookie)
+        {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll()
+        {
+            return false;
+        }
+    };
 }
