@@ -13,8 +13,6 @@ import com.fanwe.lib.http.callback.ModelRequestCallback;
 import com.fanwe.lib.http.cookie.SharedPreferencesCookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 import com.fanwe.lib.http.utils.TransmitParam;
-import com.fanwe.lib.looper.ISDLooper;
-import com.fanwe.lib.looper.impl.SDSimpleLooper;
 import com.fanwe.www.http.model.InitActModel;
 import com.google.gson.Gson;
 
@@ -52,8 +50,6 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-    private ISDLooper mLooper = new SDSimpleLooper();
-
     public void onClickRequest(View view)
     {
         Request.post(URL)
@@ -62,45 +58,36 @@ public class MainActivity extends AppCompatActivity
                 .setTag(this)
                 .execute(mModelRequestCallback_0, mModelRequestCallback_1);
 
-        Request.get(URL_FILE).setTag(this).execute(mFileRequestCallback);
-        mLooper.start(1000, new Runnable()
+        File file = new File(getExternalCacheDir(), "download.apk");
+        Request.get(URL_FILE).setTag(this).execute(new FileRequestCallback(file)
         {
             @Override
-            public void run()
+            protected void onProgress(TransmitParam param)
             {
-                Log.e(TAG, mFileRequestCallback.getTransmitParam().toString());
+                Log.i(TAG, param.toString());
+            }
+
+            @Override
+            public void onSuccess()
+            {
+
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+                super.onError(e);
+                Log.i(TAG, "download error:" + e);
+            }
+
+            @Override
+            public void onCancel()
+            {
+                super.onCancel();
+                Log.i(TAG, "download cancelled");
             }
         });
     }
-
-    private FileRequestCallback mFileRequestCallback = new FileRequestCallback(null)
-    {
-        @Override
-        public void onStart()
-        {
-            super.onStart();
-            setFile(new File(getExternalCacheDir(), "download.apk"));
-        }
-
-        @Override
-        protected void onProgressBackground(TransmitParam param)
-        {
-//            Log.i(TAG, param.toString());
-        }
-
-        @Override
-        public void onSuccess()
-        {
-
-        }
-
-        @Override
-        public void onCancel()
-        {
-            super.onCancel();
-            Log.i(TAG, "download cancelled");
-        }
-    };
 
     private ModelRequestCallback mModelRequestCallback_0 = new ModelRequestCallback<InitActModel>()
     {
@@ -213,7 +200,6 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-        mLooper.stop();
         RequestManager.getInstance().cancelTag(this);
         RequestManager.getInstance().removeRequestInterceptor(mRequestInterceptor);
     }

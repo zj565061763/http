@@ -16,7 +16,7 @@ public class TransmitParam
     private long mLastTime;
     private long mLastCount;
 
-    public void transmit(long current, long total)
+    public synchronized void transmit(long current, long total)
     {
         mCurrent = current;
         mTotal = total;
@@ -32,6 +32,11 @@ public class TransmitParam
         }
 
         mProgress = (int) (current * 100 / total);
+    }
+
+    public synchronized boolean isFinish()
+    {
+        return mCurrent == mTotal && mCurrent > 0;
     }
 
     public long getCurrent()

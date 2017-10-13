@@ -29,6 +29,4 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile project(':lib')
     compile 'com.google.code.gson:gson:2.8.2'
-
-    compile 'com.github.zj565061763:looper:1.0.5'
 }

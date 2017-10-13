@@ -1,7 +1,10 @@
 package com.fanwe.lib.http.callback;
 
+import android.os.CountDownTimer;
+
 import com.fanwe.lib.http.utils.IOUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
+import com.fanwe.lib.task.SDTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +18,8 @@ import java.io.OutputStream;
 public abstract class FileRequestCallback extends RequestCallback
 {
     private File mFile;
-    private TransmitParam mTransmitParam;
+    private TransmitParam mTransmitParam = new TransmitParam();
+    private CountDownTimer mTimer;
 
     public FileRequestCallback(File file)
     {
@@ -37,10 +41,6 @@ public abstract class FileRequestCallback extends RequestCallback
 
     public TransmitParam getTransmitParam()
     {
-        if (mTransmitParam == null)
-        {
-            mTransmitParam = new TransmitParam();
-        }
         return mTransmitParam;
     }
 
@@ -63,6 +63,50 @@ public abstract class FileRequestCallback extends RequestCallback
         }
     }
 
+    private void startTimer()
+    {
+        SDTask.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mTimer == null)
+                {
+                    mTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
+                    {
+                        @Override
+                        public void onTick(long millisUntilFinished)
+                        {
+                            onProgress(getTransmitParam());
+                        }
+
+                        @Override
+                        public void onFinish()
+                        {
+                        }
+                    };
+                    mTimer.start();
+                }
+            }
+        });
+    }
+
+    private void stopTimer()
+    {
+        SDTask.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mTimer != null)
+                {
+                    mTimer.cancel();
+                    mTimer = null;
+                }
+            }
+        });
+    }
+
     @Override
     public void onSuccessBackground() throws Exception
     {
@@ -75,23 +119,31 @@ public abstract class FileRequestCallback extends RequestCallback
 
         try
         {
+            startTimer();
             IOUtil.copy(input, ouput, new IOUtil.ProgressCallback()
             {
                 @Override
                 public void onProgress(long count)
                 {
                     getTransmitParam().transmit(count, total);
-                    onProgressBackground(getTransmitParam());
                 }
             });
         } finally
         {
+            SDTask.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    onProgress(getTransmitParam());
+                }
+            });
+            stopTimer();
             IOUtil.closeQuietly(input);
             IOUtil.closeQuietly(ouput);
         }
     }
 
-    protected abstract void onProgressBackground(TransmitParam param);
-
+    protected abstract void onProgress(TransmitParam param);
 
 }
