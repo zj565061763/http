@@ -22,7 +22,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //设置cookie管理对象
         RequestManager.getInstance().setCookieJar(new SharedPreferencesCookieJar(this));
+
+        //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑
         RequestManager.getInstance().addRequestInterceptor(mRequestInterceptor);
     }
 
@@ -31,12 +34,14 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void beforeExecute(Request request)
         {
+            //请求发起之前回调
             Log.i(TAG, "beforeExecute:" + request);
         }
 
         @Override
         public void afterExecute(Response response)
         {
+            //请求发起之后回调
             Log.i(TAG, "afterExecute:" + response.getRequest());
         }
     };

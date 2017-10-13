@@ -29,9 +29,9 @@ public class AsyncRequestActivity extends AppCompatActivity
 
     public void onClickRequest(View view)
     {
-        Request.post(URL).param("ctl", "app").param("act", "init")
-                .setTag(this)
-                .execute(mModelRequestCallback_0, mModelRequestCallback_1);
+        Request.post(URL).param("ctl", "app").param("act", "init") //设置要提交的参数
+                .setTag(this) //设置该请求对应的tag，可用于取消请求
+                .execute(mModelRequestCallback_0, mModelRequestCallback_1); //设置请求结果回调，可以设置多个回调
     }
 
     private ModelRequestCallback mModelRequestCallback_0 = new ModelRequestCallback<InitActModel>()
