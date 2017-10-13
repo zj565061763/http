@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onClickRequest(View view)
     {
-        Request.get(URL)
+        Request.post(URL)
                 .param("ctl", "app")
                 .param("act", "init")
                 .setTag(this)
