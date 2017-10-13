@@ -47,9 +47,11 @@ public class MainActivity extends AppCompatActivity
 
     public void onClickRequest(View view)
     {
-        Request request = Request.get(URL).param("ctl", "app").param("act", "init").setTag(this);
-
-        request.execute(mModelRequestCallback_0, mModelRequestCallback_1);
+        Request.get(URL)
+                .param("ctl", "app")
+                .param("act", "init")
+                .setTag(this)
+                .execute(mModelRequestCallback_0, mModelRequestCallback_1);
     }
 
     private ModelRequestCallback mModelRequestCallback_0 = new ModelRequestCallback<InitActModel>()
@@ -156,14 +158,14 @@ public class MainActivity extends AppCompatActivity
 
     public void onClickCancelRequest(View view)
     {
-        RequestManager.getInstance().cancelRequest(this);
+        RequestManager.getInstance().cancelTag(this);
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        RequestManager.getInstance().cancelRequest(this);
+        RequestManager.getInstance().cancelTag(this);
         RequestManager.getInstance().removeRequestInterceptor(mRequestInterceptor);
     }
 }

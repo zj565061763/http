@@ -93,11 +93,11 @@ public class RequestManager implements RequestInterceptor
     }
 
     /**
-     * 取消请求
+     * 根据tag取消请求
      *
      * @param tag
      */
-    public void cancelRequest(Object tag)
+    public void cancelTag(Object tag)
     {
         SDTask.cancelTag(tag, true);
     }
