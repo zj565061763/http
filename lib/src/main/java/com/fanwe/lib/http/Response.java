@@ -55,7 +55,8 @@ public class Response
     {
         if (TextUtils.isEmpty(body))
         {
-            body = new String(IOUtil.readBytes(getInputStream()), getCharset());
+            body = IOUtil.readString(getInputStream(), getCharset());
+            getInputStream().close();
         }
         return body;
     }
