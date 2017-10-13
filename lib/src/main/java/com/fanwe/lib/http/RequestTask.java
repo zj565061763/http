@@ -51,7 +51,6 @@ class RequestTask extends SDTask
             public void run()
             {
                 getCallback().onSuccess();
-                getCallback().onFinish();
             }
         });
     }
@@ -66,7 +65,6 @@ class RequestTask extends SDTask
             public void run()
             {
                 getCallback().onError(e);
-                getCallback().onFinish();
             }
         });
     }
@@ -81,6 +79,19 @@ class RequestTask extends SDTask
             public void run()
             {
                 getCallback().onCancel();
+            }
+        });
+    }
+
+    @Override
+    protected void onFinally()
+    {
+        super.onFinally();
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
                 getCallback().onFinish();
             }
         });
