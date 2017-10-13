@@ -15,9 +15,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
-/**
- * Created by zhengjun on 2017/10/11.
- */
 public class IOUtil
 {
     private IOUtil()
