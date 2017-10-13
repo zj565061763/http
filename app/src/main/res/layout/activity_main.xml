@@ -8,13 +8,19 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClickRequest"
-        android:text="http请求"/>
+        android:onClick="onClickAsyncRequestActivity"
+        android:text="异步请求"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClickDownload"
-        android:text="http下载"/>
+        android:onClick="onClickSyncRequestActivity"
+        android:text="同步请求"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickDownloadActivity"
+        android:text="文件下载"/>
 
 </LinearLayout>

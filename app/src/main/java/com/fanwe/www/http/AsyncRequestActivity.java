@@ -11,9 +11,12 @@ import com.fanwe.lib.http.callback.ModelRequestCallback;
 import com.fanwe.www.http.model.InitActModel;
 import com.google.gson.Gson;
 
-public class RequestActivity extends AppCompatActivity
+/**
+ * 异步请求demo
+ */
+public class AsyncRequestActivity extends AppCompatActivity
 {
-    public static final String TAG = "RequestActivity";
+    public static final String TAG = "AsyncRequestActivity";
 
     public static final String URL = "http://ilvbt3.fanwe.net/mapi/index.php";
 
@@ -21,14 +24,12 @@ public class RequestActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request);
+        setContentView(R.layout.activity_async_request);
     }
 
     public void onClickRequest(View view)
     {
-        Request.post(URL)
-                .param("ctl", "app")
-                .param("act", "init")
+        Request.post(URL).param("ctl", "app").param("act", "init")
                 .setTag(this)
                 .execute(mModelRequestCallback_0, mModelRequestCallback_1);
     }

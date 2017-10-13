@@ -41,12 +41,17 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-    public void onClickRequest(View view)
+    public void onClickAsyncRequestActivity(View view)
     {
-        startActivity(new Intent(this, RequestActivity.class));
+        startActivity(new Intent(this, AsyncRequestActivity.class));
     }
 
-    public void onClickDownload(View view)
+    public void onClickSyncRequestActivity(View view)
+    {
+        startActivity(new Intent(this, SyncRequestActivity.class));
+    }
+
+    public void onClickDownloadActivity(View view)
     {
         startActivity(new Intent(this, DownloadActivity.class));
     }
