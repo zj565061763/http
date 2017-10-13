@@ -4,10 +4,12 @@ import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
-import com.fanwe.lib.task.SDTask;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -16,6 +18,8 @@ import java.util.List;
 public class RequestManager implements RequestInterceptor
 {
     private static RequestManager sInstance;
+
+    private Map<RequestTask, Integer> mMapRequest = new WeakHashMap<>();
 
     private CookieJar mCookieJar;
     private List<RequestInterceptor> mListRequestInterceptor;
@@ -69,7 +73,7 @@ public class RequestManager implements RequestInterceptor
      * @param request
      * @param callbacks
      */
-    public void execute(Request request, IRequestCallback... callbacks)
+    public synchronized void execute(Request request, IRequestCallback... callbacks)
     {
         if (request == null)
         {
@@ -90,16 +94,41 @@ public class RequestManager implements RequestInterceptor
 
         RequestTask task = new RequestTask(request, realCallback);
         task.submit(request.getTag());
+        mMapRequest.put(task, 0);
     }
 
     /**
      * 根据tag取消请求
      *
      * @param tag
+     * @return 申请取消成功的数量
      */
-    public void cancelTag(Object tag)
+    public synchronized int cancelTag(Object tag)
     {
-        SDTask.cancelTag(tag, true);
+        int count = 0;
+        if (tag != null && !mMapRequest.isEmpty())
+        {
+            Iterator<Map.Entry<RequestTask, Integer>> it = mMapRequest.entrySet().iterator();
+            while (it.hasNext())
+            {
+                Map.Entry<RequestTask, Integer> item = it.next();
+                RequestTask task = item.getKey();
+
+                if (task.isDone())
+                {
+                    it.remove();
+                } else
+                {
+                    if (tag.equals(task.getRequest().getTag()))
+                    {
+                        task.cancel(true);
+                        it.remove();
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     private List<RequestInterceptor> getListRequestInterceptor()
