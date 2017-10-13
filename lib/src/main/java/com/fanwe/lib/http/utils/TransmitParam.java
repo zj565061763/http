@@ -11,7 +11,7 @@ public class TransmitParam
     private long mCurrent;
     private long mTotal;
     private int mProgress;
-    private int mSpeed;
+    private int mSpeedBps;
 
     private long mLastTime;
     private long mLastCount;
@@ -25,7 +25,7 @@ public class TransmitParam
         if (currentTime - mLastTime > CALCULATE_SPEED_SPAN)
         {
             long count = current - mLastCount;
-            mSpeed = (int) (count * (1000 / CALCULATE_SPEED_SPAN));
+            mSpeedBps = (int) (count * (1000 / CALCULATE_SPEED_SPAN));
 
             mLastTime = currentTime;
             mLastCount = current;
@@ -49,19 +49,14 @@ public class TransmitParam
         return mProgress;
     }
 
-    public int getSpeed()
+    public int getSpeedBps()
     {
-        return mSpeed;
-    }
-
-    public int getSpeedKbps()
-    {
-        return getSpeed() / 1024;
+        return mSpeedBps;
     }
 
     public int getSpeedKBps()
     {
-        return getSpeed() / (1024 * 8);
+        return getSpeedBps() / 1024;
     }
 
     @Override
