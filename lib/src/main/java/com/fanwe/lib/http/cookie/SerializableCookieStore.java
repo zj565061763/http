@@ -53,7 +53,7 @@ public class SerializableCookieStore implements PersistableCookieStore, Serializ
     {
         if (mFile == null)
         {
-            mFile = new File(mContext.getExternalCacheDir(), "httpcookie");
+            mFile = new File(mContext.getFilesDir(), "httpcookie");
         }
         if (!mFile.exists())
         {
