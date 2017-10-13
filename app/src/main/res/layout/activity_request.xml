@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClickRequest"
-        android:text="http请求"/>
+        android:text="发起请求"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClickDownload"
-        android:text="http下载"/>
+        android:onClick="onClickCancelRequest"
+        android:text="取消请求"/>
 
 </LinearLayout>
