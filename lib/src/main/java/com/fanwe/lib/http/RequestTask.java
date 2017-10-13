@@ -14,10 +14,6 @@ class RequestTask extends SDTask
     public RequestTask(Request request, IRequestCallback callback)
     {
         mRequest = request;
-        if (callback == null)
-        {
-            callback = IRequestCallback.EMPTY_CALLBACK;
-        }
         mCallback = callback;
     }
 
@@ -28,6 +24,10 @@ class RequestTask extends SDTask
 
     public IRequestCallback getCallback()
     {
+        if (mCallback == null)
+        {
+            mCallback = IRequestCallback.EMPTY_CALLBACK;
+        }
         return mCallback;
     }
 

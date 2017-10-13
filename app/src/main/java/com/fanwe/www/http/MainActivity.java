@@ -48,57 +48,111 @@ public class MainActivity extends AppCompatActivity
     public void onClickRequest(View view)
     {
         Request request = Request.get(URL).param("ctl", "app").param("act", "init").setTag(this);
-        request.execute(new ModelRequestCallback<InitActModel>()
-        {
-            @Override
-            public void onStart()
-            {
-                super.onStart();
-                Log.i(TAG, "onStart");
-            }
 
-            @Override
-            public void onSuccessBackground() throws Exception
-            {
-                super.onSuccessBackground();
-                Log.i(TAG, "onSuccessBackground");
-            }
-
-            @Override
-            protected InitActModel parseToModel(String content, Class<InitActModel> clazz)
-            {
-                return new Gson().fromJson(content, clazz);
-            }
-
-            @Override
-            public void onSuccess()
-            {
-                InitActModel model = getModel();
-                Log.i(TAG, "onSuccess:" + model.getCity());
-            }
-
-            @Override
-            public void onError(Exception e)
-            {
-                super.onError(e);
-                Log.i(TAG, "onError:" + e);
-            }
-
-            @Override
-            public void onCancel()
-            {
-                super.onCancel();
-                Log.i(TAG, "onCancel");
-            }
-
-            @Override
-            public void onFinish()
-            {
-                super.onFinish();
-                Log.i(TAG, "onFinish");
-            }
-        });
+        request.execute(mModelRequestCallback_0, mModelRequestCallback_1);
     }
+
+    private ModelRequestCallback mModelRequestCallback_0 = new ModelRequestCallback<InitActModel>()
+    {
+        @Override
+        public void onStart()
+        {
+            super.onStart();
+            Log.i(TAG, "onStart_0");
+        }
+
+        @Override
+        public void onSuccessBackground() throws Exception
+        {
+            super.onSuccessBackground();
+            Log.i(TAG, "onSuccessBackground_0");
+        }
+
+        @Override
+        protected InitActModel parseToModel(String content, Class<InitActModel> clazz)
+        {
+            return new Gson().fromJson(content, clazz);
+        }
+
+        @Override
+        public void onSuccess()
+        {
+            InitActModel model = getModel();
+            Log.i(TAG, "onSuccess_0:" + model.getCity());
+        }
+
+        @Override
+        public void onError(Exception e)
+        {
+            super.onError(e);
+            Log.i(TAG, "onError_0:" + e);
+        }
+
+        @Override
+        public void onCancel()
+        {
+            super.onCancel();
+            Log.i(TAG, "onCancel_0");
+        }
+
+        @Override
+        public void onFinish()
+        {
+            super.onFinish();
+            Log.i(TAG, "onFinish_0");
+        }
+    };
+
+    private ModelRequestCallback mModelRequestCallback_1 = new ModelRequestCallback<InitActModel>()
+    {
+        @Override
+        public void onStart()
+        {
+            super.onStart();
+            Log.i(TAG, "onStart_1");
+        }
+
+        @Override
+        public void onSuccessBackground() throws Exception
+        {
+            super.onSuccessBackground();
+            Log.i(TAG, "onSuccessBackground_1");
+        }
+
+        @Override
+        protected InitActModel parseToModel(String content, Class<InitActModel> clazz)
+        {
+            return new Gson().fromJson(content, clazz);
+        }
+
+        @Override
+        public void onSuccess()
+        {
+            InitActModel model = getModel();
+            Log.i(TAG, "onSuccess_1:" + model.getCity());
+        }
+
+        @Override
+        public void onError(Exception e)
+        {
+            super.onError(e);
+            Log.i(TAG, "onError_1:" + e);
+        }
+
+        @Override
+        public void onCancel()
+        {
+            super.onCancel();
+            Log.i(TAG, "onCancel_1");
+        }
+
+        @Override
+        public void onFinish()
+        {
+            super.onFinish();
+            Log.i(TAG, "onFinish_1");
+        }
+    };
 
     public void onClickCancelRequest(View view)
     {

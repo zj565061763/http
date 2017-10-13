@@ -1,6 +1,7 @@
 package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
+import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.lib.http.cookie.CookieJar;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 import com.fanwe.lib.task.SDTask;
@@ -66,16 +67,28 @@ public class RequestManager implements RequestInterceptor
      * 异步执行请求
      *
      * @param request
-     * @param callback
+     * @param callbacks
      */
-    public void execute(Request request, IRequestCallback callback)
+    public void execute(Request request, IRequestCallback... callbacks)
     {
         if (request == null)
         {
             return;
         }
 
-        RequestTask task = new RequestTask(request, callback);
+        IRequestCallback realCallback = null;
+        if (callbacks != null)
+        {
+            if (callbacks.length == 1)
+            {
+                realCallback = callbacks[0];
+            } else if (callbacks.length > 1)
+            {
+                realCallback = RequestCallbackProxy.get(callbacks);
+            }
+        }
+
+        RequestTask task = new RequestTask(request, realCallback);
         task.submit(request.getTag());
     }
 

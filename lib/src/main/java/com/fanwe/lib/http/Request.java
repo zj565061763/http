@@ -113,11 +113,11 @@ public abstract class Request
     /**
      * 异步请求
      *
-     * @param callback
+     * @param callbacks
      */
-    public final void execute(IRequestCallback callback)
+    public final void execute(IRequestCallback... callbacks)
     {
-        RequestManager.getInstance().execute(this, callback);
+        RequestManager.getInstance().execute(this, callbacks);
     }
 
     /**

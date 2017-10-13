@@ -19,20 +19,22 @@ public class RequestCallbackProxy
         {
             return null;
         }
-        Object object = Proxy.newProxyInstance(IRequestCallback.class.getClassLoader(), new Class[]{IRequestCallback.class}, new InvocationHandler()
-        {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-            {
-                Object result = null;
-                for (int i = 0; i < callbacks.length; i++)
+        Object object = Proxy.newProxyInstance(IRequestCallback.class.getClassLoader(),
+                new Class[]{IRequestCallback.class},
+                new InvocationHandler()
                 {
-                    IRequestCallback item = callbacks[i];
-                    result = method.invoke(item, args);
-                }
-                return result;
-            }
-        });
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+                    {
+                        Object result = null;
+                        for (int i = 0; i < callbacks.length; i++)
+                        {
+                            IRequestCallback item = callbacks[i];
+                            result = method.invoke(item, args);
+                        }
+                        return result;
+                    }
+                });
 
         return (IRequestCallback) object;
     }
