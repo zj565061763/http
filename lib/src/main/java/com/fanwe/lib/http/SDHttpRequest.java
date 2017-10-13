@@ -104,15 +104,9 @@ class SDHttpRequest extends HttpRequest
     {
         try
         {
+            URI uri = url().toURI();
             List<HttpCookie> listResponse = getResponseCookie();
-            if (listResponse != null)
-            {
-                URI uri = url().toURI();
-                for (HttpCookie item : listResponse)
-                {
-                    RequestManager.getInstance().getCookieStore().add(uri, item);
-                }
-            }
+            RequestManager.getInstance().getCookieStore().add(uri, listResponse);
         } catch (Exception e)
         {
             e.printStackTrace();

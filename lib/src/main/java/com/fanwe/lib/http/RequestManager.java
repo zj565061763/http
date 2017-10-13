@@ -2,9 +2,9 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.RequestCallbackProxy;
+import com.fanwe.lib.http.cookie.PersistableCookieStore;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
-import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class RequestManager implements RequestInterceptor
 
     private Map<RequestTask, Integer> mMapRequest = new WeakHashMap<>();
 
-    private CookieStore mCookieStore;
+    private PersistableCookieStore mCookieStore;
     private List<RequestInterceptor> mListRequestInterceptor;
 
     private RequestManager()
@@ -50,7 +50,7 @@ public class RequestManager implements RequestInterceptor
      *
      * @param cookieStore
      */
-    public void setCookieStore(CookieStore cookieStore)
+    public void setCookieStore(PersistableCookieStore cookieStore)
     {
         mCookieStore = cookieStore;
     }
@@ -60,7 +60,7 @@ public class RequestManager implements RequestInterceptor
      *
      * @return
      */
-    public CookieStore getCookieStore()
+    public PersistableCookieStore getCookieStore()
     {
         if (mCookieStore == null)
         {
@@ -193,8 +193,18 @@ public class RequestManager implements RequestInterceptor
         }
     }
 
-    private static final CookieStore EMPTY_COOKIE_STORE = new CookieStore()
+    private static final PersistableCookieStore EMPTY_COOKIE_STORE = new PersistableCookieStore()
     {
+        @Override
+        public void save()
+        {
+        }
+
+        @Override
+        public void add(URI uri, List<HttpCookie> listCookie)
+        {
+        }
+
         @Override
         public void add(URI uri, HttpCookie cookie)
         {

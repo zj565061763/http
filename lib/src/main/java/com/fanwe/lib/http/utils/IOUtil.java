@@ -6,12 +6,18 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.Writer;
 
 public class IOUtil
@@ -130,6 +136,34 @@ public class IOUtil
             }
         }
         out.flush();
+    }
+
+    public static <T extends Serializable> void serializeObject(T object, File file) throws IOException
+    {
+        ObjectOutputStream oos = null;
+        try
+        {
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(object);
+            oos.flush();
+        } finally
+        {
+            closeQuietly(oos);
+        }
+    }
+
+    public static <T extends Serializable> T deserializeObject(File file) throws IOException, ClassNotFoundException
+    {
+        ObjectInputStream ois = null;
+        try
+        {
+            ois = new ObjectInputStream(new FileInputStream(file));
+            Object object = ois.readObject();
+            return (T) object;
+        } finally
+        {
+            closeQuietly(ois);
+        }
     }
 
     public static void closeQuietly(Closeable closeable)
