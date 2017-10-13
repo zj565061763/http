@@ -32,15 +32,17 @@ class RequestTask extends SDTask
     }
 
     @Override
-    protected void onSubmit()
-    {
-        super.onSubmit();
-        getCallback().onStart();
-    }
-
-    @Override
     protected void onRun() throws Exception
     {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                getCallback().onStart();
+            }
+        });
+
         Response response = getRequest().execute();
 
         getCallback().setResponse(response);
