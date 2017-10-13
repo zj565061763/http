@@ -1,5 +1,7 @@
 package com.fanwe.lib.http.cookie;
 
+import com.fanwe.lib.http.utils.LogUtils;
+
 import java.io.Serializable;
 import java.net.CookieStore;
 import java.net.HttpCookie;
@@ -39,6 +41,7 @@ class MemoryCookieStore implements CookieStore, Serializable
     @Override
     public synchronized void add(URI uri, HttpCookie cookie)
     {
+        LogUtils.i("cookie add cookie:" + uri.toString() + " " + cookie.toString());
         List<CookieModel> listCookie = getListCookie(uri);
 
         boolean hasCookie = false;
@@ -118,6 +121,7 @@ class MemoryCookieStore implements CookieStore, Serializable
             {
                 item.fillValue(uri, cookie);
                 it.remove();
+                LogUtils.i("cookie remove:" + uri.toString() + " " + cookie.toString());
                 return true;
             }
         }
@@ -133,6 +137,7 @@ class MemoryCookieStore implements CookieStore, Serializable
         } else
         {
             mMapCookie.clear();
+            LogUtils.i("cookie removeAll");
             return true;
         }
     }
