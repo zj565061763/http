@@ -77,7 +77,7 @@ public abstract class FileRequestCallback extends RequestCallback
                         @Override
                         public void onTick(long millisUntilFinished)
                         {
-                            onProgress(getTransmitParam());
+                            onProgressDownload(getTransmitParam());
                         }
 
                         @Override
@@ -135,7 +135,7 @@ public abstract class FileRequestCallback extends RequestCallback
                 @Override
                 public void run()
                 {
-                    onProgress(getTransmitParam());
+                    onProgressDownload(getTransmitParam());
                 }
             });
             stopTimer();
@@ -144,6 +144,6 @@ public abstract class FileRequestCallback extends RequestCallback
         }
     }
 
-    protected abstract void onProgress(TransmitParam param);
+    protected abstract void onProgressDownload(TransmitParam param);
 
 }

@@ -39,7 +39,7 @@ public class DownloadActivity extends AppCompatActivity
         Request.get(URL_FILE).setTag(this).execute(new FileRequestCallback(file)
         {
             @Override
-            protected void onProgress(TransmitParam param)
+            protected void onProgressDownload(TransmitParam param)
             {
                 mProgressBar.setProgress(param.getProgress());
                 mTvProgress.setText(param.getProgress() + "%");
