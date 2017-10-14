@@ -21,11 +21,12 @@ public class TransmitParam
         mCurrent = current;
         mTotal = total;
 
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - mLastTime > CALCULATE_SPEED_SPAN)
+        final long currentTime = System.currentTimeMillis();
+        final long timeSpan = currentTime - mLastTime;
+        if (timeSpan >= CALCULATE_SPEED_SPAN)
         {
             long count = current - mLastCount;
-            mSpeedBps = (int) (count * (1000 / CALCULATE_SPEED_SPAN));
+            mSpeedBps = (int) (count * (1000 / timeSpan));
 
             mLastTime = currentTime;
             mLastCount = current;
