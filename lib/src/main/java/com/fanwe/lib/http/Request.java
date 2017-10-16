@@ -56,7 +56,14 @@ public abstract class Request
      */
     public Request param(String name, Object value)
     {
-        getMapParam().put(name, value);
+        if (value != null)
+        {
+            getMapParam().put(name, value);
+
+        } else
+        {
+            getMapParam().remove(name);
+        }
         return this;
     }
 
@@ -69,7 +76,13 @@ public abstract class Request
      */
     public Request header(String name, String value)
     {
-        getMapHeader().put(name, value);
+        if (value != null)
+        {
+            getMapHeader().put(name, value);
+        } else
+        {
+            getMapHeader().remove(name);
+        }
         return this;
     }
 
