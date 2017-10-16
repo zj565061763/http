@@ -138,6 +138,6 @@ public class SerializableCookieStore implements PersistableCookieStore, Serializ
         {
             save();
         }
-        return getMemoryCookieStore().removeAll();
+        return result;
     }
 }
