@@ -1,6 +1,12 @@
 package com.fanwe.lib.http;
 
+import android.os.CountDownTimer;
+
 import com.fanwe.lib.http.callback.IRequestCallback;
+import com.fanwe.lib.http.callback.UploadProgressCallback;
+import com.fanwe.lib.http.utils.LogUtils;
+import com.fanwe.lib.http.utils.TransmitParam;
+import com.fanwe.lib.task.SDTask;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,6 +22,10 @@ public abstract class Request
     private Map<String, String> mMapHeader;
 
     private Object mTag;
+
+    private UploadProgressCallback mUploadProgressCallback;
+    private TransmitParam mTransmitParam;
+    private CountDownTimer mCountDownTimer;
 
     protected Request(String url)
     {
@@ -82,6 +92,30 @@ public abstract class Request
         return this;
     }
 
+    public Request setUploadProgressCallback(UploadProgressCallback uploadProgressCallback)
+    {
+        mUploadProgressCallback = uploadProgressCallback;
+        return this;
+    }
+
+    public UploadProgressCallback getUploadProgressCallback()
+    {
+        if (mUploadProgressCallback == null)
+        {
+            mUploadProgressCallback = UploadProgressCallback.EMPTY_PROGRESS_CALLBACK;
+        }
+        return mUploadProgressCallback;
+    }
+
+    public TransmitParam getTransmitParam()
+    {
+        if (mTransmitParam == null)
+        {
+            mTransmitParam = new TransmitParam();
+        }
+        return mTransmitParam;
+    }
+
     public Object getTag()
     {
         return mTag;
@@ -108,6 +142,70 @@ public abstract class Request
             mMapHeader = new LinkedHashMap<>();
         }
         return mMapHeader;
+    }
+
+    protected void notifyProgressUpload(long uploaded, long total)
+    {
+        LogUtils.i("progress upload:" + uploaded + "," + total);
+        startCountDownTimer();
+        getTransmitParam().transmit(uploaded, total);
+        if (getTransmitParam().isFinish())
+        {
+            stopCountDownTimer();
+            SDTask.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //可能造成内存泄漏
+                    getUploadProgressCallback().onProgressUpload(getTransmitParam());
+                }
+            });
+        }
+    }
+
+    private void startCountDownTimer()
+    {
+        SDTask.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mCountDownTimer == null)
+                {
+                    mCountDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
+                    {
+                        @Override
+                        public void onTick(long millisUntilFinished)
+                        {
+                            getUploadProgressCallback().onProgressUpload(getTransmitParam());
+                        }
+
+                        @Override
+                        public void onFinish()
+                        {
+                        }
+                    };
+                    mCountDownTimer.start();
+                }
+            }
+        });
+    }
+
+    private void stopCountDownTimer()
+    {
+        SDTask.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mCountDownTimer != null)
+                {
+                    mCountDownTimer.cancel();
+                    mCountDownTimer = null;
+                }
+            }
+        });
     }
 
     /**

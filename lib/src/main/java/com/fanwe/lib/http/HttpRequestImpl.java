@@ -15,6 +15,14 @@ abstract class HttpRequestImpl extends Request
     {
         SDHttpRequest request = new SDHttpRequest(url, method);
         request.headers(getMapHeader());
+        request.progress(new HttpRequest.UploadProgress()
+        {
+            @Override
+            public void onUpload(long uploaded, long total)
+            {
+                notifyProgressUpload(uploaded, total);
+            }
+        });
         return request;
     }
 

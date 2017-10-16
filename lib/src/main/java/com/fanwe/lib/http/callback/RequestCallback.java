@@ -1,6 +1,7 @@
 package com.fanwe.lib.http.callback;
 
 import com.fanwe.lib.http.Response;
+import com.fanwe.lib.http.utils.TransmitParam;
 
 /**
  * Created by zhengjun on 2017/10/10.
@@ -35,6 +36,12 @@ public abstract class RequestCallback implements IRequestCallback
 
     @Override
     public abstract void onSuccess();
+
+    @Override
+    public void onProgressUpload(TransmitParam param)
+    {
+
+    }
 
     @Override
     public void onError(Exception e)

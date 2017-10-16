@@ -77,7 +77,7 @@ public abstract class FileRequestCallback extends RequestCallback
                         @Override
                         public void onTick(long millisUntilFinished)
                         {
-                            onProgressDownload(getTransmitParam());
+                            mUpdateProgressRunnable.run();
                         }
 
                         @Override
@@ -130,19 +130,28 @@ public abstract class FileRequestCallback extends RequestCallback
             });
         } finally
         {
-            SDTask.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    onProgressDownload(getTransmitParam());
-                }
-            });
             stopTimer();
+            SDTask.runOnUiThread(mUpdateProgressRunnable);
             IOUtil.closeQuietly(input);
             IOUtil.closeQuietly(ouput);
         }
     }
+
+    @Override
+    public void onCancel()
+    {
+        super.onCancel();
+        SDTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
+    }
+
+    private Runnable mUpdateProgressRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            onProgressDownload(getTransmitParam());
+        }
+    };
 
     protected abstract void onProgressDownload(TransmitParam param);
 

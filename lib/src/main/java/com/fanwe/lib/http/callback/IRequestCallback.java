@@ -1,11 +1,12 @@
 package com.fanwe.lib.http.callback;
 
 import com.fanwe.lib.http.Response;
+import com.fanwe.lib.http.utils.TransmitParam;
 
 /**
  * Created by zhengjun on 2017/10/10.
  */
-public interface IRequestCallback
+public interface IRequestCallback extends UploadProgressCallback
 {
     void setResponse(Response response);
 
@@ -25,6 +26,11 @@ public interface IRequestCallback
 
     IRequestCallback EMPTY_CALLBACK = new IRequestCallback()
     {
+        @Override
+        public void onProgressUpload(TransmitParam param)
+        {
+        }
+
         @Override
         public void setResponse(Response response)
         {
