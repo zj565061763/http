@@ -23,6 +23,9 @@ public abstract class Request
 
     private Object mTag;
 
+    private int mReadTimeout;
+    private int mConnectTimeout;
+
     private UploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
     private CountDownTimer mCountDownTimer;
@@ -89,6 +92,18 @@ public abstract class Request
     public Request setTag(Object tag)
     {
         mTag = tag;
+        return this;
+    }
+
+    public Request setReadTimeout(int readTimeout)
+    {
+        mReadTimeout = readTimeout;
+        return this;
+    }
+
+    public Request setConnectTimeout(int connectTimeout)
+    {
+        mConnectTimeout = connectTimeout;
         return this;
     }
 
