@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.fanwe.lib.http.Request;
+import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.Response;
 
 /**
@@ -33,7 +33,7 @@ public class SyncRequestActivity extends AppCompatActivity
             {
                 try
                 {
-                    Response response = Request.post(URL).param("ctl", "app").param("act", "init")
+                    Response response = new PostRequest(URL).param("ctl", "app").param("act", "init")
                             .setTag(this)
                             .execute();
 

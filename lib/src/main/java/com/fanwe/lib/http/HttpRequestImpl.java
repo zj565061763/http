@@ -6,7 +6,7 @@ package com.fanwe.lib.http;
 
 abstract class HttpRequestImpl extends Request
 {
-    protected HttpRequestImpl(String url)
+    public HttpRequestImpl(String url)
     {
         super(url);
     }

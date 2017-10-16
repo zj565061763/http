@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.fanwe.lib.http.Request;
+import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.callback.ModelRequestCallback;
 import com.fanwe.www.http.model.InitActModel;
@@ -29,7 +29,7 @@ public class AsyncRequestActivity extends AppCompatActivity
 
     public void onClickRequest(View view)
     {
-        Request.post(URL).param("ctl", "app").param("act", "init") //设置要提交的参数
+        new PostRequest(URL).param("ctl", "app").param("act", "init") //设置要提交的参数
                 .setTag(this) //设置该请求对应的tag，可用于取消请求
                 .execute(mModelRequestCallback_0, mModelRequestCallback_1); //设置请求结果回调，可以设置多个回调
     }

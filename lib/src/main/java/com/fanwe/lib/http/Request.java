@@ -30,19 +30,9 @@ public abstract class Request
     private TransmitParam mTransmitParam;
     private CountDownTimer mCountDownTimer;
 
-    protected Request(String url)
+    public Request(String url)
     {
         setUrl(url);
-    }
-
-    public static GetRequest get(String url)
-    {
-        return new GetRequest(url);
-    }
-
-    public static PostRequest post(String url)
-    {
-        return new PostRequest(url);
     }
 
     /**

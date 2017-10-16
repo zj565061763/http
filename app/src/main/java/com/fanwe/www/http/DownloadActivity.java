@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.fanwe.lib.http.GetRequest;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.callback.FileRequestCallback;
@@ -36,7 +37,7 @@ public class DownloadActivity extends AppCompatActivity
     public void onClickRequest(View view)
     {
         File file = new File(getExternalCacheDir(), "download.apk");
-        Request.get(URL_FILE).setTag(this).execute(new FileRequestCallback(file)
+        new GetRequest(URL_FILE).setTag(this).execute(new FileRequestCallback(file)
         {
             @Override
             protected void onProgressDownload(TransmitParam param)

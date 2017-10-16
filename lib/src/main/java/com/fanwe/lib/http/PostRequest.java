@@ -15,7 +15,7 @@ public class PostRequest extends HttpRequestImpl
 {
     private List<FileRequestBody> mListFilePart;
 
-    protected PostRequest(String url)
+    public PostRequest(String url)
     {
         super(url);
     }
@@ -29,25 +29,25 @@ public class PostRequest extends HttpRequestImpl
         return mListFilePart;
     }
 
-    public PostRequest addPart(String name, File part)
+    public PostRequest addFile(String name, File file)
     {
-        addPart(name, null, null, part);
+        addFile(name, null, null, file);
         return this;
     }
 
-    public PostRequest addPart(String name, String filename, File part)
+    public PostRequest addFile(String name, String filename, File file)
     {
-        addPart(name, filename, null, part);
+        addFile(name, filename, null, file);
         return this;
     }
 
-    public PostRequest addPart(String name, String filename, String contentType, File part)
+    public PostRequest addFile(String name, String filename, String contentType, File file)
     {
         FileRequestBody body = new FileRequestBody();
         body.setName(name);
         body.setFilename(filename);
         body.setContentType(contentType);
-        body.setFile(part);
+        body.setFile(file);
 
         getListFilePart().add(body);
         return this;
