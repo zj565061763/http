@@ -15,6 +15,8 @@ abstract class HttpRequestImpl extends Request
     {
         SDHttpRequest request = new SDHttpRequest(url, method);
         request.headers(getMapHeader());
+        request.readTimeout(getReadTimeout());
+        request.connectTimeout(getConnectTimeout());
         request.progress(new HttpRequest.UploadProgress()
         {
             @Override

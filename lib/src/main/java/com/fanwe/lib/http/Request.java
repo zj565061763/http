@@ -107,6 +107,16 @@ public abstract class Request
         return this;
     }
 
+    public int getReadTimeout()
+    {
+        return mReadTimeout;
+    }
+
+    public int getConnectTimeout()
+    {
+        return mConnectTimeout;
+    }
+
     public Request setUploadProgressCallback(UploadProgressCallback uploadProgressCallback)
     {
         mUploadProgressCallback = uploadProgressCallback;
