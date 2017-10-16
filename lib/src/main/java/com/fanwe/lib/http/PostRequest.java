@@ -3,6 +3,7 @@ package com.fanwe.lib.http;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -43,19 +44,24 @@ public class PostRequest extends HttpRequestImpl
         return this;
     }
 
-
     @Override
     protected void doExecute(Response response) throws Exception
     {
         HttpRequest request = newHttpRequest(getUrl(), HttpRequest.METHOD_POST);
 
-        request.form(getMapParam());
         if (mListFilePart != null && !mListFilePart.isEmpty())
         {
+            for (Map.Entry<String, Object> item : getMapParam().entrySet())
+            {
+                request.part(item.getKey(), String.valueOf(item.getValue()));
+            }
             for (FileRequestBody item : mListFilePart)
             {
                 request.part(item.name, item.filename, item.contentType, item.part);
             }
+        } else
+        {
+            request.form(getMapParam());
         }
 
         response.fillValue(request);

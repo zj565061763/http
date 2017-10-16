@@ -18,7 +18,7 @@ public abstract class Request
 {
     private String mUrl;
 
-    private Map<Object, Object> mMapParam;
+    private Map<String, Object> mMapParam;
     private Map<String, String> mMapHeader;
 
     private Object mTag;
@@ -61,7 +61,7 @@ public abstract class Request
      * @param value
      * @return
      */
-    public Request param(Object name, Object value)
+    public Request param(String name, Object value)
     {
         getMapParam().put(name, value);
         return this;
@@ -126,7 +126,7 @@ public abstract class Request
         return mUrl;
     }
 
-    public Map<Object, Object> getMapParam()
+    public Map<String, Object> getMapParam()
     {
         if (mMapParam == null)
         {
