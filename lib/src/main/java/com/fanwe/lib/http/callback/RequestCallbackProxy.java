@@ -30,7 +30,10 @@ public final class RequestCallbackProxy
                         for (int i = 0; i < callbacks.length; i++)
                         {
                             IRequestCallback item = callbacks[i];
-                            result = method.invoke(item, args);
+                            if (item != null)
+                            {
+                                result = method.invoke(item, args);
+                            }
                         }
                         return result;
                     }
