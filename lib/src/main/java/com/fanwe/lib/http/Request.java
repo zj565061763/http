@@ -59,7 +59,6 @@ public abstract class Request
         if (value != null)
         {
             getMapParam().put(name, value);
-
         } else
         {
             getMapParam().remove(name);
