@@ -56,6 +56,7 @@ class RequestTask extends SDTask implements UploadProgressCallback
             @Override
             public void run()
             {
+                getCallback().onSuccessBefore();
                 getCallback().onSuccess();
             }
         });

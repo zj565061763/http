@@ -35,6 +35,12 @@ public abstract class RequestCallback implements IRequestCallback
     }
 
     @Override
+    public void onSuccessBefore()
+    {
+
+    }
+
+    @Override
     public abstract void onSuccess();
 
     @Override

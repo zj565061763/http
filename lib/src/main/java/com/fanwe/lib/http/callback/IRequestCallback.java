@@ -16,6 +16,8 @@ public interface IRequestCallback extends UploadProgressCallback
 
     void onSuccessBackground() throws Exception;
 
+    void onSuccessBefore();
+
     void onSuccess();
 
     void onError(Exception e);
@@ -50,6 +52,12 @@ public interface IRequestCallback extends UploadProgressCallback
         @Override
         public void onSuccessBackground() throws Exception
         {
+        }
+
+        @Override
+        public void onSuccessBefore()
+        {
+
         }
 
         @Override
