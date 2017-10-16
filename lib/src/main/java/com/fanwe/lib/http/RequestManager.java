@@ -100,7 +100,7 @@ public class RequestManager implements RequestInterceptor
 
         realCallback.onPrepare(request);
         RequestTask task = new RequestTask(request, realCallback);
-        task.submit(request.getTag());
+        task.submit(null);
         mMapRequest.put(task, 0);
     }
 
