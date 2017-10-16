@@ -1,5 +1,6 @@
 package com.fanwe.lib.http.callback;
 
+import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.utils.TransmitParam;
 
@@ -11,6 +12,8 @@ public interface IRequestCallback extends UploadProgressCallback
     void setResponse(Response response);
 
     Response getResponse();
+
+    void onPrepare(Request request);
 
     void onStart();
 
@@ -42,6 +45,11 @@ public interface IRequestCallback extends UploadProgressCallback
         public Response getResponse()
         {
             return null;
+        }
+
+        @Override
+        public void onPrepare(Request request)
+        {
         }
 
         @Override

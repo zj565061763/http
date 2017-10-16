@@ -1,5 +1,6 @@
 package com.fanwe.lib.http.callback;
 
+import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.utils.TransmitParam;
 
@@ -21,6 +22,12 @@ public abstract class RequestCallback implements IRequestCallback
     public final Response getResponse()
     {
         return mResponse;
+    }
+
+    @Override
+    public void onPrepare(Request request)
+    {
+
     }
 
     @Override
