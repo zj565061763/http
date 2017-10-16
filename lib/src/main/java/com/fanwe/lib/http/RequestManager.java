@@ -93,6 +93,10 @@ public class RequestManager implements RequestInterceptor
                 realCallback = RequestCallbackProxy.get(callbacks);
             }
         }
+        if (realCallback == null)
+        {
+            realCallback = IRequestCallback.EMPTY_CALLBACK;
+        }
 
         RequestTask task = new RequestTask(request, realCallback);
         task.submit(request.getTag());
