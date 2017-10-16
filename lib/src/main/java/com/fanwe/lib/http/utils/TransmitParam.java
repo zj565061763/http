@@ -6,7 +6,7 @@ package com.fanwe.lib.http.utils;
 
 public class TransmitParam
 {
-    private static final long CALCULATE_SPEED_SPAN = 100;
+    private static final long CALCULATE_SPEED_INTERVAL = 50;
 
     private long mCurrent;
     private long mTotal;
@@ -16,17 +16,19 @@ public class TransmitParam
     private long mLastTime;
     private long mLastCount;
 
+    private long mCalculateSpeedInterval = CALCULATE_SPEED_INTERVAL;
+
     public synchronized void transmit(long current, long total)
     {
         mCurrent = current;
         mTotal = total;
 
         final long currentTime = System.currentTimeMillis();
-        final long timeSpan = currentTime - mLastTime;
-        if (timeSpan >= CALCULATE_SPEED_SPAN)
+        final long timeInterval = currentTime - mLastTime;
+        if (timeInterval >= mCalculateSpeedInterval)
         {
             long count = current - mLastCount;
-            mSpeedBps = (int) (count * (1000 / timeSpan));
+            mSpeedBps = (int) (count * (1000f / timeInterval));
 
             mLastTime = currentTime;
             mLastCount = current;
@@ -38,6 +40,15 @@ public class TransmitParam
     public synchronized boolean isFinish()
     {
         return mCurrent == mTotal && mCurrent > 0;
+    }
+
+    public synchronized void setCalculateSpeedInterval(long calculateSpeedInterval)
+    {
+        if (calculateSpeedInterval <= 0)
+        {
+            calculateSpeedInterval = CALCULATE_SPEED_INTERVAL;
+        }
+        mCalculateSpeedInterval = calculateSpeedInterval;
     }
 
     public long getCurrent()
