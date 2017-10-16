@@ -8,9 +8,7 @@ import java.util.List;
 /**
  * Created by zhengjun on 2017/10/13.
  */
-public interface PersistableCookieStore extends CookieStore
+public interface ICookieStore extends CookieStore
 {
-    void save();
-
     void add(URI uri, List<HttpCookie> listCookie);
 }

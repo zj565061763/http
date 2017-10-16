@@ -15,7 +15,7 @@ import java.util.List;
  * Created by zhengjun on 2017/10/13.
  */
 
-public class SerializableCookieStore implements PersistableCookieStore, Serializable
+public class SerializableCookieStore implements ICookieStore, Serializable
 {
     private Context mContext;
     private MemoryCookieStore mMemoryCookieStore;
@@ -68,8 +68,7 @@ public class SerializableCookieStore implements PersistableCookieStore, Serializ
         return mFile;
     }
 
-    @Override
-    public synchronized void save()
+    private synchronized void save()
     {
         try
         {
