@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
  */
 public abstract class ModelRequestCallback<T> extends RequestCallback
 {
-    private T mModel;
+    private T mActModel;
 
     @Override
     public void onSuccessBackground() throws Exception
@@ -20,13 +20,13 @@ public abstract class ModelRequestCallback<T> extends RequestCallback
         Type type = getType(getClass(), 0);
         if (type instanceof Class)
         {
-            mModel = parseToModel(content, (Class<T>) type);
+            mActModel = parseToModel(content, (Class<T>) type);
         }
     }
 
-    public T getModel()
+    public T getActModel()
     {
-        return mModel;
+        return mActModel;
     }
 
     /**

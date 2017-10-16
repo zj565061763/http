@@ -59,7 +59,7 @@ public class AsyncRequestActivity extends AppCompatActivity
         @Override
         public void onSuccess()
         {
-            InitActModel model = getModel();
+            InitActModel model = getActModel();
             Log.i(TAG, "onSuccess_0:" + model.getCity());
         }
 
@@ -110,7 +110,7 @@ public class AsyncRequestActivity extends AppCompatActivity
         @Override
         public void onSuccess()
         {
-            InitActModel model = getModel();
+            InitActModel model = getActModel();
             Log.i(TAG, "onSuccess_1:" + model.getCity());
         }
 
