@@ -1,5 +1,7 @@
 package com.fanwe.lib.http;
 
+import com.fanwe.lib.http.body.FileRequestBody;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +35,20 @@ public class PostRequest extends HttpRequestImpl
         return this;
     }
 
+    public PostRequest addPart(String name, String filename, File part)
+    {
+        addPart(name, filename, null, part);
+        return this;
+    }
+
     public PostRequest addPart(String name, String filename, String contentType, File part)
     {
         FileRequestBody body = new FileRequestBody();
-        body.name = name;
-        body.filename = filename;
-        body.contentType = contentType;
-        body.part = part;
+        body.setName(name);
+        body.setFilename(filename);
+        body.setContentType(contentType);
+        body.setFile(part);
+
         getListFilePart().add(body);
         return this;
     }
@@ -57,7 +66,7 @@ public class PostRequest extends HttpRequestImpl
             }
             for (FileRequestBody item : mListFilePart)
             {
-                request.part(item.name, item.filename, item.contentType, item.part);
+                request.part(item.getName(), item.getFilename(), item.getContentType(), item.getFile());
             }
         } else
         {
@@ -65,17 +74,5 @@ public class PostRequest extends HttpRequestImpl
         }
 
         response.fillValue(request);
-    }
-
-    private static class RequestBody
-    {
-        public String name;
-        public String filename;
-        public String contentType;
-    }
-
-    private static class FileRequestBody extends RequestBody
-    {
-        public File part;
     }
 }
