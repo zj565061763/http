@@ -240,9 +240,9 @@ public abstract class Request
      *
      * @param callbacks
      */
-    public final void execute(IRequestCallback... callbacks)
+    public final RequestHandler execute(IRequestCallback... callbacks)
     {
-        RequestManager.getInstance().execute(this, callbacks);
+        return RequestManager.getInstance().execute(this, callbacks);
     }
 
     /**

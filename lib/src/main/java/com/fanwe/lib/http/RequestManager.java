@@ -75,11 +75,11 @@ public class RequestManager implements RequestInterceptor
      * @param request
      * @param callbacks
      */
-    public synchronized void execute(Request request, IRequestCallback... callbacks)
+    public synchronized RequestHandler execute(Request request, IRequestCallback... callbacks)
     {
         if (request == null)
         {
-            return;
+            return null;
         }
 
         IRequestCallback realCallback = null;
@@ -102,6 +102,8 @@ public class RequestManager implements RequestInterceptor
         RequestTask task = new RequestTask(request, realCallback);
         task.submit(null);
         mMapRequest.put(task, 0);
+
+        return new RequestHandler(task);
     }
 
     /**
