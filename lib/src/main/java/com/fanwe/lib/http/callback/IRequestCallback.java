@@ -11,8 +11,18 @@ public interface IRequestCallback extends UploadProgressCallback
 {
     void setResponse(Response response);
 
+    /**
+     * 返回请求结果对象
+     *
+     * @return
+     */
     Response getResponse();
 
+    /**
+     * 异步请求在被执行之前的准备回调
+     *
+     * @param request
+     */
     void onPrepare(Request request);
 
     void onStart();

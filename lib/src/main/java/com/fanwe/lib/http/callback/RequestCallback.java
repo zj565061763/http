@@ -13,13 +13,13 @@ public abstract class RequestCallback implements IRequestCallback
     private Response mResponse;
 
     @Override
-    public final void setResponse(Response response)
+    public void setResponse(Response response)
     {
         mResponse = response;
     }
 
     @Override
-    public final Response getResponse()
+    public Response getResponse()
     {
         return mResponse;
     }
