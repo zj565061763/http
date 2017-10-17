@@ -29,7 +29,7 @@ public interface IRequestCallback extends UploadProgressCallback
 
     void onFinish();
 
-    IRequestCallback EMPTY_CALLBACK = new IRequestCallback()
+    IRequestCallback DEFAULT = new IRequestCallback()
     {
         @Override
         public void onProgressUpload(TransmitParam param)
@@ -65,7 +65,6 @@ public interface IRequestCallback extends UploadProgressCallback
         @Override
         public void onSuccessBefore()
         {
-
         }
 
         @Override

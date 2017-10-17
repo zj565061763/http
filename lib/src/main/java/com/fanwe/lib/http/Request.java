@@ -129,7 +129,7 @@ public abstract class Request
     {
         if (mUploadProgressCallback == null)
         {
-            mUploadProgressCallback = UploadProgressCallback.EMPTY_PROGRESS_CALLBACK;
+            mUploadProgressCallback = UploadProgressCallback.DEFAULT;
         }
         return mUploadProgressCallback;
     }

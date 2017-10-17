@@ -3,7 +3,6 @@ package com.fanwe.lib.http.cookie;
 import com.fanwe.lib.http.utils.LogUtils;
 
 import java.io.Serializable;
-import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Map;
 /**
  * Created by zhengjun on 2017/10/13.
  */
-class MemoryCookieStore implements CookieStore, Serializable
+class MemoryCookieStore implements ICookieStore, Serializable
 {
     static final long serialVersionUID = 0L;
 
@@ -139,6 +138,18 @@ class MemoryCookieStore implements CookieStore, Serializable
             mMapCookie.clear();
             LogUtils.i("cookie removeAll");
             return true;
+        }
+    }
+
+    @Override
+    public synchronized void add(URI uri, List<HttpCookie> listCookie)
+    {
+        if (listCookie != null)
+        {
+            for (HttpCookie item : listCookie)
+            {
+                add(uri, item);
+            }
         }
     }
 }

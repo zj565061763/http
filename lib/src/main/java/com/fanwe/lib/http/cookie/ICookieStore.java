@@ -10,5 +10,7 @@ import java.util.List;
  */
 public interface ICookieStore extends CookieStore
 {
+    ICookieStore DEFAULT = new MemoryCookieStore();
+
     void add(URI uri, List<HttpCookie> listCookie);
 }

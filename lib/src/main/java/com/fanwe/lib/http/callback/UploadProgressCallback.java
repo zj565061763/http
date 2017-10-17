@@ -8,7 +8,7 @@ import com.fanwe.lib.http.utils.TransmitParam;
 
 public interface UploadProgressCallback
 {
-    UploadProgressCallback EMPTY_PROGRESS_CALLBACK = new UploadProgressCallback()
+    UploadProgressCallback DEFAULT = new UploadProgressCallback()
     {
         @Override
         public void onProgressUpload(TransmitParam param)

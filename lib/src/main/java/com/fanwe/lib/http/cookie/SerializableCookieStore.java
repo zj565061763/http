@@ -85,10 +85,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
     {
         if (listCookie != null)
         {
-            for (HttpCookie item : listCookie)
-            {
-                getMemoryCookieStore().add(uri, item);
-            }
+            getMemoryCookieStore().add(uri, listCookie);
             save();
         }
     }

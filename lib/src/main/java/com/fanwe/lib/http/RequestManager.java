@@ -1,12 +1,12 @@
 package com.fanwe.lib.http;
 
+import android.text.TextUtils;
+
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.lib.http.cookie.ICookieStore;
 import com.fanwe.lib.http.interceptor.RequestInterceptor;
 
-import java.net.HttpCookie;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,9 +21,10 @@ public class RequestManager implements RequestInterceptor
 {
     private static RequestManager sInstance;
 
-    private Map<RequestTask, Integer> mMapRequest = new WeakHashMap<>();
+    private Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
 
     private ICookieStore mCookieStore;
+    private RequestIdentifierProvider mRequestIdentifierProvider;
     private List<RequestInterceptor> mListRequestInterceptor;
 
     private RequestManager()
@@ -64,9 +65,23 @@ public class RequestManager implements RequestInterceptor
     {
         if (mCookieStore == null)
         {
-            mCookieStore = EMPTY_COOKIE_STORE;
+            mCookieStore = ICookieStore.DEFAULT;
         }
         return mCookieStore;
+    }
+
+    public void setRequestIdentifierProvider(RequestIdentifierProvider requestIdentifierProvider)
+    {
+        mRequestIdentifierProvider = requestIdentifierProvider;
+    }
+
+    public RequestIdentifierProvider getRequestIdentifierProvider()
+    {
+        if (mRequestIdentifierProvider == null)
+        {
+            mRequestIdentifierProvider = RequestIdentifierProvider.DEFAULT;
+        }
+        return mRequestIdentifierProvider;
     }
 
     /**
@@ -95,14 +110,18 @@ public class RequestManager implements RequestInterceptor
         }
         if (realCallback == null)
         {
-            realCallback = IRequestCallback.EMPTY_CALLBACK;
+            realCallback = IRequestCallback.DEFAULT;
         }
 
         realCallback.onPrepare(request);
         RequestTask task = new RequestTask(request, realCallback);
         task.submit(null);
-        mMapRequest.put(task, 0);
 
+        RequestInfo info = new RequestInfo();
+        info.setTag(request.getTag());
+        info.setRequestIdentifier(getRequestIdentifierProvider().provideRequestIdentifier(request));
+
+        mMapRequest.put(task, info);
         return new RequestHandler(task);
     }
 
@@ -114,26 +133,73 @@ public class RequestManager implements RequestInterceptor
      */
     public synchronized int cancelTag(Object tag)
     {
-        int count = 0;
-        if (tag != null && !mMapRequest.isEmpty())
+        if (tag == null || mMapRequest.isEmpty())
         {
-            Iterator<Map.Entry<RequestTask, Integer>> it = mMapRequest.entrySet().iterator();
-            while (it.hasNext())
-            {
-                Map.Entry<RequestTask, Integer> item = it.next();
-                RequestTask task = item.getKey();
+            return 0;
+        }
 
-                if (task.isDone())
+        int count = 0;
+        Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry<RequestTask, RequestInfo> item = it.next();
+
+            RequestTask task = item.getKey();
+            RequestInfo info = item.getValue();
+
+            if (task.isDone())
+            {
+                it.remove();
+            } else
+            {
+                if (tag.equals(info.getTag()))
                 {
+                    task.cancel(true);
                     it.remove();
-                } else
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 根据Request的唯一标识取消请求{@link RequestIdentifierProvider}
+     *
+     * @param request
+     * @return
+     */
+    public synchronized int cancelRequestIdentifier(Request request)
+    {
+        if (request == null || mMapRequest.isEmpty())
+        {
+            return 0;
+        }
+        String identifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
+        if (TextUtils.isEmpty(identifier))
+        {
+            return 0;
+        }
+
+        int count = 0;
+        Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry<RequestTask, RequestInfo> item = it.next();
+
+            RequestTask task = item.getKey();
+            RequestInfo info = item.getValue();
+
+            if (task.isDone())
+            {
+                it.remove();
+            } else
+            {
+                if (identifier.equals(info.getRequestIdentifier()))
                 {
-                    if (tag.equals(task.getRequest().getTag()))
-                    {
-                        task.cancel(true);
-                        it.remove();
-                        count++;
-                    }
+                    task.cancel(true);
+                    it.remove();
+                    count++;
                 }
             }
         }
@@ -199,48 +265,4 @@ public class RequestManager implements RequestInterceptor
             item.afterExecute(response);
         }
     }
-
-    private static final ICookieStore EMPTY_COOKIE_STORE = new ICookieStore()
-    {
-
-        @Override
-        public void add(URI uri, List<HttpCookie> listCookie)
-        {
-        }
-
-        @Override
-        public void add(URI uri, HttpCookie cookie)
-        {
-        }
-
-        @Override
-        public List<HttpCookie> get(URI uri)
-        {
-            return null;
-        }
-
-        @Override
-        public List<HttpCookie> getCookies()
-        {
-            return null;
-        }
-
-        @Override
-        public List<URI> getURIs()
-        {
-            return null;
-        }
-
-        @Override
-        public boolean remove(URI uri, HttpCookie cookie)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll()
-        {
-            return false;
-        }
-    };
 }

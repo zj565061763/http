@@ -30,7 +30,7 @@ class RequestTask extends SDTask implements UploadProgressCallback
     {
         if (mCallback == null)
         {
-            mCallback = IRequestCallback.EMPTY_CALLBACK;
+            mCallback = IRequestCallback.DEFAULT;
         }
         return mCallback;
     }
