@@ -17,7 +17,7 @@ import java.util.WeakHashMap;
  * Created by zhengjun on 2017/10/11.
  */
 
-public class RequestManager implements RequestInterceptor
+public class RequestManager
 {
     private static RequestManager sInstance;
 
@@ -206,6 +206,8 @@ public class RequestManager implements RequestInterceptor
         return count;
     }
 
+    //---------- RequestInterceptor start ----------
+
     private List<RequestInterceptor> getListRequestInterceptor()
     {
         if (mListRequestInterceptor == null)
@@ -215,54 +217,82 @@ public class RequestManager implements RequestInterceptor
         return mListRequestInterceptor;
     }
 
-    public synchronized void addRequestInterceptor(RequestInterceptor interceptor)
+    /**
+     * 添加请求拦截对象
+     *
+     * @param interceptor
+     */
+    public void addRequestInterceptor(RequestInterceptor interceptor)
     {
-        if (interceptor == null)
+        synchronized (mRequestInterceptor)
         {
-            return;
-        }
-        if (!getListRequestInterceptor().contains(interceptor))
-        {
-            getListRequestInterceptor().add(interceptor);
+            if (interceptor == null)
+            {
+                return;
+            }
+            if (!getListRequestInterceptor().contains(interceptor))
+            {
+                getListRequestInterceptor().add(interceptor);
+            }
         }
     }
 
-    public synchronized void removeRequestInterceptor(RequestInterceptor interceptor)
+    /**
+     * 移除请求拦截对象
+     *
+     * @param interceptor
+     */
+    public void removeRequestInterceptor(RequestInterceptor interceptor)
     {
-        if (interceptor == null || mListRequestInterceptor == null)
+        synchronized (mRequestInterceptor)
         {
-            return;
-        }
-        mListRequestInterceptor.remove(interceptor);
-        if (mListRequestInterceptor.isEmpty())
-        {
-            mListRequestInterceptor = null;
+            if (interceptor == null || mListRequestInterceptor == null)
+            {
+                return;
+            }
+            mListRequestInterceptor.remove(interceptor);
+            if (mListRequestInterceptor.isEmpty())
+            {
+                mListRequestInterceptor = null;
+            }
         }
     }
 
-    @Override
-    public synchronized void beforeExecute(Request request)
+    RequestInterceptor mRequestInterceptor = new RequestInterceptor()
     {
-        if (mListRequestInterceptor == null)
+        @Override
+        public void beforeExecute(Request request)
         {
-            return;
+            synchronized (this)
+            {
+                if (mListRequestInterceptor == null)
+                {
+                    return;
+                }
+                for (RequestInterceptor item : mListRequestInterceptor)
+                {
+                    item.beforeExecute(request);
+                }
+            }
         }
-        for (RequestInterceptor item : mListRequestInterceptor)
-        {
-            item.beforeExecute(request);
-        }
-    }
 
-    @Override
-    public synchronized void afterExecute(Response response)
-    {
-        if (mListRequestInterceptor == null)
+        @Override
+        public void afterExecute(Response response)
         {
-            return;
+            synchronized (this)
+            {
+                if (mListRequestInterceptor == null)
+                {
+                    return;
+                }
+                for (RequestInterceptor item : mListRequestInterceptor)
+                {
+                    item.afterExecute(response);
+                }
+            }
         }
-        for (RequestInterceptor item : mListRequestInterceptor)
-        {
-            item.afterExecute(response);
-        }
-    }
+    };
+
+    //---------- RequestInterceptor end ----------
+
 }

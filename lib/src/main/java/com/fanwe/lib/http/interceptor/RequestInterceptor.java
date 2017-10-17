@@ -4,11 +4,22 @@ import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.Response;
 
 /**
+ * 用于请求拦截
  * Created by zhengjun on 2017/10/11.
  */
 public interface RequestInterceptor
 {
+    /**
+     * 发起网络请求之前回调
+     *
+     * @param request
+     */
     void beforeExecute(Request request);
 
+    /**
+     * 发起网络请求之后回调
+     *
+     * @param response
+     */
     void afterExecute(Response response);
 }

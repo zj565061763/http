@@ -253,13 +253,13 @@ public abstract class Request
      */
     public final Response execute() throws Exception
     {
-        RequestManager.getInstance().beforeExecute(this);
+        RequestManager.getInstance().mRequestInterceptor.beforeExecute(this);
 
         Response response = new Response();
         response.setRequest(this);
         doExecute(response);
 
-        RequestManager.getInstance().afterExecute(response);
+        RequestManager.getInstance().mRequestInterceptor.afterExecute(response);
         return response;
     }
 

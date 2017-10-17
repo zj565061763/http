@@ -13,6 +13,9 @@ public class RequestHandler
         mRequestTask = requestTask;
     }
 
+    /**
+     * 取消请求
+     */
     public void cancel()
     {
         mRequestTask.cancel(true);
