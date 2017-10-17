@@ -222,18 +222,15 @@ public class RequestManager
      *
      * @param interceptor
      */
-    public void addRequestInterceptor(RequestInterceptor interceptor)
+    public synchronized void addRequestInterceptor(RequestInterceptor interceptor)
     {
-        synchronized (mRequestInterceptor)
+        if (interceptor == null)
         {
-            if (interceptor == null)
-            {
-                return;
-            }
-            if (!getListRequestInterceptor().contains(interceptor))
-            {
-                getListRequestInterceptor().add(interceptor);
-            }
+            return;
+        }
+        if (!getListRequestInterceptor().contains(interceptor))
+        {
+            getListRequestInterceptor().add(interceptor);
         }
     }
 
@@ -242,19 +239,16 @@ public class RequestManager
      *
      * @param interceptor
      */
-    public void removeRequestInterceptor(RequestInterceptor interceptor)
+    public synchronized void removeRequestInterceptor(RequestInterceptor interceptor)
     {
-        synchronized (mRequestInterceptor)
+        if (interceptor == null || mListRequestInterceptor == null)
         {
-            if (interceptor == null || mListRequestInterceptor == null)
-            {
-                return;
-            }
-            mListRequestInterceptor.remove(interceptor);
-            if (mListRequestInterceptor.isEmpty())
-            {
-                mListRequestInterceptor = null;
-            }
+            return;
+        }
+        mListRequestInterceptor.remove(interceptor);
+        if (mListRequestInterceptor.isEmpty())
+        {
+            mListRequestInterceptor = null;
         }
     }
 
@@ -263,7 +257,7 @@ public class RequestManager
         @Override
         public void beforeExecute(Request request)
         {
-            synchronized (this)
+            synchronized (RequestManager.this)
             {
                 if (mListRequestInterceptor == null)
                 {
@@ -279,7 +273,7 @@ public class RequestManager
         @Override
         public void afterExecute(Response response)
         {
-            synchronized (this)
+            synchronized (RequestManager.this)
             {
                 if (mListRequestInterceptor == null)
                 {
