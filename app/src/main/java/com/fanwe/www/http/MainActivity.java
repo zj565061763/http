@@ -3,15 +3,10 @@ package com.fanwe.www.http;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
-import com.fanwe.lib.http.Request;
-import com.fanwe.lib.http.RequestIdentifierProvider;
 import com.fanwe.lib.http.RequestManager;
-import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.cookie.SerializableCookieStore;
-import com.fanwe.lib.http.interceptor.RequestInterceptor;
 import com.fanwe.lib.http.utils.LogUtils;
 
 public class MainActivity extends AppCompatActivity
@@ -30,41 +25,11 @@ public class MainActivity extends AppCompatActivity
         RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));
 
         //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑
-        RequestManager.getInstance().addRequestInterceptor(mRequestInterceptor);
+        RequestManager.getInstance().addRequestInterceptor(new AppRequestInterceptor());
 
         //设置Request的唯一标识生成对象
-        RequestManager.getInstance().setRequestIdentifierProvider(new RequestIdentifierProvider()
-        {
-            @Override
-            public String provideRequestIdentifier(Request request)
-            {
-                Object ctl = request.getMapParam().get("ctl");
-                Object act = request.getMapParam().get("act");
-                if (ctl != null && act != null)
-                {
-                    return ctl + "," + act;
-                }
-                return null;
-            }
-        });
+        RequestManager.getInstance().setRequestIdentifierProvider(new AppRequestIdentifierProvider());
     }
-
-    private RequestInterceptor mRequestInterceptor = new RequestInterceptor()
-    {
-        @Override
-        public void beforeExecute(Request request)
-        {
-            //请求发起之前回调
-            Log.i(TAG, "beforeExecute:" + request);
-        }
-
-        @Override
-        public void afterExecute(Response response)
-        {
-            //请求发起之后回调
-            Log.i(TAG, "afterExecute:" + response.getRequest());
-        }
-    };
 
     public void onClickAsyncRequestActivity(View view)
     {
@@ -85,6 +50,5 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-        RequestManager.getInstance().removeRequestInterceptor(mRequestInterceptor);
     }
 }
