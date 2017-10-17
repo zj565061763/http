@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.fanwe.lib.http.Request;
+import com.fanwe.lib.http.RequestIdentifierProvider;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.cookie.SerializableCookieStore;
@@ -30,6 +31,22 @@ public class MainActivity extends AppCompatActivity
 
         //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑
         RequestManager.getInstance().addRequestInterceptor(mRequestInterceptor);
+
+        //设置Request的唯一标识生成对象
+        RequestManager.getInstance().setRequestIdentifierProvider(new RequestIdentifierProvider()
+        {
+            @Override
+            public String provideRequestIdentifier(Request request)
+            {
+                Object ctl = request.getMapParam().get("ctl");
+                Object act = request.getMapParam().get("act");
+                if (ctl != null && act != null)
+                {
+                    return ctl + "," + act;
+                }
+                return null;
+            }
+        });
     }
 
     private RequestInterceptor mRequestInterceptor = new RequestInterceptor()
