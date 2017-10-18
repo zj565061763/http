@@ -3,7 +3,7 @@ package com.fanwe.lib.http.cookie;
 import android.content.Context;
 
 import com.fanwe.lib.http.utils.IOUtil;
-import com.fanwe.lib.http.utils.LogUtils;
+import com.fanwe.lib.http.utils.LogUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -35,15 +35,15 @@ public class SerializableCookieStore implements ICookieStore, Serializable
                 mMemoryCookieStore = IOUtil.deserializeObject(getFile());
             } catch (Exception e)
             {
-                LogUtils.e("cookie deserialize cookiestore error:" + e);
+                LogUtil.e("cookie deserialize cookiestore error:" + e);
             }
             if (mMemoryCookieStore == null)
             {
                 mMemoryCookieStore = new MemoryCookieStore();
-                LogUtils.i("cookie create MemoryCookieStore");
+                LogUtil.i("cookie create MemoryCookieStore");
             } else
             {
-                LogUtils.i("cookie deserialize cookiestore success");
+                LogUtil.i("cookie deserialize cookiestore success");
             }
         }
         return mMemoryCookieStore;
@@ -62,7 +62,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
                 mFile.createNewFile();
             } catch (Exception e)
             {
-                LogUtils.e("cookie create httpcookie file error:" + e);
+                LogUtil.e("cookie create httpcookie file error:" + e);
             }
         }
         return mFile;
@@ -73,10 +73,10 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         try
         {
             IOUtil.serializeObject(getMemoryCookieStore(), getFile());
-            LogUtils.i("cookie save cookiestore success");
+            LogUtil.i("cookie save cookiestore success");
         } catch (Exception e)
         {
-            LogUtils.e("cookie save cookiestore error:" + e);
+            LogUtil.e("cookie save cookiestore error:" + e);
         }
     }
 

@@ -6,7 +6,7 @@ import android.util.Log;
  * Created by zhengjun on 2017/9/20.
  */
 
-public class LogUtils
+public class LogUtil
 {
     public static final String TAG = "SDHttp";
 

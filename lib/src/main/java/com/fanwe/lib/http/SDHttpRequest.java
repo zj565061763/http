@@ -2,7 +2,7 @@ package com.fanwe.lib.http;
 
 import android.text.TextUtils;
 
-import com.fanwe.lib.http.utils.LogUtils;
+import com.fanwe.lib.http.utils.LogUtil;
 
 import java.net.HttpCookie;
 import java.net.URI;
@@ -68,7 +68,7 @@ class SDHttpRequest extends HttpRequest
                 sb.append(item.toString()).append(";");
             }
             sb.deleteCharAt(sb.lastIndexOf(";"));
-            LogUtils.i("cookie loadCookieForRequest:" + sb.toString());
+            LogUtil.i("cookie loadCookieForRequest:" + sb.toString());
             header(HEADER_COOKIE, sb.toString());
         }
         return this;
@@ -83,7 +83,7 @@ class SDHttpRequest extends HttpRequest
         }
         if (!TextUtils.isEmpty(cookie))
         {
-            LogUtils.i("cookie saveCookieFromResponse:" + cookie);
+            LogUtil.i("cookie saveCookieFromResponse:" + cookie);
             List<HttpCookie> listCookie = HttpCookie.parse(cookie);
             return listCookie;
         }
@@ -100,7 +100,7 @@ class SDHttpRequest extends HttpRequest
             setRequestCookie(listRequest);
         } catch (Exception e)
         {
-            LogUtils.e("cookie loadCookieForRequest error:" + e);
+            LogUtil.e("cookie loadCookieForRequest error:" + e);
         }
     }
 
@@ -113,7 +113,7 @@ class SDHttpRequest extends HttpRequest
             RequestManager.getInstance().getCookieStore().add(uri, listResponse);
         } catch (Exception e)
         {
-            LogUtils.e("cookie saveCookieFromResponse error:" + e);
+            LogUtil.e("cookie saveCookieFromResponse error:" + e);
         }
     }
 

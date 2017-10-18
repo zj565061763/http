@@ -4,7 +4,7 @@ import android.os.CountDownTimer;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
-import com.fanwe.lib.http.utils.LogUtils;
+import com.fanwe.lib.http.utils.LogUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.SDTask;
 
@@ -173,7 +173,7 @@ public abstract class Request
 
     protected void notifyProgressUpload(long uploaded, long total)
     {
-        LogUtils.i("progress upload:" + uploaded + "," + total);
+        LogUtil.i("progress upload:" + uploaded + "," + total);
         startCountDownTimer();
         getTransmitParam().transmit(uploaded, total);
         if (getTransmitParam().isFinish())
