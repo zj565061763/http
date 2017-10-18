@@ -13,6 +13,7 @@ public class AppRequestIdentifierProvider implements IRequestIdentifierProvider
     {
         String identifier = null;
 
+        //此处的clt和act为作者公司服务端标识接口的参数，故用这两个参数组合来生成请求标识
         Object ctl = request.getMapParam().get("ctl");
         Object act = request.getMapParam().get("act");
         if (ctl != null && act != null)
