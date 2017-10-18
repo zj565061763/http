@@ -277,7 +277,7 @@ public static void requestCommonInterface(final RequestCallback callback)
 }
 ```
 
-以上方法较为繁琐，每个地方都要写，当然也可以代理模式解决，但是也是挺繁琐的，这边介绍一个库中的类可以解决这种尴尬，具体代码如下：
+以上方法较为繁琐，每个地方都要写，当然也可以通过代理模式减少一些重复的代码，但也是挺繁琐的，这边介绍一个库中的类可以解决这种尴尬，具体代码如下：
 ```java
 public void requestCommonInterface(final RequestCallback callback)
 {
