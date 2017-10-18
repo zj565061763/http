@@ -38,6 +38,7 @@ new Thread(new Runnable()
 * onSuccessBackground中代码逻辑造成的异常：<br>
 `onPrepare(execute调用线程)->onStart(UI线程)->onSuccessBackground(非UI线程)->onError(UI线程)->onFinish(UI线程)`
 
+```java
 Request request = new PostRequest(URL) //创建请求对象
         .param("ctl", "app").param("act", "init") //创建要提交的form数据
         .setTag(TAG); //设置请求对应的tag，可用于取消请求对象
@@ -104,3 +105,4 @@ RequestHandler requestHandler = request.execute(new ModelRequestCallback<InitAct
 
 requestHandler.cancel(); //根据异步请求关联的对象取消请求
 RequestManager.getInstance().cancelTag(TAG); //根据tag取消请求
+```
