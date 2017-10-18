@@ -31,6 +31,7 @@ new Thread(new Runnable()
 
 1. 正常回调：onPrepare(execute调用线程)->onStart(UI线程)->onSuccessBackground(非UI线程)->onSuccessBefore(UI线程)->onSuccess(UI线程)->onFinish(UI线程)
 2. 网络异常：onPrepare(execute调用线程)->onStart(UI线程)->onError(UI线程)->onFinish(UI线程)
+3. onSuccessBackground中代码逻辑造成的异常：onPrepare(execute调用线程)->onStart(UI线程)->onSuccessBackground(非UI线程)->onError(UI线程)->onFinish(UI线程)
 
 Request request = new PostRequest(URL) //创建请求对象
         .param("ctl", "app").param("act", "init") //创建要提交的form数据
