@@ -37,7 +37,7 @@ public class DownloadActivity extends AppCompatActivity
     public void onClickRequest(View view)
     {
         File file = new File(getExternalCacheDir(), "download.apk");
-        new GetRequest(URL_FILE).setTag(this).execute(new FileRequestCallback(file)
+        new GetRequest(URL_FILE).setTag(TAG).execute(new FileRequestCallback(file)
         {
             @Override
             protected void onProgressDownload(TransmitParam param)
@@ -77,13 +77,13 @@ public class DownloadActivity extends AppCompatActivity
 
     public void onClickCancelRequest(View view)
     {
-        RequestManager.getInstance().cancelTag(this);
+        RequestManager.getInstance().cancelTag(TAG);
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        RequestManager.getInstance().cancelTag(this);
+        RequestManager.getInstance().cancelTag(TAG);
     }
 }
