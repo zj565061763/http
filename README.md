@@ -32,7 +32,7 @@ new Thread(new Runnable()
 * 正常回调：<br>
 `onPrepare(execute调用线程)->onStart(UI线程)->onSuccessBackground(非UI线程)->onSuccessBefore(UI线程)->onSuccess(UI线程)->onFinish(UI线程)`
 
-* 网络异常：<br>
+* 网络或者服务端等外部原因造成的异常：<br>
 `onPrepare(execute调用线程)->onStart(UI线程)->onError(UI线程)->onFinish(UI线程)`
 
 * onSuccessBackground中代码逻辑造成的异常：<br>
