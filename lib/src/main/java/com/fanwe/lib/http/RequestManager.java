@@ -3,7 +3,6 @@ package com.fanwe.lib.http;
 import android.text.TextUtils;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
-import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.lib.http.cookie.ICookieStore;
 import com.fanwe.lib.http.interceptor.IRequestInterceptor;
 
@@ -88,33 +87,22 @@ public class RequestManager
      * 异步执行请求
      *
      * @param request
-     * @param callbacks
+     * @param callback
      */
-    public synchronized RequestHandler execute(Request request, IRequestCallback... callbacks)
+    public synchronized RequestHandler execute(Request request, IRequestCallback callback)
     {
         if (request == null)
         {
             return null;
         }
 
-        IRequestCallback realCallback = null;
-        if (callbacks != null)
+        if (callback == null)
         {
-            if (callbacks.length == 1)
-            {
-                realCallback = callbacks[0];
-            } else if (callbacks.length > 1)
-            {
-                realCallback = RequestCallbackProxy.get(callbacks);
-            }
-        }
-        if (realCallback == null)
-        {
-            realCallback = IRequestCallback.DEFAULT;
+            callback = IRequestCallback.DEFAULT;
         }
 
-        realCallback.onPrepare(request);
-        RequestTask task = new RequestTask(request, realCallback);
+        callback.onPrepare(request);
+        RequestTask task = new RequestTask(request, callback);
         task.submit(null);
 
         RequestInfo info = new RequestInfo();

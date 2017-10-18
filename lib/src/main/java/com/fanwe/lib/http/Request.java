@@ -238,11 +238,11 @@ public abstract class Request
     /**
      * 异步请求
      *
-     * @param callbacks
+     * @param callback
      */
-    public final RequestHandler execute(IRequestCallback... callbacks)
+    public final RequestHandler execute(IRequestCallback callback)
     {
-        return RequestManager.getInstance().execute(this, callbacks);
+        return RequestManager.getInstance().execute(this, callback);
     }
 
     /**
