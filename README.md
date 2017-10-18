@@ -106,3 +106,34 @@ RequestHandler requestHandler = request.execute(new ModelRequestCallback<InitAct
 requestHandler.cancel(); //根据异步请求关联的对象取消请求
 RequestManager.getInstance().cancelTag(TAG); //根据tag取消请求
 ```
+
+## 文件下载
+目前不支持断点下载，只能重头开始下载
+```java
+Request request = new GetRequest(URL_FILE); //创建请求对象
+request.setTag(TAG); //给请求设置tag，可用于取消请求
+
+File file = new File(getExternalCacheDir(), "download.apk"); //设置下载文件要保存的File
+request.execute(new FileRequestCallback(file)
+{
+    @Override
+    protected void onProgressDownload(TransmitParam param)
+    {
+        mProgressBar.setProgress(param.getProgress()); //下载进度
+        mTvProgress.setText(param.getProgress() + "%"); //下载百分比
+        mTvSpeed.setText(param.getSpeedKBps() + "KB/秒"); //下载速度
+        if (param.isFinish())
+        {
+            //下载完成
+            mTvSpeed.setText("");
+            Log.i(TAG, "download finish");
+        }
+    }
+
+    @Override
+    public void onSuccess()
+    {
+
+    }
+});
+```
