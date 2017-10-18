@@ -4,9 +4,9 @@ package com.fanwe.lib.http;
  * 用来给Request生成唯一标识
  * Created by zhengjun on 2017/10/17.
  */
-public interface RequestIdentifierProvider
+public interface IRequestIdentifierProvider
 {
-    RequestIdentifierProvider DEFAULT = new RequestIdentifierProvider()
+    IRequestIdentifierProvider DEFAULT = new IRequestIdentifierProvider()
     {
         @Override
         public String provideRequestIdentifier(Request request)

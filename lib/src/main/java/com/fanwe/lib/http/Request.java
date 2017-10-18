@@ -3,7 +3,7 @@ package com.fanwe.lib.http;
 import android.os.CountDownTimer;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
-import com.fanwe.lib.http.callback.UploadProgressCallback;
+import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.utils.LogUtils;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.SDTask;
@@ -26,7 +26,7 @@ public abstract class Request
     private int mReadTimeout;
     private int mConnectTimeout;
 
-    private UploadProgressCallback mUploadProgressCallback;
+    private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
     private CountDownTimer mCountDownTimer;
 
@@ -119,17 +119,17 @@ public abstract class Request
         return mConnectTimeout;
     }
 
-    public Request setUploadProgressCallback(UploadProgressCallback uploadProgressCallback)
+    public Request setUploadProgressCallback(IUploadProgressCallback uploadProgressCallback)
     {
         mUploadProgressCallback = uploadProgressCallback;
         return this;
     }
 
-    public UploadProgressCallback getUploadProgressCallback()
+    public IUploadProgressCallback getUploadProgressCallback()
     {
         if (mUploadProgressCallback == null)
         {
-            mUploadProgressCallback = UploadProgressCallback.DEFAULT;
+            mUploadProgressCallback = IUploadProgressCallback.DEFAULT;
         }
         return mUploadProgressCallback;
     }

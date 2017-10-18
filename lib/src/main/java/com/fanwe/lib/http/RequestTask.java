@@ -1,14 +1,14 @@
 package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
-import com.fanwe.lib.http.callback.UploadProgressCallback;
+import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.SDTask;
 
 /**
  * Created by zhengjun on 2017/10/11.
  */
-class RequestTask extends SDTask implements UploadProgressCallback
+class RequestTask extends SDTask implements IUploadProgressCallback
 {
     private Request mRequest;
     private IRequestCallback mCallback;

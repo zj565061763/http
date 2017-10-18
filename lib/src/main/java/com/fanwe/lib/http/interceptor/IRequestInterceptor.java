@@ -7,7 +7,7 @@ import com.fanwe.lib.http.Response;
  * 用于请求拦截
  * Created by zhengjun on 2017/10/11.
  */
-public interface RequestInterceptor
+public interface IRequestInterceptor
 {
     /**
      * 发起网络请求之前回调

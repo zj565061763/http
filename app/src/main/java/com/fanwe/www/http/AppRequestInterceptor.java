@@ -4,12 +4,12 @@ import android.util.Log;
 
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.Response;
-import com.fanwe.lib.http.interceptor.RequestInterceptor;
+import com.fanwe.lib.http.interceptor.IRequestInterceptor;
 
 /**
  * http请求拦截
  */
-public class AppRequestInterceptor implements RequestInterceptor
+public class AppRequestInterceptor implements IRequestInterceptor
 {
     public static final String TAG = "AppRequestInterceptor";
 

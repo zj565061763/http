@@ -1,12 +1,12 @@
 package com.fanwe.www.http;
 
 import com.fanwe.lib.http.Request;
-import com.fanwe.lib.http.RequestIdentifierProvider;
+import com.fanwe.lib.http.IRequestIdentifierProvider;
 
 /**
  * 用来给Request生成唯一标识
  */
-public class AppRequestIdentifierProvider implements RequestIdentifierProvider
+public class AppRequestIdentifierProvider implements IRequestIdentifierProvider
 {
     @Override
     public String provideRequestIdentifier(Request request)

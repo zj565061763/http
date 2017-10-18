@@ -6,9 +6,9 @@ import com.fanwe.lib.http.utils.TransmitParam;
  * Created by zhengjun on 2017/10/16.
  */
 
-public interface UploadProgressCallback
+public interface IUploadProgressCallback
 {
-    UploadProgressCallback DEFAULT = new UploadProgressCallback()
+    IUploadProgressCallback DEFAULT = new IUploadProgressCallback()
     {
         @Override
         public void onProgressUpload(TransmitParam param)

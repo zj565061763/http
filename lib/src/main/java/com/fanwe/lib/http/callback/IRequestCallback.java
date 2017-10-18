@@ -7,7 +7,7 @@ import com.fanwe.lib.http.utils.TransmitParam;
 /**
  * Created by zhengjun on 2017/10/10.
  */
-public interface IRequestCallback extends UploadProgressCallback
+public interface IRequestCallback extends IUploadProgressCallback
 {
     void setResponse(Response response);
 

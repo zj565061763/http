@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.lib.http.cookie.ICookieStore;
-import com.fanwe.lib.http.interceptor.RequestInterceptor;
+import com.fanwe.lib.http.interceptor.IRequestInterceptor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,8 +24,8 @@ public class RequestManager
     private Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
 
     private ICookieStore mCookieStore;
-    private RequestIdentifierProvider mRequestIdentifierProvider;
-    private List<RequestInterceptor> mListRequestInterceptor;
+    private IRequestIdentifierProvider mRequestIdentifierProvider;
+    private List<IRequestInterceptor> mListRequestInterceptor;
 
     private RequestManager()
     {
@@ -70,16 +70,16 @@ public class RequestManager
         return mCookieStore;
     }
 
-    public void setRequestIdentifierProvider(RequestIdentifierProvider requestIdentifierProvider)
+    public void setRequestIdentifierProvider(IRequestIdentifierProvider requestIdentifierProvider)
     {
         mRequestIdentifierProvider = requestIdentifierProvider;
     }
 
-    public RequestIdentifierProvider getRequestIdentifierProvider()
+    public IRequestIdentifierProvider getRequestIdentifierProvider()
     {
         if (mRequestIdentifierProvider == null)
         {
-            mRequestIdentifierProvider = RequestIdentifierProvider.DEFAULT;
+            mRequestIdentifierProvider = IRequestIdentifierProvider.DEFAULT;
         }
         return mRequestIdentifierProvider;
     }
@@ -164,7 +164,7 @@ public class RequestManager
     }
 
     /**
-     * 根据Request的唯一标识取消请求{@link RequestIdentifierProvider}
+     * 根据Request的唯一标识取消请求{@link IRequestIdentifierProvider}
      *
      * @param request
      * @return
@@ -206,9 +206,9 @@ public class RequestManager
         return count;
     }
 
-    //---------- RequestInterceptor start ----------
+    //---------- IRequestInterceptor start ----------
 
-    private List<RequestInterceptor> getListRequestInterceptor()
+    private List<IRequestInterceptor> getListRequestInterceptor()
     {
         if (mListRequestInterceptor == null)
         {
@@ -222,7 +222,7 @@ public class RequestManager
      *
      * @param interceptor
      */
-    public synchronized void addRequestInterceptor(RequestInterceptor interceptor)
+    public synchronized void addRequestInterceptor(IRequestInterceptor interceptor)
     {
         if (interceptor == null)
         {
@@ -239,7 +239,7 @@ public class RequestManager
      *
      * @param interceptor
      */
-    public synchronized void removeRequestInterceptor(RequestInterceptor interceptor)
+    public synchronized void removeRequestInterceptor(IRequestInterceptor interceptor)
     {
         if (interceptor == null || mListRequestInterceptor == null)
         {
@@ -252,7 +252,7 @@ public class RequestManager
         }
     }
 
-    RequestInterceptor mRequestInterceptor = new RequestInterceptor()
+    IRequestInterceptor mRequestInterceptor = new IRequestInterceptor()
     {
         @Override
         public void beforeExecute(Request request)
@@ -263,7 +263,7 @@ public class RequestManager
                 {
                     return;
                 }
-                for (RequestInterceptor item : mListRequestInterceptor)
+                for (IRequestInterceptor item : mListRequestInterceptor)
                 {
                     item.beforeExecute(request);
                 }
@@ -279,7 +279,7 @@ public class RequestManager
                 {
                     return;
                 }
-                for (RequestInterceptor item : mListRequestInterceptor)
+                for (IRequestInterceptor item : mListRequestInterceptor)
                 {
                     item.afterExecute(response);
                 }
@@ -287,6 +287,6 @@ public class RequestManager
         }
     };
 
-    //---------- RequestInterceptor end ----------
+    //---------- IRequestInterceptor end ----------
 
 }
