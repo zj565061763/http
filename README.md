@@ -297,3 +297,18 @@ public void requestCommonInterface(final RequestCallback callback)
     new PostRequest(URL).param("ctl", "app").param("act", "init").execute(callbackProxy);
 }
 ```
+
+以上是为了更好的阅读代码所以一步步拆分了，你也可以像下面这么写
+```java
+public void requestCommonInterface(final RequestCallback callback)
+{
+    new PostRequest(URL).param("ctl", "app").param("act", "init").execute(RequestCallbackProxy.get(new RequestCallback()
+    {
+        @Override
+        public void onSuccess()
+        {
+            Log.i(TAG, "do common logic");
+        }
+    }, callback));
+}
+```
