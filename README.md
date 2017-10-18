@@ -291,7 +291,7 @@ public void requestCommonInterface(final RequestCallback callback)
         }
     };
 
-    //根据多个回调对象动态生成一个回调代理对象，这里要注意的是，多个回调对象中的getResponse()返回的都是同一个结果
+    //根据多个回调对象动态生成一个回调代理对象，这里要注意的是，多个回调对象中的getResponse()返回的都是同一个对象
     IRequestCallback callbackProxy = RequestCallbackProxy.get(commonLogicCallback, callback);
 
     new PostRequest(URL).param("ctl", "app").param("act", "init").execute(callbackProxy);
