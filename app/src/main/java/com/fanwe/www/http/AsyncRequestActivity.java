@@ -55,7 +55,7 @@ public class AsyncRequestActivity extends AppCompatActivity
         @Override
         protected InitActModel parseToModel(String content, Class<InitActModel> clazz)
         {
-            return new Gson().fromJson(content, clazz);
+            return new Gson().fromJson(content, null);
         }
 
         @Override

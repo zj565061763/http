@@ -8,6 +8,8 @@ import android.view.View;
 import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.Response;
 
+import java.io.InputStream;
+
 /**
  * 同步请求demo
  */
@@ -37,7 +39,11 @@ public class SyncRequestActivity extends AppCompatActivity
                             .setTag(this)
                             .execute();
 
-                    Log.i(TAG, response.getBody());
+                    InputStream inputStream = response.getInputStream(); //结果以输入流返回
+                    int code = response.getCode(); //返回码
+                    String result = response.getBody(); //结果以字符串返回
+
+                    Log.i(TAG, result);
                 } catch (Exception e)
                 {
                     e.printStackTrace();
