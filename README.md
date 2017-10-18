@@ -252,3 +252,48 @@ public void onPrepare(Request request)
     RequestManager.getInstance().cancelRequestIdentifier(request);
 }
 ```
+
+## 多个异步回调
+在实际开发中，有的接口需要很多地方都调用的时候一般把这个接口封装到一个方法中，然后要求外部传入一个异步回调对象来监听。<br>
+但是假如我们封装的方法中需要先做一些统一的处理，然后再通知外部传进来的回调对象，那怎么处理比较方便呢？<br>
+<br>
+通常的实现办法是先在内部做处理，然后再手动通知外部传进来的回调，如下：
+```java
+public static void requestCommonInterface(final RequestCallback callback)
+{
+    new PostRequest(URL).param("ctl", "app").param("act", "init").execute(new RequestCallback()
+    {
+        @Override
+        public void onSuccess()
+        {
+            //内部事先做一些统一的处理
+            Log.i(TAG, "do common logic");
+            if (callback != null)
+            {
+                callback.onSuccess();
+            }
+        }
+    });
+}
+```
+
+以上方法较为繁琐，每个地方都要写，当然也可以代理模式解决，但是也是挺繁琐的，这边介绍一个库中的类可以解决这种尴尬，具体代码如下：
+```java
+public void requestCommonInterface(final RequestCallback callback)
+{
+    //公共逻辑回调
+    IRequestCallback commonLogicCallback = new RequestCallback()
+    {
+        @Override
+        public void onSuccess()
+        {
+            Log.i(TAG, "do common logic");
+        }
+    };
+
+    //根据多个回调对象动态生成一个回调代理对象，这里要注意的是，多个回调对象中的getResponse()返回的都是同一个结果
+    IRequestCallback callbackProxy = RequestCallbackProxy.get(commonLogicCallback, callback);
+
+    new PostRequest(URL).param("ctl", "app").param("act", "init").execute(callbackProxy);
+}
+```
