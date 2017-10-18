@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity
         //设置cookie管理对象
         RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));
 
-        //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑
+        //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边传入的对象如果是和资源相关的对象，需要在资源销毁的时候remove
         RequestManager.getInstance().addRequestInterceptor(new AppRequestInterceptor());
 
         //设置Request的唯一标识生成对象
