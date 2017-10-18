@@ -137,3 +137,33 @@ request.execute(new FileRequestCallback(file)
     }
 });
 ```
+
+## 文件上传
+```java
+PostRequest request = new PostRequest(URL); //创建请求对象
+request.addFile("file", file) //添加File对象
+        .param("ctl", "avatar").param("act", "uploadImage"); //添加form参数
+request.execute(new RequestCallback()
+{
+    @Override
+    public void onProgressUpload(TransmitParam param)
+    {
+        super.onProgressUpload(param);
+        mProgressBar.setProgress(param.getProgress()); //上传进度
+        mTvProgress.setText(param.getProgress() + "%"); //上传百分比
+        mTvSpeed.setText(param.getSpeedKBps() + "KB/秒"); //上传速度
+        if (param.isFinish())
+        {
+            //上传完成
+            mTvSpeed.setText("");
+            Log.i(TAG, "download finish");
+        }
+    }
+
+    @Override
+    public void onSuccess()
+    {
+
+    }
+});
+```
