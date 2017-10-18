@@ -174,3 +174,24 @@ request.execute(new RequestCallback()
 //设置cookie管理对象
 RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));
 ```
+
+## 请求拦截
+在实际开发中，有些业务需要全局处理，比如发起请求之前对参数加密，打印每次请求的地址等。可以实现IRequestInterceptor后，把对象设置给RequestManager
+```java
+//设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边是add，如果是和资源相关的对象，需要在资源销毁的时候remove
+RequestManager.getInstance().addRequestInterceptor(new IRequestInterceptor()
+{
+    @Override
+    public void beforeExecute(Request request)
+    {
+        //请求被真正执行之前回调
+        Log.i(TAG, "beforeExecute:" + request);
+    }
+
+    @Override
+    public void afterExecute(Response response)
+    {
+        //请求被真正执行之后回调
+    }
+});
+```
