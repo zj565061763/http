@@ -167,3 +167,10 @@ request.execute(new RequestCallback()
     }
 });
 ```
+
+## cookie管理
+库中已经内置了一个SerializableCookieStore来管理cookie，如果用户要自己实现的话，可以实现ICookieStore接口
+```java
+//设置cookie管理对象
+RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));
+```
