@@ -83,7 +83,7 @@ class SDHttpRequest extends HttpRequest
         }
         if (!TextUtils.isEmpty(cookie))
         {
-            LogUtil.i("cookie saveCookieFrom " + url() + "\r\n" + cookie);
+            LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + cookie);
             List<HttpCookie> listCookie = HttpCookie.parse(cookie);
             return listCookie;
         }
