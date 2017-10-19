@@ -1,3 +1,5 @@
+## About
+本库的底层是通过[http-request](https://github.com/kevinsawicki/http-request)库实现的
 
 ## 同步请求
 ```java
