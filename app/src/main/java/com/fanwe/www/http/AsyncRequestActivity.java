@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.RequestManager;
+import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.callback.ModelRequestCallback;
 import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.www.http.model.InitActModel;
@@ -61,6 +62,7 @@ public class AsyncRequestActivity extends AppCompatActivity
         @Override
         public void onSuccess()
         {
+            Response response = getResponse(); //获得返回结果对象
             InitActModel model = getActModel();
             Log.i(TAG, "onSuccess_0:" + model.getCity());
         }

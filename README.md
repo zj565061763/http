@@ -68,6 +68,7 @@ RequestHandler requestHandler = request.execute(new ModelRequestCallback<InitAct
     public void onSuccess()
     {
         //成功回调，ui线程
+        Response response = getResponse(); //获得返回结果对象
         InitActModel model = getActModel(); //获得解析好的实体
         Log.i(TAG, "onSuccess:" + model.getCity());
     }
@@ -196,29 +197,7 @@ RequestManager.getInstance().addRequestInterceptor(new IRequestInterceptor()
 
 ## 请求标识
 在实际开发中有的接口请求如果点击连续请求的话，我们希望只有最后一次有效，那么可以通过给请求设置标识的方式来取消之前发起的请求
-1. 实现IRequestIdentifierProvider接口
-```java
-public class AppRequestIdentifierProvider implements IRequestIdentifierProvider
-{
-    @Override
-    public String provideRequestIdentifier(Request request)
-    {
-        String identifier = null;
-
-        //此处的clt和act为作者公司服务端标识接口的参数，故用这两个参数组合来生成请求标识
-        Object ctl = request.getMapParam().get("ctl");
-        Object act = request.getMapParam().get("act");
-        if (ctl != null && act != null)
-        {
-            identifier = ctl + "," + act;
-        }
-
-        return identifier;
-    }
-}
-```
-
-2. 设置对象给RequestManager
+1. 实现IRequestIdentifierProvider接口，并设置给RequestManager
 ```java
 //设置Request的唯一标识生成对象，注意这边传入的对象不应该是和资源相关的对象，否则资源销毁回调的时候被单例持有会造成内存泄漏
 RequestManager.getInstance().setRequestIdentifierProvider(new IRequestIdentifierProvider()
@@ -241,7 +220,7 @@ RequestManager.getInstance().setRequestIdentifierProvider(new IRequestIdentifier
 });
 ```
 
-3. 在异步回调接口的onPrepare方法中取消已经发起的请求
+2. 在异步回调接口的onPrepare方法中取消已经发起的请求
 ```java
 @Override
 public void onPrepare(Request request)
