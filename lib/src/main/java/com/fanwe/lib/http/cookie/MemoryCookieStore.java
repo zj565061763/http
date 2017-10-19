@@ -47,12 +47,18 @@ class MemoryCookieStore implements ICookieStore, Serializable
         while (it.hasNext())
         {
             CookieModel item = it.next();
-            if (item.getName().equals(cookie.getName()))
+            if (item.isExpiry())
             {
-                item.fillValue(uri, cookie);
+                it.remove();
+            } else
+            {
+                if (item.getName().equals(cookie.getName()))
+                {
+                    item.fillValue(uri, cookie);
 
-                target = item;
-                break;
+                    target = item;
+                    break;
+                }
             }
         }
 
@@ -76,8 +82,14 @@ class MemoryCookieStore implements ICookieStore, Serializable
         while (it.hasNext())
         {
             CookieModel item = it.next();
-            HttpCookie httpCookie = item.toHttpCookie();
-            listHttpCookie.add(httpCookie);
+            if (item.isExpiry())
+            {
+                it.remove();
+            } else
+            {
+                HttpCookie httpCookie = item.toHttpCookie();
+                listHttpCookie.add(httpCookie);
+            }
         }
         return listHttpCookie;
     }
@@ -96,8 +108,14 @@ class MemoryCookieStore implements ICookieStore, Serializable
                 while (it.hasNext())
                 {
                     CookieModel item = it.next();
-                    HttpCookie httpCookie = item.toHttpCookie();
-                    listHttpCookie.add(httpCookie);
+                    if (item.isExpiry())
+                    {
+                        it.remove();
+                    } else
+                    {
+                        HttpCookie httpCookie = item.toHttpCookie();
+                        listHttpCookie.add(httpCookie);
+                    }
                 }
             }
         }
@@ -118,12 +136,18 @@ class MemoryCookieStore implements ICookieStore, Serializable
         while (it.hasNext())
         {
             CookieModel item = it.next();
-            if (item.getName().equals(cookie.getName()))
+            if (item.isExpiry())
             {
-                item.fillValue(uri, cookie);
                 it.remove();
-                LogUtil.i("cookie remove:" + uri.toString() + "\r\n" + item.toString());
-                return true;
+            } else
+            {
+                if (item.getName().equals(cookie.getName()))
+                {
+                    item.fillValue(uri, cookie);
+                    it.remove();
+                    LogUtil.i("cookie remove:" + uri.toString() + "\r\n" + item.toString());
+                    return true;
+                }
             }
         }
         return false;
