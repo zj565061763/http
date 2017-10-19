@@ -63,7 +63,7 @@ class MemoryCookieStore implements ICookieStore, Serializable
             listCookie.add(target);
         }
 
-        LogUtil.i("cookie add cookie:" + uri.toString() + " " + target.toString());
+        LogUtil.i("cookie add cookie:" + uri.toString() + "\r\n" + target.toString());
     }
 
     @Override
@@ -122,7 +122,7 @@ class MemoryCookieStore implements ICookieStore, Serializable
             {
                 item.fillValue(uri, cookie);
                 it.remove();
-                LogUtil.i("cookie remove:" + uri.toString() + " " + item.toString());
+                LogUtil.i("cookie remove:" + uri.toString() + "\r\n" + item.toString());
                 return true;
             }
         }

@@ -43,6 +43,9 @@ public class CookieModel implements Serializable
         if (maxAge > 0)
         {
             this.expiry = maxAge * 1000 + System.currentTimeMillis();
+        } else
+        {
+            this.expiry = -1;
         }
     }
 
