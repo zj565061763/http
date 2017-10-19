@@ -191,7 +191,7 @@ RequestManager.getInstance().addRequestInterceptor(new IRequestInterceptor()
     }
 
     @Override
-    public void afterExecute(Response response)
+    public void afterExecute(Request request, Response response);
     {
         //请求被真正执行之后回调
     }
