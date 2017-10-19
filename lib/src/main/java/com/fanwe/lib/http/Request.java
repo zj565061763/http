@@ -67,6 +67,21 @@ public abstract class Request
     }
 
     /**
+     * 把mapParam中的请求参数都设置进去
+     *
+     * @param mapParam
+     * @return
+     */
+    public Request param(Map<String, Object> mapParam)
+    {
+        if (mapParam != null)
+        {
+            getMapParam().putAll(mapParam);
+        }
+        return this;
+    }
+
+    /**
      * 设置header参数
      *
      * @param name
@@ -81,6 +96,21 @@ public abstract class Request
         } else
         {
             getMapHeader().remove(name);
+        }
+        return this;
+    }
+
+    /**
+     * 把mapHeader中的请求参数都设置进去
+     *
+     * @param mapHeader
+     * @return
+     */
+    public Request header(Map<String, String> mapHeader)
+    {
+        if (mapHeader != null)
+        {
+            getMapHeader().putAll(mapHeader);
         }
         return this;
     }
