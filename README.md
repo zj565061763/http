@@ -1,5 +1,5 @@
 ## About
-本库的底层http请求是通过[http-request](https://github.com/kevinsawicki/http-request)库实现的
+本库的底层http请求是通过[http-request](https://github.com/kevinsawicki/http-request)库实现的<br>
 异步任务是通过[task](https://github.com/zj565061763/task)库实现的
 
 ## 同步请求
