@@ -9,6 +9,15 @@ import com.fanwe.lib.http.utils.TransmitParam;
  */
 public interface IRequestCallback extends IUploadProgressCallback
 {
+    void setRequest(Request request);
+
+    /**
+     * 返回请求对象
+     *
+     * @return
+     */
+    Request getRequest();
+
     void setResponse(Response response);
 
     /**
@@ -44,6 +53,17 @@ public interface IRequestCallback extends IUploadProgressCallback
         @Override
         public void onProgressUpload(TransmitParam param)
         {
+        }
+
+        @Override
+        public void setRequest(Request request)
+        {
+        }
+
+        @Override
+        public Request getRequest()
+        {
+            return null;
         }
 
         @Override

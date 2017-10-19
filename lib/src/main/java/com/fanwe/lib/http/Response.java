@@ -12,19 +12,12 @@ import java.io.InputStream;
  */
 public class Response
 {
-    private Request request;
-
     private int code;
     private int contentLength;
     private String charset;
     private InputStream inputStream;
 
     private String body;
-
-    void setRequest(Request request)
-    {
-        this.request = request;
-    }
 
     void fillValue(HttpRequest request)
     {
@@ -59,11 +52,6 @@ public class Response
             IOUtil.closeQuietly(getInputStream());
         }
         return body;
-    }
-
-    public Request getRequest()
-    {
-        return request;
     }
 
     public int getCode()

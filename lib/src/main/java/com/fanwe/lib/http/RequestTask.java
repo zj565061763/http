@@ -18,6 +18,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         mRequest = request;
         mCallback = callback;
 
+        mCallback.setRequest(request);
         request.setUploadProgressCallback(this);
     }
 

@@ -21,9 +21,9 @@ public class AppRequestInterceptor implements IRequestInterceptor
     }
 
     @Override
-    public void afterExecute(Response response)
+    public void afterExecute(Request request, Response response)
     {
         //请求发起之后回调
-        Log.i(TAG, "afterExecute:" + response.getRequest());
+        Log.i(TAG, "afterExecute:" + request);
     }
 }

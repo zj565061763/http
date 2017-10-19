@@ -10,7 +10,20 @@ import com.fanwe.lib.http.utils.TransmitParam;
 
 public abstract class RequestCallback implements IRequestCallback
 {
+    private Request mRequest;
     private Response mResponse;
+
+    @Override
+    public void setRequest(Request request)
+    {
+        this.mRequest = request;
+    }
+
+    @Override
+    public Request getRequest()
+    {
+        return mRequest;
+    }
 
     @Override
     public void setResponse(Response response)

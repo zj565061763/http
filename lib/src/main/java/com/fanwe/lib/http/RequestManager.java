@@ -259,7 +259,7 @@ public class RequestManager
         }
 
         @Override
-        public void afterExecute(Response response)
+        public void afterExecute(Request request, Response response)
         {
             synchronized (RequestManager.this)
             {
@@ -269,7 +269,7 @@ public class RequestManager
                 }
                 for (IRequestInterceptor item : mListRequestInterceptor)
                 {
-                    item.afterExecute(response);
+                    item.afterExecute(request, response);
                 }
             }
         }

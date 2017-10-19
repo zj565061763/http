@@ -19,7 +19,8 @@ public interface IRequestInterceptor
     /**
      * 发起网络请求之后回调
      *
+     * @param request
      * @param response
      */
-    void afterExecute(Response response);
+    void afterExecute(Request request, Response response);
 }

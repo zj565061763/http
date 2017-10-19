@@ -286,10 +286,9 @@ public abstract class Request
         RequestManager.getInstance().mRequestInterceptor.beforeExecute(this);
 
         Response response = new Response();
-        response.setRequest(this);
         doExecute(response);
 
-        RequestManager.getInstance().mRequestInterceptor.afterExecute(response);
+        RequestManager.getInstance().mRequestInterceptor.afterExecute(this, response);
         return response;
     }
 
