@@ -21,6 +21,7 @@ public class CookieModel implements Serializable
     private String path;
     private String portList;
     private boolean secure;
+    private long maxAge;
     private int version = 1;
     private long expiry = -1;
 
@@ -36,9 +37,9 @@ public class CookieModel implements Serializable
         this.path = cookie.getPath();
         this.portList = cookie.getPortlist();
         this.secure = cookie.getSecure();
+        this.maxAge = cookie.getMaxAge();
         this.version = cookie.getVersion();
 
-        long maxAge = cookie.getMaxAge();
         if (maxAge > 0)
         {
             this.expiry = maxAge * 1000 + System.currentTimeMillis();
@@ -86,5 +87,15 @@ public class CookieModel implements Serializable
     public boolean isExpiry()
     {
         return expiry > 0 && expiry < System.currentTimeMillis();
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append("=").append(value).append("\r\n");
+        sb.append("path=").append(path).append("\r\n");
+        sb.append("maxAge=").append(maxAge).append("\r\n");
+        return sb.toString();
     }
 }

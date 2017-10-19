@@ -40,10 +40,9 @@ class MemoryCookieStore implements ICookieStore, Serializable
     @Override
     public synchronized void add(URI uri, HttpCookie cookie)
     {
-        LogUtil.i("cookie add cookie:" + uri.toString() + " " + cookie.toString());
         List<CookieModel> listCookie = getListCookie(uri);
 
-        boolean hasCookie = false;
+        CookieModel target = null;
         Iterator<CookieModel> it = listCookie.iterator();
         while (it.hasNext())
         {
@@ -51,17 +50,20 @@ class MemoryCookieStore implements ICookieStore, Serializable
             if (item.getName().equals(cookie.getName()))
             {
                 item.fillValue(uri, cookie);
-                hasCookie = true;
+
+                target = item;
                 break;
             }
         }
 
-        if (!hasCookie)
+        if (target == null)
         {
-            CookieModel model = new CookieModel();
-            model.fillValue(uri, cookie);
-            listCookie.add(model);
+            target = new CookieModel();
+            target.fillValue(uri, cookie);
+            listCookie.add(target);
         }
+
+        LogUtil.i("cookie add cookie:" + uri.toString() + " " + target.toString());
     }
 
     @Override
@@ -120,7 +122,7 @@ class MemoryCookieStore implements ICookieStore, Serializable
             {
                 item.fillValue(uri, cookie);
                 it.remove();
-                LogUtil.i("cookie remove:" + uri.toString() + " " + cookie.toString());
+                LogUtil.i("cookie remove:" + uri.toString() + " " + item.toString());
                 return true;
             }
         }

@@ -68,7 +68,7 @@ class SDHttpRequest extends HttpRequest
                 sb.append(item.toString()).append(";");
             }
             sb.deleteCharAt(sb.lastIndexOf(";"));
-            LogUtil.i("cookie loadCookieForRequest:" + sb.toString());
+            LogUtil.i("cookie loadCookieForRequest +" + url() + ":" + sb.toString());
             header(HEADER_COOKIE, sb.toString());
         }
         return this;
@@ -83,7 +83,7 @@ class SDHttpRequest extends HttpRequest
         }
         if (!TextUtils.isEmpty(cookie))
         {
-            LogUtil.i("cookie saveCookieFromResponse:" + cookie);
+            LogUtil.i("cookie saveCookieFromResponse " + url() + ":" + cookie);
             List<HttpCookie> listCookie = HttpCookie.parse(cookie);
             return listCookie;
         }
