@@ -27,13 +27,19 @@ public final class RequestCallbackProxy
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
                     {
                         Object result = null;
-                        for (int i = 0; i < callbacks.length; i++)
+                        try
                         {
-                            IRequestCallback item = callbacks[i];
-                            if (item != null)
+                            for (int i = 0; i < callbacks.length; i++)
                             {
-                                result = method.invoke(item, args);
+                                IRequestCallback item = callbacks[i];
+                                if (item != null)
+                                {
+                                    result = method.invoke(item, args);
+                                }
                             }
+                        } catch (Exception e)
+                        {
+                            throw e;
                         }
                         return result;
                     }
