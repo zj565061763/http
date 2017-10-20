@@ -4,18 +4,14 @@ import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.utils.TransmitParam;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 /**
  * Created by zhengjun on 2017/10/12.
  */
-public final class RequestCallbackProxy implements IRequestCallback
+public class RequestCallbackProxy implements IRequestCallback
 {
     private IRequestCallback[] mArrCallback;
 
-    private RequestCallbackProxy(IRequestCallback... callbacks)
+    protected RequestCallbackProxy(IRequestCallback... callbacks)
     {
         mArrCallback = callbacks;
     }
@@ -23,35 +19,6 @@ public final class RequestCallbackProxy implements IRequestCallback
     public static IRequestCallback get(final IRequestCallback... callbacks)
     {
         return new RequestCallbackProxy(callbacks);
-    }
-
-    public static IRequestCallback getProxy(final IRequestCallback... callbacks)
-    {
-        if (callbacks == null || callbacks.length <= 0)
-        {
-            return null;
-        }
-        Object object = Proxy.newProxyInstance(IRequestCallback.class.getClassLoader(),
-                new Class[]{IRequestCallback.class},
-                new InvocationHandler()
-                {
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-                    {
-                        Object result = null;
-                        for (int i = 0; i < callbacks.length; i++)
-                        {
-                            IRequestCallback item = callbacks[i];
-                            if (item != null)
-                            {
-                                result = method.invoke(item, args);
-                            }
-                        }
-                        return result;
-                    }
-                });
-
-        return (IRequestCallback) object;
     }
 
     public IRequestCallback[] getArrCallback()
