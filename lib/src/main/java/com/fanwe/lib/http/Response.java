@@ -44,12 +44,17 @@ public class Response
      * @return
      * @throws IOException
      */
-    public String getBody() throws IOException
+    public synchronized String getBody() throws IOException
     {
         if (TextUtils.isEmpty(body))
         {
-            body = IOUtil.readString(getInputStream(), getCharset());
-            IOUtil.closeQuietly(getInputStream());
+            try
+            {
+                body = IOUtil.readString(getInputStream(), getCharset());
+            } finally
+            {
+                IOUtil.closeQuietly(getInputStream());
+            }
         }
         return body;
     }
