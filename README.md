@@ -2,6 +2,9 @@
 本库的底层http请求是通过[http-request](https://github.com/kevinsawicki/http-request)库实现的<br>
 异步任务是通过[task](https://github.com/zj565061763/task)库实现的
 
+## Gradle
+[![](https://jitpack.io/v/zj565061763/http.svg)](https://jitpack.io/#zj565061763/http)
+
 ## 同步请求
 ```java
 new Thread(new Runnable()
