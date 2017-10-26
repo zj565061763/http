@@ -28,7 +28,7 @@ public abstract class Request
 
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
-    private CountDownTimer mCountDownTimer;
+    private CountDownTimer mTimer;
 
     public Request(String url)
     {
@@ -204,11 +204,11 @@ public abstract class Request
     protected void notifyProgressUpload(long uploaded, long total)
     {
         LogUtil.i("progress upload:" + uploaded + "," + total);
-        startCountDownTimer();
+        startTimer();
         getTransmitParam().transmit(uploaded, total);
         if (getTransmitParam().isFinish())
         {
-            stopCountDownTimer();
+            stopTimer();
             SDTask.runOnUiThread(new Runnable()
             {
                 @Override
@@ -221,9 +221,9 @@ public abstract class Request
         }
     }
 
-    private synchronized void startCountDownTimer()
+    private synchronized void startTimer()
     {
-        if (mCountDownTimer != null)
+        if (mTimer != null)
         {
             return;
         }
@@ -235,9 +235,9 @@ public abstract class Request
             {
                 synchronized (Request.this)
                 {
-                    if (mCountDownTimer == null)
+                    if (mTimer == null)
                     {
-                        mCountDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
+                        mTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
                         {
                             @Override
                             public void onTick(long millisUntilFinished)
@@ -250,19 +250,19 @@ public abstract class Request
                             {
                             }
                         };
-                        mCountDownTimer.start();
+                        mTimer.start();
                     }
                 }
             }
         });
     }
 
-    private synchronized void stopCountDownTimer()
+    private synchronized void stopTimer()
     {
-        if (mCountDownTimer != null)
+        if (mTimer != null)
         {
-            mCountDownTimer.cancel();
-            mCountDownTimer = null;
+            mTimer.cancel();
+            mTimer = null;
         }
     }
 
