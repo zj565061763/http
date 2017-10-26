@@ -212,7 +212,7 @@ public abstract class Request
         if (getTransmitParam().isFinish())
         {
             stopTimer();
-            SDTask.runOnUiThread(mUpdateProgressRunnable); //可能内存泄漏？
+            SDTask.runOnUiThread(mUpdateProgressRunnable);
         }
     }
 
@@ -289,11 +289,15 @@ public abstract class Request
     public final Response execute() throws Exception
     {
         RequestManager.getInstance().mRequestInterceptor.beforeExecute(this);
-
         Response response = new Response();
-        doExecute(response);
-
-        RequestManager.getInstance().mRequestInterceptor.afterExecute(this, response);
+        try
+        {
+            doExecute(response);
+        } finally
+        {
+            SDTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
+            RequestManager.getInstance().mRequestInterceptor.afterExecute(this, response);
+        }
         return response;
     }
 
