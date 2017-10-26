@@ -64,14 +64,10 @@ class SDHttpRequest extends HttpRequest
     {
         if (listCookie != null && !listCookie.isEmpty())
         {
-            StringBuilder sb = new StringBuilder();
-            for (HttpCookie item : listCookie)
-            {
-                sb.append(item.toString()).append(";");
-            }
-            sb.deleteCharAt(sb.lastIndexOf(";"));
-            LogUtil.i("cookie loadCookieFor " + url() + "\r\n" + sb.toString());
-            header(HEADER_COOKIE, sb.toString());
+            String cookie = TextUtils.join(";", listCookie);
+            header(HEADER_COOKIE, cookie);
+
+            LogUtil.i("cookie loadCookieFor " + url() + "\r\n" + cookie);
         }
         return this;
     }
