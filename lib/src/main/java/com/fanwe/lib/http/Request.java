@@ -16,6 +16,9 @@ import java.util.Map;
  */
 public abstract class Request
 {
+    public static final int READ_TIMEOUT = 15 * 1000;
+    public static final int CONNECT_TIMEOUT = 15 * 1000;
+
     private String mUrl;
 
     private Map<String, Object> mMapParam;
@@ -23,8 +26,8 @@ public abstract class Request
 
     private Object mTag;
 
-    private int mReadTimeout;
-    private int mConnectTimeout;
+    private int mReadTimeout = READ_TIMEOUT;
+    private int mConnectTimeout = CONNECT_TIMEOUT;
 
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
