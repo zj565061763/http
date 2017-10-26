@@ -221,48 +221,49 @@ public abstract class Request
         }
     }
 
-    private void startCountDownTimer()
+    private synchronized void startCountDownTimer()
     {
+        if (mCountDownTimer != null)
+        {
+            return;
+        }
+
         SDTask.runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                if (mCountDownTimer == null)
+                synchronized (Request.this)
                 {
-                    mCountDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
+                    if (mCountDownTimer == null)
                     {
-                        @Override
-                        public void onTick(long millisUntilFinished)
+                        mCountDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
                         {
-                            getUploadProgressCallback().onProgressUpload(getTransmitParam());
-                        }
+                            @Override
+                            public void onTick(long millisUntilFinished)
+                            {
+                                getUploadProgressCallback().onProgressUpload(getTransmitParam());
+                            }
 
-                        @Override
-                        public void onFinish()
-                        {
-                        }
-                    };
-                    mCountDownTimer.start();
+                            @Override
+                            public void onFinish()
+                            {
+                            }
+                        };
+                        mCountDownTimer.start();
+                    }
                 }
             }
         });
     }
 
-    private void stopCountDownTimer()
+    private synchronized void stopCountDownTimer()
     {
-        SDTask.runOnUiThread(new Runnable()
+        if (mCountDownTimer != null)
         {
-            @Override
-            public void run()
-            {
-                if (mCountDownTimer != null)
-                {
-                    mCountDownTimer.cancel();
-                    mCountDownTimer = null;
-                }
-            }
-        });
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
     }
 
     /**
