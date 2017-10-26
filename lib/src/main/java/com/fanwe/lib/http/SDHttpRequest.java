@@ -88,7 +88,7 @@ class SDHttpRequest extends HttpRequest
             }
             if (listCookie != null && !listCookie.isEmpty())
             {
-                LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + TextUtils.join(";", listCookie));
+                LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + TextUtils.join("\r\n", listCookie));
 
                 List<HttpCookie> listResult = new ArrayList<>();
                 for (String item : listCookie)
