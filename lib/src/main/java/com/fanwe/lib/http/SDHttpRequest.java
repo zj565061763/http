@@ -7,7 +7,9 @@ import com.fanwe.lib.http.utils.LogUtil;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhengjun on 2017/10/10.
@@ -76,16 +78,27 @@ class SDHttpRequest extends HttpRequest
 
     public List<HttpCookie> getResponseCookie()
     {
-        String cookie = header(HEADER_SET_COOKIE);
-        if (TextUtils.isEmpty(cookie))
+        Map<String, List<String>> mapHeaders = headers();
+        if (mapHeaders != null && !mapHeaders.isEmpty())
         {
-            cookie = header(HEADER_SET_COOKIE2);
-        }
-        if (!TextUtils.isEmpty(cookie))
-        {
-            LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + cookie);
-            List<HttpCookie> listCookie = HttpCookie.parse(cookie);
-            return listCookie;
+            List<String> listCookie = mapHeaders.get(HEADER_SET_COOKIE);
+            if (listCookie == null || listCookie.isEmpty())
+            {
+                listCookie = mapHeaders.get(HEADER_SET_COOKIE2);
+            }
+            if (listCookie != null && !listCookie.isEmpty())
+            {
+                List<HttpCookie> listResult = new ArrayList<>();
+                for (String item : listCookie)
+                {
+                    if (!TextUtils.isEmpty(item))
+                    {
+                        LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + item);
+                        listResult.addAll(HttpCookie.parse(item));
+                    }
+                }
+                return listResult;
+            }
         }
 
         return null;
