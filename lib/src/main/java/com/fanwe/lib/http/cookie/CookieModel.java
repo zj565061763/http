@@ -99,6 +99,7 @@ public class CookieModel implements Serializable
         sb.append(name).append("=").append(value).append("\r\n");
         sb.append("path=").append(path).append("\r\n");
         sb.append("maxAge=").append(maxAge).append("\r\n");
+        sb.append("expiry=").append(expiry).append("\r\n");
         return sb.toString();
     }
 }
