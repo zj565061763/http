@@ -6,6 +6,8 @@ import com.fanwe.lib.http.utils.IOUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -15,6 +17,7 @@ public class Response
     private int code;
     private int contentLength;
     private String charset;
+    private Map<String, List<String>> headers;
     private InputStream inputStream;
 
     private String body;
@@ -35,6 +38,7 @@ public class Response
         }
         setCharset(charset);
 
+        setHeaders(request.headers());
         setInputStream(request.stream());
     }
 
@@ -87,6 +91,16 @@ public class Response
     public void setCharset(String charset)
     {
         this.charset = charset;
+    }
+
+    public Map<String, List<String>> getHeaders()
+    {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, List<String>> headers)
+    {
+        this.headers = headers;
     }
 
     public InputStream getInputStream()
