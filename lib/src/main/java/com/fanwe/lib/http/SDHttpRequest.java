@@ -88,14 +88,12 @@ class SDHttpRequest extends HttpRequest
             }
             if (listCookie != null && !listCookie.isEmpty())
             {
+                LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + TextUtils.join(";", listCookie));
+
                 List<HttpCookie> listResult = new ArrayList<>();
                 for (String item : listCookie)
                 {
-                    if (!TextUtils.isEmpty(item))
-                    {
-                        LogUtil.i("cookie ---------->saveCookieFrom " + url() + "\r\n" + item);
-                        listResult.addAll(HttpCookie.parse(item));
-                    }
+                    listResult.addAll(HttpCookie.parse(item));
                 }
                 return listResult;
             }
