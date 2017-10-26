@@ -209,15 +209,7 @@ public abstract class Request
         if (getTransmitParam().isFinish())
         {
             stopTimer();
-            SDTask.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    //可能造成内存泄漏
-                    getUploadProgressCallback().onProgressUpload(getTransmitParam());
-                }
-            });
+            SDTask.runOnUiThread(mUpdateProgressRunnable); //可能内存泄漏？
         }
     }
 
@@ -242,7 +234,7 @@ public abstract class Request
                             @Override
                             public void onTick(long millisUntilFinished)
                             {
-                                getUploadProgressCallback().onProgressUpload(getTransmitParam());
+                                mUpdateProgressRunnable.run();
                             }
 
                             @Override
@@ -265,6 +257,15 @@ public abstract class Request
             mTimer = null;
         }
     }
+
+    private Runnable mUpdateProgressRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            getUploadProgressCallback().onProgressUpload(getTransmitParam());
+        }
+    };
 
     /**
      * 异步请求
