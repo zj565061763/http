@@ -117,6 +117,8 @@ class ModifyMemoryCookieStore implements ICookieStore, Serializable
             throw new NullPointerException("uri is null");
         }
 
+        List<HttpCookie> listResult = new ArrayList<>();
+
         List<CookieModel> cookies = new ArrayList<>();
         boolean secureLink = "https".equalsIgnoreCase(uri.getScheme());
         lock.lock();
@@ -126,17 +128,15 @@ class ModifyMemoryCookieStore implements ICookieStore, Serializable
             getInternal1(cookies, domainIndex, uri.getHost(), secureLink);
             // check uriIndex then
             getInternal2(cookies, uriIndex, getEffectiveURI(uri), secureLink);
+
+            for (CookieModel item : cookies)
+            {
+                listResult.add(item.toHttpCookie());
+            }
         } finally
         {
             lock.unlock();
         }
-
-        List<HttpCookie> listResult = new ArrayList<>();
-        for (CookieModel item : cookies)
-        {
-            listResult.add(item.toHttpCookie());
-        }
-
         return listResult;
     }
 
