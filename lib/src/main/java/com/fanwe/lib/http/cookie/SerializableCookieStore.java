@@ -18,7 +18,7 @@ import java.util.List;
 public class SerializableCookieStore implements ICookieStore, Serializable
 {
     private Context mContext;
-    private MemoryCookieStore mMemoryCookieStore;
+    private ModifyMemoryCookieStore mMemoryCookieStore;
     private File mFile;
 
     public SerializableCookieStore(Context context)
@@ -26,7 +26,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         mContext = context.getApplicationContext();
     }
 
-    private synchronized MemoryCookieStore getMemoryCookieStore()
+    private synchronized ModifyMemoryCookieStore getMemoryCookieStore()
     {
         if (mMemoryCookieStore == null)
         {
@@ -39,7 +39,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
             }
             if (mMemoryCookieStore == null)
             {
-                mMemoryCookieStore = new MemoryCookieStore();
+                mMemoryCookieStore = new ModifyMemoryCookieStore();
                 LogUtil.i("cookie create MemoryCookieStore");
             } else
             {

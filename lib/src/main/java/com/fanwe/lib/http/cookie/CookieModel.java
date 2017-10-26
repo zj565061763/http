@@ -1,8 +1,11 @@
 package com.fanwe.lib.http.cookie;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 import java.net.HttpCookie;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Created by zhengjun on 2017/10/13.
@@ -11,42 +14,42 @@ public class CookieModel implements Serializable
 {
     static final long serialVersionUID = 0L;
 
-    private String uri;
     private String name;
     private String value;
     private String comment;
     private String commentURL;
     private boolean discard;
     private String domain;
+    private long maxAge = -1;
     private String path;
     private String portList;
     private boolean secure;
-    private long maxAge;
+    private boolean httpOnly;
     private int version = 1;
-    private long expiry = -1;
 
-    public void fillValue(URI uri, HttpCookie cookie)
+    private long whenCreated;
+
+    public CookieModel(URI uri, HttpCookie cookie)
     {
-        this.uri = uri.toString();
         this.name = cookie.getName();
         this.value = cookie.getValue();
         this.comment = cookie.getComment();
         this.commentURL = cookie.getCommentURL();
         this.discard = cookie.getDiscard();
         this.domain = cookie.getDomain();
+        this.maxAge = cookie.getMaxAge();
         this.path = cookie.getPath();
         this.portList = cookie.getPortlist();
         this.secure = cookie.getSecure();
-        this.maxAge = cookie.getMaxAge();
+        this.httpOnly = cookie.isHttpOnly();
         this.version = cookie.getVersion();
 
-        if (maxAge > 0)
+        if (TextUtils.isEmpty(domain) && uri != null)
         {
-            this.expiry = maxAge * 1000 + System.currentTimeMillis();
-        } else
-        {
-            this.expiry = -1;
+            this.domain = uri.getHost();
         }
+
+        this.whenCreated = System.currentTimeMillis();
     }
 
     public HttpCookie toHttpCookie()
@@ -59,27 +62,26 @@ public class CookieModel implements Serializable
         cookie.setPath(path);
         cookie.setPortlist(portList);
         cookie.setSecure(secure);
+        cookie.setHttpOnly(httpOnly);
         cookie.setVersion(version);
 
-        if (expiry < 0)
+        if (maxAge < 0)
         {
             cookie.setMaxAge(-1);
         } else
         {
-            cookie.setMaxAge((expiry - System.currentTimeMillis()) / 1000);
+            long consumeSecond = (System.currentTimeMillis() - whenCreated) / 1000; //已经消耗掉的秒数
+
+            long leftSecond = maxAge - consumeSecond;
+            if (leftSecond <= 0)
+            {
+                cookie.setMaxAge(0);
+            } else
+            {
+                cookie.setMaxAge(leftSecond);
+            }
         }
-
         return cookie;
-    }
-
-    public String getUri()
-    {
-        return uri;
-    }
-
-    public String getName()
-    {
-        return name;
     }
 
     /**
@@ -87,9 +89,41 @@ public class CookieModel implements Serializable
      *
      * @return
      */
-    public boolean isExpiry()
+    public boolean hasExpired()
     {
-        return expiry > 0 && expiry < System.currentTimeMillis();
+        return toHttpCookie().hasExpired();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
+        if (!(obj instanceof CookieModel))
+        {
+            return false;
+        }
+        CookieModel other = (CookieModel) obj;
+
+        // One http cookie equals to another cookie (RFC 2965 sec. 3.3.3) if:
+        //   1. they come from same domain (case-insensitive),
+        //   2. have same name (case-insensitive),
+        //   3. and have same path (case-sensitive).
+        return equalsIgnoreCase(getName(), other.getName()) &&
+                equalsIgnoreCase(getDomain(), other.getDomain()) &&
+                Objects.equals(getPath(), other.getPath());
+    }
+
+    private static boolean equalsIgnoreCase(String s, String t)
+    {
+        if (s == t) return true;
+        if ((s != null) && (t != null))
+        {
+            return s.equalsIgnoreCase(t);
+        }
+        return false;
     }
 
     @Override
@@ -99,7 +133,126 @@ public class CookieModel implements Serializable
         sb.append(name).append("=").append(value).append("\r\n");
         sb.append("path=").append(path).append("\r\n");
         sb.append("maxAge=").append(maxAge).append("\r\n");
-        sb.append("expiry=").append(expiry).append("\r\n");
         return sb.toString();
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getValue()
+    {
+        return value;
+    }
+
+    public void setValue(String value)
+    {
+        this.value = value;
+    }
+
+    public String getComment()
+    {
+        return comment;
+    }
+
+    public void setComment(String comment)
+    {
+        this.comment = comment;
+    }
+
+    public String getCommentURL()
+    {
+        return commentURL;
+    }
+
+    public void setCommentURL(String commentURL)
+    {
+        this.commentURL = commentURL;
+    }
+
+    public boolean isDiscard()
+    {
+        return discard;
+    }
+
+    public void setDiscard(boolean discard)
+    {
+        this.discard = discard;
+    }
+
+    public String getDomain()
+    {
+        return domain;
+    }
+
+    public void setDomain(String domain)
+    {
+        this.domain = domain;
+    }
+
+    public long getMaxAge()
+    {
+        return maxAge;
+    }
+
+    public void setMaxAge(long maxAge)
+    {
+        this.maxAge = maxAge;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+    public String getPortList()
+    {
+        return portList;
+    }
+
+    public void setPortList(String portList)
+    {
+        this.portList = portList;
+    }
+
+    public boolean isSecure()
+    {
+        return secure;
+    }
+
+    public void setSecure(boolean secure)
+    {
+        this.secure = secure;
+    }
+
+    public boolean isHttpOnly()
+    {
+        return httpOnly;
+    }
+
+    public void setHttpOnly(boolean httpOnly)
+    {
+        this.httpOnly = httpOnly;
+    }
+
+    public int getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(int version)
+    {
+        this.version = version;
     }
 }
