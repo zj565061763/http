@@ -63,50 +63,6 @@ public abstract class FileRequestCallback extends RequestCallback
         }
     }
 
-    private void startTimer()
-    {
-        SDTask.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (mTimer == null)
-                {
-                    mTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
-                    {
-                        @Override
-                        public void onTick(long millisUntilFinished)
-                        {
-                            mUpdateProgressRunnable.run();
-                        }
-
-                        @Override
-                        public void onFinish()
-                        {
-                        }
-                    };
-                    mTimer.start();
-                }
-            }
-        });
-    }
-
-    private void stopTimer()
-    {
-        SDTask.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (mTimer != null)
-                {
-                    mTimer.cancel();
-                    mTimer = null;
-                }
-            }
-        });
-    }
-
     @Override
     public void onSuccessBackground() throws Exception
     {
@@ -137,11 +93,49 @@ public abstract class FileRequestCallback extends RequestCallback
         }
     }
 
-    @Override
-    public void onCancel()
+    private synchronized void startTimer()
     {
-        super.onCancel();
-        SDTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
+        if (mTimer != null)
+        {
+            return;
+        }
+
+        SDTask.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                synchronized (FileRequestCallback.this)
+                {
+                    if (mTimer == null)
+                    {
+                        mTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
+                        {
+                            @Override
+                            public void onTick(long millisUntilFinished)
+                            {
+                                mUpdateProgressRunnable.run();
+                            }
+
+                            @Override
+                            public void onFinish()
+                            {
+                            }
+                        };
+                        mTimer.start();
+                    }
+                }
+            }
+        });
+    }
+
+    private synchronized void stopTimer()
+    {
+        if (mTimer != null)
+        {
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
     private Runnable mUpdateProgressRunnable = new Runnable()
@@ -155,4 +149,10 @@ public abstract class FileRequestCallback extends RequestCallback
 
     protected abstract void onProgressDownload(TransmitParam param);
 
+    @Override
+    public void onCancel()
+    {
+        super.onCancel();
+        SDTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
+    }
 }
