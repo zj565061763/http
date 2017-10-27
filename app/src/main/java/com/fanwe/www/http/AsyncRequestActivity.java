@@ -38,10 +38,13 @@ public class AsyncRequestActivity extends AppCompatActivity
 
     private ModelRequestCallback mModelRequestCallback_0 = new ModelRequestCallback<InitActModel>()
     {
+        private long startTime;
+
         @Override
         public void onStart()
         {
             super.onStart();
+            startTime = System.currentTimeMillis();
             Log.i(TAG, "onStart_0");
         }
 
@@ -49,7 +52,7 @@ public class AsyncRequestActivity extends AppCompatActivity
         public void onSuccessBackground() throws Exception
         {
             super.onSuccessBackground();
-            Log.i(TAG, "onSuccessBackground_0");
+            Log.i(TAG, "onSuccessBackground_0:" + (System.currentTimeMillis() - startTime));
         }
 
         @Override
