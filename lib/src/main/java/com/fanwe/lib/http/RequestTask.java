@@ -36,10 +36,21 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         return mCallback;
     }
 
+    private synchronized void pauseThread() throws InterruptedException
+    {
+        wait();
+    }
+
+    private synchronized void resumeThread()
+    {
+        notifyAll();
+    }
+
     @Override
     protected void onRun() throws Exception
     {
         runOnUiThread(mStartRunnable);
+        pauseThread(); //等待开始回调完成
 
         Response response = getRequest().execute();
         getCallback().setResponse(response);
@@ -54,6 +65,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         public void run()
         {
             getCallback().onStart();
+            resumeThread();
         }
     };
 
@@ -64,6 +76,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         {
             getCallback().onSuccessBefore();
             getCallback().onSuccess();
+            getCallback().onFinish();
         }
     };
 
@@ -73,18 +86,9 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         public void run()
         {
             getCallback().onCancel();
-        }
-    };
-
-    private Runnable mFinishRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
             getCallback().onFinish();
         }
     };
-
 
     @Override
     protected void onError(final Exception e)
@@ -102,16 +106,10 @@ class RequestTask extends SDTask implements IUploadProgressCallback
                 public void run()
                 {
                     getCallback().onError(e);
+                    getCallback().onFinish();
                 }
             });
         }
-    }
-
-    @Override
-    protected void onFinally()
-    {
-        super.onFinally();
-        runOnUiThread(mFinishRunnable);
     }
 
     @Override
