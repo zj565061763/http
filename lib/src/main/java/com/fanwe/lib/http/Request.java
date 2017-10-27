@@ -4,7 +4,6 @@ import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.utils.LogUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
-import com.fanwe.lib.task.SDTask;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -205,17 +204,8 @@ public abstract class Request
     {
         LogUtil.i("progress upload:" + uploaded + "," + total);
         getTransmitParam().transmit(uploaded, total);
-        mUpdateProgressRunnable.run();
+        getUploadProgressCallback().onProgressUpload(getTransmitParam());
     }
-
-    private Runnable mUpdateProgressRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            getUploadProgressCallback().onProgressUpload(getTransmitParam());
-        }
-    };
 
     /**
      * 异步请求
@@ -242,7 +232,6 @@ public abstract class Request
             doExecute(response);
         } finally
         {
-            SDTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
             RequestManager.getInstance().mRequestInterceptor.afterExecute(this, response);
         }
         return response;

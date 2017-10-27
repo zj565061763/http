@@ -39,29 +39,42 @@ class RequestTask extends SDTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Exception
     {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                getCallback().onStart();
-            }
-        });
+        runOnUiThread(mStartRunnable);
 
         Response response = getRequest().execute();
-
         getCallback().setResponse(response);
         getCallback().onSuccessBackground();
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                getCallback().onSuccessBefore();
-                getCallback().onSuccess();
-            }
-        });
+
+        runOnUiThread(mSuccessRunnable);
     }
+
+    private Runnable mStartRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            getCallback().onStart();
+        }
+    };
+
+    private Runnable mSuccessRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            getCallback().onSuccessBefore();
+            getCallback().onSuccess();
+        }
+    };
+
+    private Runnable mFinishRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            getCallback().onFinish();
+        }
+    };
 
     @Override
     protected void onError(final Exception e)
@@ -88,14 +101,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
     protected void onFinally()
     {
         super.onFinally();
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                getCallback().onFinish();
-            }
-        });
+        runOnUiThread(mFinishRunnable);
     }
 
     @Override
