@@ -6,15 +6,15 @@ package com.fanwe.lib.http;
  */
 class RequestInfo
 {
-    private Object mTag;
+    private String mTag;
     private String mRequestIdentifier;
 
-    public Object getTag()
+    public String getTag()
     {
         return mTag;
     }
 
-    public void setTag(Object tag)
+    public void setTag(String tag)
     {
         mTag = tag;
     }

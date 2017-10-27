@@ -24,7 +24,7 @@ public abstract class Request
     private Map<String, Object> mMapParam;
     private Map<String, String> mMapHeader;
 
-    private Object mTag;
+    private String mTag;
 
     private int mReadTimeout = READ_TIMEOUT;
     private int mConnectTimeout = CONNECT_TIMEOUT;
@@ -124,7 +124,7 @@ public abstract class Request
      * @param tag
      * @return
      */
-    public Request setTag(Object tag)
+    public Request setTag(String tag)
     {
         mTag = tag;
         return this;
@@ -176,7 +176,7 @@ public abstract class Request
         return mTransmitParam;
     }
 
-    public Object getTag()
+    public String getTag()
     {
         return mTag;
     }

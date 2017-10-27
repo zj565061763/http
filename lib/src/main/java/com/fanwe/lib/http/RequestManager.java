@@ -119,7 +119,7 @@ public class RequestManager
      * @param tag
      * @return 申请取消成功的数量
      */
-    public synchronized int cancelTag(Object tag)
+    public synchronized int cancelTag(String tag)
     {
         if (tag == null || mMapRequest.isEmpty())
         {
