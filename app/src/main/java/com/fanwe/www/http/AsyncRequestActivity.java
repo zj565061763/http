@@ -9,7 +9,6 @@ import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.callback.ModelRequestCallback;
-import com.fanwe.lib.http.callback.RequestCallbackProxy;
 import com.fanwe.www.http.model.InitActModel;
 import com.google.gson.Gson;
 
