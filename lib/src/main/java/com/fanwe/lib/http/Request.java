@@ -288,10 +288,10 @@ public abstract class Request
      */
     public final Response execute() throws Exception
     {
-        RequestManager.getInstance().mRequestInterceptor.beforeExecute(this);
         Response response = new Response();
         try
         {
+            RequestManager.getInstance().mRequestInterceptor.beforeExecute(this);
             doExecute(response);
         } finally
         {
