@@ -1,7 +1,5 @@
 package com.fanwe.lib.http;
 
-import android.os.CountDownTimer;
-
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.utils.LogUtil;
@@ -31,7 +29,6 @@ public abstract class Request
 
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
-    private CountDownTimer mTimer;
 
     public Request(String url)
     {
@@ -207,58 +204,8 @@ public abstract class Request
     protected void notifyProgressUpload(long uploaded, long total)
     {
         LogUtil.i("progress upload:" + uploaded + "," + total);
-        startTimer();
         getTransmitParam().transmit(uploaded, total);
-        if (getTransmitParam().isFinish())
-        {
-            stopTimer();
-            SDTask.runOnUiThread(mUpdateProgressRunnable);
-        }
-    }
-
-    private synchronized void startTimer()
-    {
-        if (mTimer != null)
-        {
-            return;
-        }
-
-        SDTask.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                synchronized (Request.this)
-                {
-                    if (mTimer == null)
-                    {
-                        mTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
-                        {
-                            @Override
-                            public void onTick(long millisUntilFinished)
-                            {
-                                mUpdateProgressRunnable.run();
-                            }
-
-                            @Override
-                            public void onFinish()
-                            {
-                            }
-                        };
-                        mTimer.start();
-                    }
-                }
-            }
-        });
-    }
-
-    private synchronized void stopTimer()
-    {
-        if (mTimer != null)
-        {
-            mTimer.cancel();
-            mTimer = null;
-        }
+        mUpdateProgressRunnable.run();
     }
 
     private Runnable mUpdateProgressRunnable = new Runnable()
