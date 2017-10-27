@@ -149,6 +149,6 @@ public class AsyncRequestActivity extends AppCompatActivity
     protected void onDestroy()
     {
         super.onDestroy();
-        RequestManager.getInstance().cancelTag(TAG);
+        Log.i(TAG, "onDestroy");
     }
 }
