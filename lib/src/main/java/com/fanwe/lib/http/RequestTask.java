@@ -67,6 +67,15 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         }
     };
 
+    private Runnable mCancelRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            getCallback().onCancel();
+        }
+    };
+
     private Runnable mFinishRunnable = new Runnable()
     {
         @Override
@@ -76,25 +85,26 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         }
     };
 
+
     @Override
     protected void onError(final Exception e)
     {
         super.onError(e);
 
-        runOnUiThread(new Runnable()
+        if (isCancelled())
         {
-            @Override
-            public void run()
+            runOnUiThread(mCancelRunnable);
+        } else
+        {
+            runOnUiThread(new Runnable()
             {
-                if (isCancelled())
-                {
-                    getCallback().onCancel();
-                } else
+                @Override
+                public void run()
                 {
                     getCallback().onError(e);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
