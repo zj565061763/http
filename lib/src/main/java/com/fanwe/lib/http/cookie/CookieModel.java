@@ -24,7 +24,6 @@ public class CookieModel implements Serializable
     private String path;
     private String portList;
     private boolean secure;
-    private boolean httpOnly;
     private int version = 1;
 
     private long whenCreated;
@@ -41,7 +40,6 @@ public class CookieModel implements Serializable
         this.path = cookie.getPath();
         this.portList = cookie.getPortlist();
         this.secure = cookie.getSecure();
-        this.httpOnly = cookie.isHttpOnly();
         this.version = cookie.getVersion();
 
         if (TextUtils.isEmpty(domain) && uri != null)
@@ -62,7 +60,6 @@ public class CookieModel implements Serializable
         cookie.setPath(path);
         cookie.setPortlist(portList);
         cookie.setSecure(secure);
-        cookie.setHttpOnly(httpOnly);
         cookie.setVersion(version);
 
         if (maxAge < 0)
@@ -234,16 +231,6 @@ public class CookieModel implements Serializable
     public void setSecure(boolean secure)
     {
         this.secure = secure;
-    }
-
-    public boolean isHttpOnly()
-    {
-        return httpOnly;
-    }
-
-    public void setHttpOnly(boolean httpOnly)
-    {
-        this.httpOnly = httpOnly;
     }
 
     public int getVersion()
