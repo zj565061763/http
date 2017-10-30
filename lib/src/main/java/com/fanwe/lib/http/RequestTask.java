@@ -42,31 +42,25 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         return "RequestTask" + this;
     }
 
-    private synchronized void pauseThread() throws InterruptedException
-    {
-        LogUtil.i(getTag() + " pauseThread:" + Thread.currentThread().getName());
-        wait();
-    }
-
-    private synchronized void resumeThread()
-    {
-        notifyAll();
-        LogUtil.i(getTag() + " notifyAll:" + Thread.currentThread().getName());
-    }
-
     @Override
     protected void onRun() throws Exception
     {
-        LogUtil.i(getTag() + " onRun---------->:" + Thread.currentThread().getName());
-        runOnUiThread(mStartRunnable);
-        pauseThread(); //等待开始回调完成
-        LogUtil.i(getTag() + " resumeThread:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " 1 onRun---------->:" + Thread.currentThread().getName());
+
+        synchronized (RequestTask.this)
+        {
+            runOnUiThread(mStartRunnable);
+            LogUtil.i(getTag() + " 2 pauseThread:" + Thread.currentThread().getName());
+            RequestTask.this.wait(); //等待开始回调完成
+        }
+
+        LogUtil.i(getTag() + " 4 resumeThread:" + Thread.currentThread().getName());
 
         Response response = getRequest().execute();
         getCallback().setResponse(response);
         getCallback().onSuccessBackground();
 
-        LogUtil.i(getTag() + " onSuccess:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " 5 onSuccess:" + Thread.currentThread().getName());
 
         runOnUiThread(mSuccessRunnable);
     }
@@ -76,8 +70,12 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         @Override
         public void run()
         {
-            getCallback().onStart();
-            resumeThread();
+            synchronized (RequestTask.this)
+            {
+                getCallback().onStart();
+                RequestTask.this.notifyAll();
+                LogUtil.i(getTag() + " 3 notifyAll:" + Thread.currentThread().getName());
+            }
         }
     };
 
