@@ -6,6 +6,7 @@ import com.fanwe.lib.http.utils.LogUtil;
 
 import java.net.HttpCookie;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ class SDHttpRequest extends HttpRequest
             URI uri = url().toURI();
             List<HttpCookie> listRequest = RequestManager.getInstance().getCookieStore().get(uri);
             setRequestCookie(listRequest);
-        } catch (Exception e)
+        } catch (URISyntaxException e)
         {
             LogUtil.e("cookie loadCookieForRequest error:" + e);
         }
@@ -118,7 +119,7 @@ class SDHttpRequest extends HttpRequest
             URI uri = url().toURI();
             List<HttpCookie> listResponse = getResponseCookie();
             RequestManager.getInstance().getCookieStore().add(uri, listResponse);
-        } catch (Exception e)
+        } catch (URISyntaxException e)
         {
             LogUtil.e("cookie saveCookieFromResponse error:" + e);
         }
