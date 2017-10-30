@@ -51,7 +51,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
     private synchronized void resumeThread()
     {
         notifyAll();
-        LogUtil.i(getTag() + " resumeThread:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " notifyAll:" + Thread.currentThread().getName());
     }
 
     @Override
