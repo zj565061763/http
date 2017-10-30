@@ -11,7 +11,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 20171030
-        versionName "1.0.16"
+        versionName "1.0.17"
     }
     buildTypes {
         release {
