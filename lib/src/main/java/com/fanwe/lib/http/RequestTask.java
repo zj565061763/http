@@ -70,9 +70,10 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         @Override
         public void run()
         {
+            getCallback().onStart();
+
             synchronized (RequestTask.this)
             {
-                getCallback().onStart();
                 RequestTask.this.notifyAll();
                 LogUtil.i(getTag() + " 3 notifyAll:" + Thread.currentThread().getName());
             }
