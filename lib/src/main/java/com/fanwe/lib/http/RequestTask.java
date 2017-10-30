@@ -37,30 +37,36 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         return mCallback;
     }
 
+    private String getTag()
+    {
+        return "RequestTask" + this;
+    }
+
     private synchronized void pauseThread() throws InterruptedException
     {
-        LogUtil.i("RequestTask pauseThread:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " pauseThread:" + Thread.currentThread().getName());
         wait();
     }
 
     private synchronized void resumeThread()
     {
         notifyAll();
+        LogUtil.i(getTag() + " resumeThread:" + Thread.currentThread().getName());
     }
 
     @Override
     protected void onRun() throws Exception
     {
-        LogUtil.i("RequestTask onRun---------->:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " onRun---------->:" + Thread.currentThread().getName());
         runOnUiThread(mStartRunnable);
         pauseThread(); //等待开始回调完成
-        LogUtil.i("RequestTask resumeThread:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " resumeThread:" + Thread.currentThread().getName());
 
         Response response = getRequest().execute();
         getCallback().setResponse(response);
         getCallback().onSuccessBackground();
 
-        LogUtil.i("RequestTask onSuccess:" + Thread.currentThread().getName());
+        LogUtil.i(getTag() + " onSuccess:" + Thread.currentThread().getName());
 
         runOnUiThread(mSuccessRunnable);
     }
