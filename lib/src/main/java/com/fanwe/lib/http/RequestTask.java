@@ -2,6 +2,7 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
+import com.fanwe.lib.http.utils.LogUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.SDTask;
 
@@ -38,6 +39,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
 
     private synchronized void pauseThread() throws InterruptedException
     {
+        LogUtil.i("RequestTask pauseThread:" + Thread.currentThread().getName());
         wait();
     }
 
@@ -49,12 +51,16 @@ class RequestTask extends SDTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Exception
     {
+        LogUtil.i("RequestTask onRun---------->:" + Thread.currentThread().getName());
         runOnUiThread(mStartRunnable);
         pauseThread(); //等待开始回调完成
+        LogUtil.i("RequestTask resumeThread:" + Thread.currentThread().getName());
 
         Response response = getRequest().execute();
         getCallback().setResponse(response);
         getCallback().onSuccessBackground();
+
+        LogUtil.i("RequestTask onSuccess:" + Thread.currentThread().getName());
 
         runOnUiThread(mSuccessRunnable);
     }
