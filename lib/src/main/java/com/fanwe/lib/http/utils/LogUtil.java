@@ -2,6 +2,8 @@ package com.fanwe.lib.http.utils;
 
 import android.util.Log;
 
+import com.fanwe.lib.http.RequestManager;
+
 /**
  * Created by zhengjun on 2017/9/20.
  */
@@ -10,16 +12,9 @@ public class LogUtil
 {
     public static final String TAG = "SDHttp";
 
-    private static boolean mIsDebug;
-
-    public static void setDebug(boolean debug)
-    {
-        mIsDebug = debug;
-    }
-
     public static boolean isDebug()
     {
-        return mIsDebug;
+        return RequestManager.getInstance().isDebug();
     }
 
     public static void i(String msg)

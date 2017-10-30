@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.cookie.SerializableCookieStore;
-import com.fanwe.lib.http.utils.LogUtil;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -19,7 +18,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LogUtil.setDebug(true);
+        //设置调试模式，输出log
+        RequestManager.getInstance().setDebug(true);
 
         //设置cookie管理对象
         RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));

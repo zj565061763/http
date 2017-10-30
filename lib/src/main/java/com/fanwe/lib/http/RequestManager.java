@@ -26,6 +26,8 @@ public class RequestManager
     private IRequestIdentifierProvider mRequestIdentifierProvider;
     private List<IRequestInterceptor> mListRequestInterceptor;
 
+    private boolean isDebug = false;
+
     private RequestManager()
     {
     }
@@ -43,6 +45,16 @@ public class RequestManager
             }
         }
         return sInstance;
+    }
+
+    public void setDebug(boolean debug)
+    {
+        isDebug = debug;
+    }
+
+    public boolean isDebug()
+    {
+        return isDebug;
     }
 
     /**
