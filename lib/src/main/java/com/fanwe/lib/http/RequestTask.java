@@ -74,8 +74,8 @@ class RequestTask extends SDTask implements IUploadProgressCallback
 
             synchronized (RequestTask.this)
             {
-                RequestTask.this.notifyAll();
                 LogUtil.i(getTag() + " 3 notifyAll:" + Thread.currentThread().getName());
+                RequestTask.this.notifyAll();
             }
         }
     };
