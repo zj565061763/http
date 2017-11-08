@@ -223,7 +223,8 @@ class ModifyMemoryCookieStore implements ICookieStore, Serializable
         lock.lock();
         try
         {
-            modified = cookieJar.remove(ck);
+            CookieModel model = new CookieModel(uri, ck);
+            modified = cookieJar.remove(model);
         } finally
         {
             lock.unlock();
