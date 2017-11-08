@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import java.io.Serializable;
 import java.net.HttpCookie;
 import java.net.URI;
-import java.util.Objects;
 
 /**
  * Created by zhengjun on 2017/10/13.
@@ -110,7 +109,7 @@ public class CookieModel implements Serializable
         //   3. and have same path (case-sensitive).
         return equalsIgnoreCase(getName(), other.getName()) &&
                 equalsIgnoreCase(getDomain(), other.getDomain()) &&
-                Objects.equals(getPath(), other.getPath());
+                equals(getPath(), other.getPath());
     }
 
     private static boolean equalsIgnoreCase(String s, String t)
@@ -121,6 +120,11 @@ public class CookieModel implements Serializable
             return s.equalsIgnoreCase(t);
         }
         return false;
+    }
+
+    private static boolean equals(Object a, Object b)
+    {
+        return (a == b) || (a != null && a.equals(b));
     }
 
     @Override
