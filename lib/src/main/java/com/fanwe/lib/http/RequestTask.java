@@ -87,17 +87,6 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         {
             getCallback().onSuccessBefore();
             getCallback().onSuccess();
-            getCallback().onFinish();
-        }
-    };
-
-    private Runnable mCancelRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            getCallback().onCancel();
-            getCallback().onFinish();
         }
     };
 
@@ -105,22 +94,20 @@ class RequestTask extends SDTask implements IUploadProgressCallback
     protected void onError(final Exception e)
     {
         super.onError(e);
-
         if (isCancelled())
         {
-            runOnUiThread(mCancelRunnable);
+            getCallback().onCancel();
         } else
         {
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    getCallback().onError(e);
-                    getCallback().onFinish();
-                }
-            });
+            getCallback().onError(e);
         }
+    }
+
+    @Override
+    protected void onFinally()
+    {
+        super.onFinally();
+        getCallback().onFinish();
     }
 
     @Override
