@@ -98,10 +98,23 @@ public class RequestManager
     /**
      * 异步执行请求
      *
-     * @param request
+     * @param request  请求对象
      * @param callback
      */
     public synchronized RequestHandler execute(Request request, IRequestCallback callback)
+    {
+        return execute(request, false, callback);
+    }
+
+    /**
+     * 异步执行请求
+     *
+     * @param request  请求对象
+     * @param single   是否要在单线程线程池执行，true-是
+     * @param callback
+     * @return
+     */
+    public synchronized RequestHandler execute(Request request, boolean single, IRequestCallback callback)
     {
         if (request == null)
         {
@@ -114,8 +127,15 @@ public class RequestManager
         }
 
         callback.onPrepare(request);
+
         RequestTask task = new RequestTask(request, callback);
-        task.submit(null);
+        if (single)
+        {
+            task.submitSingle(null);
+        } else
+        {
+            task.submit(null);
+        }
 
         RequestInfo info = new RequestInfo();
         info.setTag(request.getTag());

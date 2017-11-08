@@ -218,6 +218,17 @@ public abstract class Request
     }
 
     /**
+     * 异步请求，在单线程线程池执行
+     *
+     * @param callback
+     * @return
+     */
+    public final RequestHandler executeSingle(IRequestCallback callback)
+    {
+        return RequestManager.getInstance().execute(this, true, callback);
+    }
+
+    /**
      * 同步请求
      *
      * @return
