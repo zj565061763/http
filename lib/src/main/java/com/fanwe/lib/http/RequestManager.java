@@ -110,7 +110,7 @@ public class RequestManager
      * 异步执行请求
      *
      * @param request  请求对象
-     * @param single   是否要在单线程线程池执行，true-是
+     * @param single   是否在单线程线程池执行(发起的异步请求会按顺序一个个执行)，true-是
      * @param callback
      * @return
      */
