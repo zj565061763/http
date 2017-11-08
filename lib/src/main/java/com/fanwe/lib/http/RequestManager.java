@@ -143,7 +143,6 @@ public class RequestManager
         while (it.hasNext())
         {
             Map.Entry<RequestTask, RequestInfo> item = it.next();
-
             RequestTask task = item.getKey();
             RequestInfo info = item.getValue();
 
@@ -152,9 +151,8 @@ public class RequestManager
                 it.remove();
             } else
             {
-                if (tag.equals(info.getTag()))
+                if (tag.equals(info.getTag()) && task.cancel(true))
                 {
-                    task.cancel(true);
                     it.remove();
                     count++;
                 }
@@ -186,7 +184,6 @@ public class RequestManager
         while (it.hasNext())
         {
             Map.Entry<RequestTask, RequestInfo> item = it.next();
-
             RequestTask task = item.getKey();
             RequestInfo info = item.getValue();
 
@@ -195,9 +192,8 @@ public class RequestManager
                 it.remove();
             } else
             {
-                if (identifier.equals(info.getRequestIdentifier()))
+                if (identifier.equals(info.getRequestIdentifier()) && task.cancel(true))
                 {
-                    task.cancel(true);
                     it.remove();
                     count++;
                 }
