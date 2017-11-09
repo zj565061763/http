@@ -37,7 +37,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
         return mCallback;
     }
 
-    private String getTag()
+    private String getLogPrefix()
     {
         return "RequestTask" + this;
     }
@@ -45,22 +45,22 @@ class RequestTask extends SDTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Exception
     {
-        LogUtil.i(getTag() + " 1 onRun---------->:" + Thread.currentThread().getName());
+        LogUtil.e(getLogPrefix() + " 1 onRun---------->:" + Thread.currentThread().getName());
 
         synchronized (RequestTask.this)
         {
             runOnUiThread(mStartRunnable);
-            LogUtil.i(getTag() + " 2 pauseThread:" + Thread.currentThread().getName());
+            LogUtil.i(getLogPrefix() + " 2 pauseThread:" + Thread.currentThread().getName());
             RequestTask.this.wait(); //等待开始回调完成
         }
 
-        LogUtil.i(getTag() + " 4 resumeThread:" + Thread.currentThread().getName());
+        LogUtil.i(getLogPrefix() + " 4 resumeThread:" + Thread.currentThread().getName());
 
         Response response = getRequest().execute();
         getCallback().setResponse(response);
         getCallback().onSuccessBackground();
 
-        LogUtil.i(getTag() + " 5 onSuccess:" + Thread.currentThread().getName());
+        LogUtil.i(getLogPrefix() + " 5 onSuccess:" + Thread.currentThread().getName());
 
         runOnUiThread(mSuccessRunnable);
     }
@@ -74,7 +74,7 @@ class RequestTask extends SDTask implements IUploadProgressCallback
 
             synchronized (RequestTask.this)
             {
-                LogUtil.i(getTag() + " 3 notifyAll:" + Thread.currentThread().getName());
+                LogUtil.i(getLogPrefix() + " 3 notifyAll:" + Thread.currentThread().getName());
                 RequestTask.this.notifyAll();
             }
         }

@@ -131,10 +131,10 @@ public class RequestManager
         RequestTask task = new RequestTask(request, callback);
         if (single)
         {
-            task.submitSingle(null);
+            task.submitSequence();
         } else
         {
-            task.submit(null);
+            task.submit();
         }
 
         RequestInfo info = new RequestInfo();
