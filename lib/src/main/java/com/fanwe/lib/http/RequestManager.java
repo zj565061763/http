@@ -110,11 +110,11 @@ public class RequestManager
      * 异步执行请求
      *
      * @param request  请求对象
-     * @param single   是否在单线程线程池执行(发起的异步请求会按顺序一个个执行)，true-是
+     * @param sequence 是否按顺序一个个执行，true-是
      * @param callback
      * @return
      */
-    public synchronized RequestHandler execute(Request request, boolean single, IRequestCallback callback)
+    public synchronized RequestHandler execute(Request request, boolean sequence, IRequestCallback callback)
     {
         if (request == null)
         {
@@ -129,7 +129,7 @@ public class RequestManager
         callback.onPrepare(request);
 
         RequestTask task = new RequestTask(request, callback);
-        if (single)
+        if (sequence)
         {
             task.submitSequence();
         } else
