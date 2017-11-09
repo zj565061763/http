@@ -32,7 +32,7 @@ public class AsyncRequestActivity extends AppCompatActivity
     {
         new PostRequest(URL).param("ctl", "app").param("act", "init") //设置要提交的参数
                 .setTag(TAG) //设置该请求对应的tag，可用于取消请求
-//                .executeSingle(mModelRequestCallback_0); // 异步请求，在单线程线程池执行(发起的异步请求会按顺序一个个执行)
+//                .executeSequence(mModelRequestCallback_0); // 异步请求，按顺序一个个执行
                 .execute(mModelRequestCallback_0);
 //                .execute(RequestCallbackProxy.get(mModelRequestCallback_0, mModelRequestCallback_1)); //设置请求结果回调，可以设置多个回调
     }

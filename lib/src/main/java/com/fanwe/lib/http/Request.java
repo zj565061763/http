@@ -223,7 +223,7 @@ public abstract class Request
      * @param callback
      * @return
      */
-    public final RequestHandler executeSingle(IRequestCallback callback)
+    public final RequestHandler executeSequence(IRequestCallback callback)
     {
         return RequestManager.getInstance().execute(this, true, callback);
     }
