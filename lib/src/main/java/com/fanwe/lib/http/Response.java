@@ -63,6 +63,11 @@ public class Response
         return body;
     }
 
+    /**
+     * http返回码
+     *
+     * @return
+     */
     public int getCode()
     {
         return code;
@@ -93,6 +98,11 @@ public class Response
         this.charset = charset;
     }
 
+    /**
+     * 返回的所有header
+     *
+     * @return
+     */
     public Map<String, List<String>> getHeaders()
     {
         return headers;
@@ -103,6 +113,11 @@ public class Response
         this.headers = headers;
     }
 
+    /**
+     * 返回输入流
+     *
+     * @return
+     */
     public InputStream getInputStream()
     {
         return inputStream;

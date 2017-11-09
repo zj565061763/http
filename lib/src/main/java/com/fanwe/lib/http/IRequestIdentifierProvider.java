@@ -1,7 +1,7 @@
 package com.fanwe.lib.http;
 
 /**
- * 用来给Request生成唯一标识
+ * 用来给Request生成标识
  * Created by zhengjun on 2017/10/17.
  */
 public interface IRequestIdentifierProvider

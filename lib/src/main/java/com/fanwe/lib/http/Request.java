@@ -148,6 +148,12 @@ public abstract class Request
         return mConnectTimeout;
     }
 
+    /**
+     * 设置上传回调（后台线程通知回调）
+     *
+     * @param uploadProgressCallback
+     * @return
+     */
     public Request setUploadProgressCallback(IUploadProgressCallback uploadProgressCallback)
     {
         mUploadProgressCallback = uploadProgressCallback;

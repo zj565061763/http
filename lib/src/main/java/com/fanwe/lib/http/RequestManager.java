@@ -81,11 +81,21 @@ public class RequestManager
         return mCookieStore;
     }
 
+    /**
+     * 设置Request标识生成对象
+     *
+     * @param requestIdentifierProvider
+     */
     public void setRequestIdentifierProvider(IRequestIdentifierProvider requestIdentifierProvider)
     {
         mRequestIdentifierProvider = requestIdentifierProvider;
     }
 
+    /**
+     * 返回Request标识生成对象
+     *
+     * @return
+     */
     public IRequestIdentifierProvider getRequestIdentifierProvider()
     {
         if (mRequestIdentifierProvider == null)
