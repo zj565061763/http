@@ -13,7 +13,7 @@ abstract class HttpRequestImpl extends Request
 
     protected HttpRequest newHttpRequest(String url, String method)
     {
-        SDHttpRequest request = new SDHttpRequest(url, method);
+        FHttpRequest request = new FHttpRequest(url, method);
         request.headers(getMapHeader());
         request.readTimeout(getReadTimeout());
         request.connectTimeout(getConnectTimeout());

@@ -15,15 +15,15 @@ import java.util.Map;
 /**
  * Created by zhengjun on 2017/10/10.
  */
-class SDHttpRequest extends HttpRequest
+class FHttpRequest extends HttpRequest
 {
-    public SDHttpRequest(CharSequence url, String method) throws HttpRequestException
+    public FHttpRequest(CharSequence url, String method) throws HttpRequestException
     {
         super(url, method);
         loadCookieForRequest();
     }
 
-    public SDHttpRequest(URL url, String method) throws HttpRequestException
+    public FHttpRequest(URL url, String method) throws HttpRequestException
     {
         super(url, method);
         loadCookieForRequest();
@@ -44,7 +44,7 @@ class SDHttpRequest extends HttpRequest
 
     private int mCode;
 
-    public SDHttpRequest addRequestCookie(HttpCookie httpCookie)
+    public FHttpRequest addRequestCookie(HttpCookie httpCookie)
     {
         if (httpCookie != null)
         {
@@ -61,7 +61,7 @@ class SDHttpRequest extends HttpRequest
         return this;
     }
 
-    public SDHttpRequest setRequestCookie(List<HttpCookie> listCookie)
+    public FHttpRequest setRequestCookie(List<HttpCookie> listCookie)
     {
         if (listCookie != null && !listCookie.isEmpty())
         {

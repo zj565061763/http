@@ -4,7 +4,7 @@ import android.os.CountDownTimer;
 
 import com.fanwe.lib.http.utils.IOUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
-import com.fanwe.lib.task.SDTask;
+import com.fanwe.lib.task.FTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -88,7 +88,7 @@ public abstract class FileRequestCallback extends RequestCallback
         } finally
         {
             stopTimer();
-            SDTask.runOnUiThread(mUpdateProgressRunnable);
+            FTask.runOnUiThread(mUpdateProgressRunnable);
             IOUtil.closeQuietly(input);
             IOUtil.closeQuietly(ouput);
         }
@@ -101,7 +101,7 @@ public abstract class FileRequestCallback extends RequestCallback
             return;
         }
 
-        SDTask.runOnUiThread(new Runnable()
+        FTask.runOnUiThread(new Runnable()
         {
             @Override
             public void run()
@@ -154,6 +154,6 @@ public abstract class FileRequestCallback extends RequestCallback
     public void onCancel()
     {
         super.onCancel();
-        SDTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
+        FTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
     }
 }

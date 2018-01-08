@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 20171122
-        versionName "1.0.25"
+        versionCode 20180108
+        versionName "1.0.26"
     }
     buildTypes {
         release {
@@ -25,7 +25,7 @@ android {
 }
 
 dependencies {
-    compile 'com.github.zj565061763:task:1.0.24'
+    compile 'com.github.zj565061763:task:1.0.25'
 }
 
 
