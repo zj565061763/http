@@ -148,8 +148,8 @@ public class RequestManager
         }
 
         RequestInfo info = new RequestInfo();
-        info.setTag(request.getTag());
-        info.setRequestIdentifier(getRequestIdentifierProvider().provideRequestIdentifier(request));
+        info.tag = request.getTag();
+        info.requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
 
         mMapRequest.put(task, info);
         return new RequestHandler(task);
@@ -181,7 +181,7 @@ public class RequestManager
                 it.remove();
             } else
             {
-                if (tag.equals(info.getTag()) && task.cancel(true))
+                if (tag.equals(info.tag) && task.cancel(true))
                 {
                     it.remove();
                     count++;
@@ -222,7 +222,7 @@ public class RequestManager
                 it.remove();
             } else
             {
-                if (identifier.equals(info.getRequestIdentifier()) && task.cancel(true))
+                if (identifier.equals(info.requestIdentifier) && task.cancel(true))
                 {
                     it.remove();
                     count++;
@@ -315,4 +315,9 @@ public class RequestManager
 
     //---------- IRequestInterceptor end ----------
 
+    private class RequestInfo
+    {
+        public String tag;
+        public String requestIdentifier;
+    }
 }
