@@ -19,7 +19,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
         mRequest = request;
         mCallback = callback;
 
-        mCallback.setRequest(mRequest);
         mRequest.setUploadProgressCallback(this);
     }
 

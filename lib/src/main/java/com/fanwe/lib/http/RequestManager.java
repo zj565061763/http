@@ -142,6 +142,7 @@ public class RequestManager
             };
         }
 
+        callback.setRequest(request);
         callback.onPrepare(request);
 
         RequestTask task = new RequestTask(request, callback);
