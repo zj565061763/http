@@ -25,7 +25,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
     private String getLogPrefix()
     {
-        return "RequestTask " + this;
+        return String.valueOf(this);
     }
 
     @Override
