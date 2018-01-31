@@ -70,10 +70,9 @@ class RequestTask extends FTask implements IUploadProgressCallback
         @Override
         public void run()
         {
-            getCallback().onStart();
-
             synchronized (RequestTask.this)
             {
+                getCallback().onStart();
                 LogUtil.i(getLogPrefix() + " 3 notifyAll:" + Thread.currentThread().getName());
                 RequestTask.this.notifyAll();
             }
