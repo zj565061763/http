@@ -91,12 +91,7 @@ public class RequestManager
         mRequestIdentifierProvider = requestIdentifierProvider;
     }
 
-    /**
-     * 返回Request标识生成对象
-     *
-     * @return
-     */
-    public IRequestIdentifierProvider getRequestIdentifierProvider()
+    private IRequestIdentifierProvider getRequestIdentifierProvider()
     {
         if (mRequestIdentifierProvider == null)
         {
