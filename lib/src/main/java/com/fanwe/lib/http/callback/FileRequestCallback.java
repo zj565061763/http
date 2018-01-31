@@ -17,7 +17,7 @@ import java.io.OutputStream;
 
 public abstract class FileRequestCallback extends RequestCallback
 {
-    private File mFile;
+    private final File mFile;
     private TransmitParam mTransmitParam = new TransmitParam();
     private CountDownTimer mTimer;
 
@@ -26,17 +26,9 @@ public abstract class FileRequestCallback extends RequestCallback
         mFile = file;
     }
 
-    public File getFile()
+    public final File getFile()
     {
         return mFile;
-    }
-
-    public void setFile(File file)
-    {
-        if (mFile == null)
-        {
-            mFile = file;
-        }
     }
 
     public TransmitParam getTransmitParam()
