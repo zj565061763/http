@@ -2,8 +2,8 @@ package com.fanwe.lib.http.cookie;
 
 import android.content.Context;
 
-import com.fanwe.lib.http.utils.IOUtil;
-import com.fanwe.lib.http.utils.LogUtil;
+import com.fanwe.lib.http.utils.HttpIOUtil;
+import com.fanwe.lib.http.utils.HttpLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,22 +33,22 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         {
             try
             {
-                mMemoryCookieStore = IOUtil.deserializeObject(getFile());
+                mMemoryCookieStore = HttpIOUtil.deserializeObject(getFile());
             } catch (ClassNotFoundException e)
             {
-                LogUtil.e("cookie deserialize cookiestore error:" + e);
+                HttpLogger.e("cookie deserialize cookiestore error:" + e);
             } catch (IOException e)
             {
-                LogUtil.e("cookie deserialize cookiestore error:" + e);
+                HttpLogger.e("cookie deserialize cookiestore error:" + e);
             }
 
             if (mMemoryCookieStore == null)
             {
                 mMemoryCookieStore = new ModifyMemoryCookieStore();
-                LogUtil.i("cookie create MemoryCookieStore");
+                HttpLogger.i("cookie create MemoryCookieStore");
             } else
             {
-                LogUtil.i("cookie deserialize cookiestore success");
+                HttpLogger.i("cookie deserialize cookiestore success");
             }
         }
         return mMemoryCookieStore;
@@ -67,7 +67,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
                 mFile.createNewFile();
             } catch (IOException e)
             {
-                LogUtil.e("cookie create httpcookie file error:" + e);
+                HttpLogger.e("cookie create httpcookie file error:" + e);
             }
         }
         return mFile;
@@ -77,11 +77,11 @@ public class SerializableCookieStore implements ICookieStore, Serializable
     {
         try
         {
-            IOUtil.serializeObject(getMemoryCookieStore(), getFile());
-            LogUtil.i("cookie save cookiestore success");
+            HttpIOUtil.serializeObject(getMemoryCookieStore(), getFile());
+            HttpLogger.i("cookie save cookiestore success");
         } catch (IOException e)
         {
-            LogUtil.e("cookie save cookiestore error:" + e);
+            HttpLogger.e("cookie save cookiestore error:" + e);
         }
     }
 

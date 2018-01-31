@@ -2,7 +2,6 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
-import com.fanwe.lib.http.utils.LogUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 
 import java.util.LinkedHashMap;
@@ -206,9 +205,8 @@ public abstract class Request
         return mMapHeader;
     }
 
-    protected void notifyProgressUpload(long uploaded, long total)
+    protected final void notifyProgressUpload(long uploaded, long total)
     {
-        LogUtil.i("progress upload:" + uploaded + "," + total);
         getTransmitParam().transmit(uploaded, total);
         getUploadProgressCallback().onProgressUpload(getTransmitParam());
     }

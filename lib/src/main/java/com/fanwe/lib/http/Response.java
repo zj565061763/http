@@ -2,7 +2,7 @@ package com.fanwe.lib.http;
 
 import android.text.TextUtils;
 
-import com.fanwe.lib.http.utils.IOUtil;
+import com.fanwe.lib.http.utils.HttpIOUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,10 +54,10 @@ public class Response
         {
             try
             {
-                body = IOUtil.readString(getInputStream(), getCharset());
+                body = HttpIOUtil.readString(getInputStream(), getCharset());
             } finally
             {
-                IOUtil.closeQuietly(getInputStream());
+                HttpIOUtil.closeQuietly(getInputStream());
             }
         }
         return body;

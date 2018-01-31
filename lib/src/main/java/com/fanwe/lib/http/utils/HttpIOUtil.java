@@ -20,9 +20,9 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 
-public class IOUtil
+public class HttpIOUtil
 {
-    private IOUtil()
+    private HttpIOUtil()
     {
     }
 

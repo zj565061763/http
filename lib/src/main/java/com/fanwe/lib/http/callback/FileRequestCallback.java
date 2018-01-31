@@ -2,7 +2,7 @@ package com.fanwe.lib.http.callback;
 
 import android.os.CountDownTimer;
 
-import com.fanwe.lib.http.utils.IOUtil;
+import com.fanwe.lib.http.utils.HttpIOUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.FTask;
 
@@ -77,7 +77,7 @@ public abstract class FileRequestCallback extends RequestCallback
         try
         {
             startTimer();
-            IOUtil.copy(input, ouput, new IOUtil.ProgressCallback()
+            HttpIOUtil.copy(input, ouput, new HttpIOUtil.ProgressCallback()
             {
                 @Override
                 public void onProgress(long count)
@@ -89,8 +89,8 @@ public abstract class FileRequestCallback extends RequestCallback
         {
             stopTimer();
             FTask.runOnUiThread(mUpdateProgressRunnable);
-            IOUtil.closeQuietly(input);
-            IOUtil.closeQuietly(ouput);
+            HttpIOUtil.closeQuietly(input);
+            HttpIOUtil.closeQuietly(ouput);
         }
     }
 

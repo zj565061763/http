@@ -8,9 +8,9 @@ import com.fanwe.lib.http.RequestManager;
  * Created by zhengjun on 2017/9/20.
  */
 
-public class LogUtil
+public class HttpLogger
 {
-    public static final String TAG = "SDHttp";
+    public static final String TAG = "FHttp";
 
     public static boolean isDebug()
     {
