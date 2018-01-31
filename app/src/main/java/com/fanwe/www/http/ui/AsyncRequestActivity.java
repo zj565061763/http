@@ -1,4 +1,4 @@
-package com.fanwe.www.http;
+package com.fanwe.www.http.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.Response;
 import com.fanwe.lib.http.callback.ModelRequestCallback;
+import com.fanwe.www.http.R;
 import com.fanwe.www.http.model.InitActModel;
 import com.google.gson.Gson;
 

@@ -1,4 +1,4 @@
-package com.fanwe.www.http;
+package com.fanwe.www.http.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,7 @@ import android.view.View;
 import com.fanwe.lib.http.PostRequest;
 import com.fanwe.lib.http.Request;
 import com.fanwe.lib.http.Response;
+import com.fanwe.www.http.R;
 
 import java.io.InputStream;
 

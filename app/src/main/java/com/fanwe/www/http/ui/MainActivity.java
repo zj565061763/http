@@ -1,4 +1,4 @@
-package com.fanwe.www.http;
+package com.fanwe.www.http.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.view.View;
 
 import com.fanwe.lib.http.RequestManager;
 import com.fanwe.lib.http.cookie.SerializableCookieStore;
+import com.fanwe.www.http.AppRequestIdentifierProvider;
+import com.fanwe.www.http.AppRequestInterceptor;
+import com.fanwe.www.http.R;
 
 public class MainActivity extends AppCompatActivity
 {
