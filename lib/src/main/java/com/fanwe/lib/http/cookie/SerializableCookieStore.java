@@ -6,7 +6,6 @@ import com.fanwe.lib.http.utils.HttpIOUtil;
 import com.fanwe.lib.http.utils.HttpLogger;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -34,10 +33,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
             try
             {
                 mMemoryCookieStore = HttpIOUtil.deserializeObject(getFile());
-            } catch (ClassNotFoundException e)
-            {
-                HttpLogger.e("cookie deserialize cookiestore error:" + e);
-            } catch (IOException e)
+            } catch (Exception e)
             {
                 HttpLogger.e("cookie deserialize cookiestore error:" + e);
             }
@@ -65,7 +61,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
             try
             {
                 mFile.createNewFile();
-            } catch (IOException e)
+            } catch (Exception e)
             {
                 HttpLogger.e("cookie create httpcookie file error:" + e);
             }
@@ -79,7 +75,7 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         {
             HttpIOUtil.serializeObject(getMemoryCookieStore(), getFile());
             HttpLogger.i("cookie save cookiestore success");
-        } catch (IOException e)
+        } catch (Exception e)
         {
             HttpLogger.e("cookie save cookiestore error:" + e);
         }
