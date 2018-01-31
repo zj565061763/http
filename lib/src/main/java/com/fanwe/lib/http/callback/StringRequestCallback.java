@@ -14,7 +14,12 @@ public abstract class StringRequestCallback extends RequestCallback
         mResult = getResponse().getBody();
     }
 
-    public String getResult()
+    /**
+     * 返回请求的字符串
+     *
+     * @return
+     */
+    public final String getResult()
     {
         return mResult;
     }
