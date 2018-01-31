@@ -38,7 +38,7 @@ public class FileRequestBody extends RequestBody
     public String getContentType()
     {
         String result = super.getContentType();
-        if (TextUtils.isEmpty(result))
+        if (TextUtils.isEmpty(result) && getFile() != null)
         {
             result = getFileContentType(getFile());
         }
