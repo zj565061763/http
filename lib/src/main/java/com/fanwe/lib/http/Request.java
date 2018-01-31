@@ -1,7 +1,7 @@
 package com.fanwe.lib.http;
 
-import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
+import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.utils.LogUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 
@@ -218,7 +218,7 @@ public abstract class Request
      *
      * @param callback
      */
-    public final RequestHandler execute(IRequestCallback callback)
+    public final RequestHandler execute(RequestCallback callback)
     {
         return RequestManager.getInstance().execute(this, callback);
     }
@@ -229,7 +229,7 @@ public abstract class Request
      * @param callback
      * @return
      */
-    public final RequestHandler executeSequence(IRequestCallback callback)
+    public final RequestHandler executeSequence(RequestCallback callback)
     {
         return RequestManager.getInstance().execute(this, true, callback);
     }

@@ -2,7 +2,7 @@ package com.fanwe.lib.http;
 
 import android.text.TextUtils;
 
-import com.fanwe.lib.http.callback.IRequestCallback;
+import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.cookie.ICookieStore;
 import com.fanwe.lib.http.interceptor.IRequestInterceptor;
 
@@ -111,7 +111,7 @@ public class RequestManager
      * @param request  请求对象
      * @param callback
      */
-    public synchronized RequestHandler execute(Request request, IRequestCallback callback)
+    public synchronized RequestHandler execute(Request request, RequestCallback callback)
     {
         return execute(request, false, callback);
     }
@@ -124,7 +124,7 @@ public class RequestManager
      * @param callback
      * @return
      */
-    public synchronized RequestHandler execute(Request request, boolean sequence, IRequestCallback callback)
+    public synchronized RequestHandler execute(Request request, boolean sequence, RequestCallback callback)
     {
         if (request == null)
         {
@@ -133,7 +133,13 @@ public class RequestManager
 
         if (callback == null)
         {
-            callback = IRequestCallback.DEFAULT;
+            callback = new RequestCallback()
+            {
+                @Override
+                public void onSuccess()
+                {
+                }
+            };
         }
 
         callback.onPrepare(request);

@@ -1,7 +1,7 @@
 package com.fanwe.lib.http;
 
-import com.fanwe.lib.http.callback.IRequestCallback;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
+import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.utils.LogUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.FTask;
@@ -11,30 +11,16 @@ import com.fanwe.lib.task.FTask;
  */
 class RequestTask extends FTask implements IUploadProgressCallback
 {
-    private Request mRequest;
-    private IRequestCallback mCallback;
+    private final Request mRequest;
+    private final RequestCallback mCallback;
 
-    public RequestTask(Request request, IRequestCallback callback)
+    public RequestTask(Request request, RequestCallback callback)
     {
         mRequest = request;
         mCallback = callback;
 
-        mCallback.setRequest(request);
-        request.setUploadProgressCallback(this);
-    }
-
-    public Request getRequest()
-    {
-        return mRequest;
-    }
-
-    public IRequestCallback getCallback()
-    {
-        if (mCallback == null)
-        {
-            mCallback = IRequestCallback.DEFAULT;
-        }
-        return mCallback;
+        mCallback.setRequest(mRequest);
+        mRequest.setUploadProgressCallback(this);
     }
 
     private String getLogPrefix()
@@ -56,9 +42,9 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
         LogUtil.i(getLogPrefix() + " 4 resumeThread:" + Thread.currentThread().getName());
 
-        Response response = getRequest().execute();
-        getCallback().setResponse(response);
-        getCallback().onSuccessBackground();
+        final Response response = mRequest.execute();
+        mCallback.setResponse(response);
+        mCallback.onSuccessBackground();
 
         LogUtil.i(getLogPrefix() + " 5 onSuccess:" + Thread.currentThread().getName());
 
@@ -72,7 +58,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
         {
             synchronized (RequestTask.this)
             {
-                getCallback().onStart();
+                mCallback.onStart();
                 LogUtil.i(getLogPrefix() + " 3 notifyAll:" + Thread.currentThread().getName());
                 RequestTask.this.notifyAll();
             }
@@ -84,8 +70,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
         @Override
         public void run()
         {
-            getCallback().onSuccessBefore();
-            getCallback().onSuccess();
+            mCallback.onSuccessBefore();
+            mCallback.onSuccess();
         }
     };
 
@@ -100,7 +86,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 @Override
                 public void run()
                 {
-                    getCallback().onCancel();
+                    mCallback.onCancel();
                 }
             });
         } else
@@ -110,7 +96,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 @Override
                 public void run()
                 {
-                    getCallback().onError(e);
+                    mCallback.onError(e);
                 }
             });
         }
@@ -125,7 +111,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             @Override
             public void run()
             {
-                getCallback().onFinish();
+                mCallback.onFinish();
             }
         });
     }
@@ -133,6 +119,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     public void onProgressUpload(TransmitParam param)
     {
-        getCallback().onProgressUpload(param);
+        mCallback.onProgressUpload(param);
     }
 }

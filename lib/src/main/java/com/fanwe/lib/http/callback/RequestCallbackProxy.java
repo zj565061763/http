@@ -7,25 +7,31 @@ import com.fanwe.lib.http.utils.TransmitParam;
 /**
  * Created by zhengjun on 2017/10/12.
  */
-public class RequestCallbackProxy implements IRequestCallback
+public class RequestCallbackProxy extends RequestCallback
 {
-    private IRequestCallback[] mArrCallback;
+    private RequestCallback[] mArrCallback;
 
-    protected RequestCallbackProxy(IRequestCallback... callbacks)
+    protected RequestCallbackProxy(RequestCallback... callbacks)
     {
         mArrCallback = callbacks;
     }
 
-    public static IRequestCallback get(final IRequestCallback... callbacks)
+    /**
+     * 返回回调代理对象
+     *
+     * @param callbacks
+     * @return
+     */
+    public static RequestCallback get(RequestCallback... callbacks)
     {
         return new RequestCallbackProxy(callbacks);
     }
 
-    public IRequestCallback[] getArrCallback()
+    public RequestCallback[] getArrCallback()
     {
         if (mArrCallback == null)
         {
-            mArrCallback = new IRequestCallback[0];
+            mArrCallback = new RequestCallback[0];
         }
         return mArrCallback;
     }
@@ -33,7 +39,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void setRequest(Request request)
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -56,7 +62,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void setResponse(Response response)
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -79,7 +85,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onPrepare(Request request)
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -91,7 +97,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onStart()
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -103,7 +109,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onSuccessBackground() throws Exception
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -115,7 +121,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onSuccessBefore()
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -127,7 +133,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onSuccess()
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -139,7 +145,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onError(Exception e)
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -151,7 +157,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onCancel()
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -163,7 +169,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onFinish()
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
@@ -175,7 +181,7 @@ public class RequestCallbackProxy implements IRequestCallback
     @Override
     public void onProgressUpload(TransmitParam param)
     {
-        for (IRequestCallback item : getArrCallback())
+        for (RequestCallback item : getArrCallback())
         {
             if (item != null)
             {
