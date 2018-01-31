@@ -25,28 +25,28 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
     private String getLogPrefix()
     {
-        return "RequestTask" + this;
+        return "RequestTask " + this;
     }
 
     @Override
     protected void onRun() throws Exception
     {
-        HttpLogger.e(getLogPrefix() + " 1 onRun---------->:" + Thread.currentThread().getName());
+        HttpLogger.e(getLogPrefix() + " 1 onRun---------->");
 
         synchronized (RequestTask.this)
         {
             runOnUiThread(mStartRunnable);
-            HttpLogger.i(getLogPrefix() + " 2 pauseThread:" + Thread.currentThread().getName());
+            HttpLogger.i(getLogPrefix() + " 2 waitThread");
             RequestTask.this.wait(); //等待开始回调完成
         }
 
-        HttpLogger.i(getLogPrefix() + " 4 resumeThread:" + Thread.currentThread().getName());
+        HttpLogger.i(getLogPrefix() + " 4 resumeThread");
 
         final Response response = mRequest.execute();
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
-        HttpLogger.i(getLogPrefix() + " 5 onSuccess:" + Thread.currentThread().getName());
+        HttpLogger.i(getLogPrefix() + " 5 onSuccess");
 
         runOnUiThread(mSuccessRunnable);
     }
@@ -59,7 +59,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             synchronized (RequestTask.this)
             {
                 mCallback.onStart();
-                HttpLogger.i(getLogPrefix() + " 3 notifyAll:" + Thread.currentThread().getName());
+                HttpLogger.i(getLogPrefix() + " 3 notifyThread");
                 RequestTask.this.notifyAll();
             }
         }
@@ -79,7 +79,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onError(final Exception e)
     {
         super.onError(e);
-        HttpLogger.i(getLogPrefix() + " onError:" + e + " " + Thread.currentThread().getName());
+        HttpLogger.i(getLogPrefix() + " onError:" + e);
         if (isCancelled())
         {
             runOnUiThread(new Runnable()
