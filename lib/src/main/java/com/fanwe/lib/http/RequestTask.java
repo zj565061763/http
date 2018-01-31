@@ -79,6 +79,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onError(final Exception e)
     {
         super.onError(e);
+        HttpLogger.i(getLogPrefix() + " onError:" + e + " " + Thread.currentThread().getName());
         if (isCancelled())
         {
             runOnUiThread(new Runnable()
