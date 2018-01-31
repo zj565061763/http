@@ -24,7 +24,7 @@ public class RequestManager
 
     private ICookieStore mCookieStore;
     private IRequestIdentifierProvider mRequestIdentifierProvider;
-    private List<IRequestInterceptor> mListRequestInterceptor;
+    private List<IRequestInterceptor> mListRequestInterceptor = new ArrayList<>();
 
     private boolean isDebug = false;
 
@@ -241,15 +241,6 @@ public class RequestManager
 
     //---------- IRequestInterceptor start ----------
 
-    private List<IRequestInterceptor> getListRequestInterceptor()
-    {
-        if (mListRequestInterceptor == null)
-        {
-            mListRequestInterceptor = new ArrayList<>();
-        }
-        return mListRequestInterceptor;
-    }
-
     /**
      * 添加请求拦截对象
      *
@@ -257,14 +248,11 @@ public class RequestManager
      */
     public synchronized void addRequestInterceptor(IRequestInterceptor interceptor)
     {
-        if (interceptor == null)
+        if (interceptor == null || mListRequestInterceptor.contains(interceptor))
         {
             return;
         }
-        if (!getListRequestInterceptor().contains(interceptor))
-        {
-            getListRequestInterceptor().add(interceptor);
-        }
+        mListRequestInterceptor.add(interceptor);
     }
 
     /**
@@ -274,28 +262,16 @@ public class RequestManager
      */
     public synchronized void removeRequestInterceptor(IRequestInterceptor interceptor)
     {
-        if (interceptor == null || mListRequestInterceptor == null)
-        {
-            return;
-        }
         mListRequestInterceptor.remove(interceptor);
-        if (mListRequestInterceptor.isEmpty())
-        {
-            mListRequestInterceptor = null;
-        }
     }
 
-    IRequestInterceptor mRequestInterceptor = new IRequestInterceptor()
+    IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
     {
         @Override
         public void beforeExecute(Request request)
         {
             synchronized (RequestManager.this)
             {
-                if (mListRequestInterceptor == null)
-                {
-                    return;
-                }
                 for (IRequestInterceptor item : mListRequestInterceptor)
                 {
                     item.beforeExecute(request);
@@ -308,10 +284,6 @@ public class RequestManager
         {
             synchronized (RequestManager.this)
             {
-                if (mListRequestInterceptor == null)
-                {
-                    return;
-                }
                 for (IRequestInterceptor item : mListRequestInterceptor)
                 {
                     item.afterExecute(request, response);

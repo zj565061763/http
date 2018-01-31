@@ -243,11 +243,11 @@ public abstract class Request
         Response response = new Response();
         try
         {
-            RequestManager.getInstance().mRequestInterceptor.beforeExecute(this);
+            RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
             doExecute(response);
         } finally
         {
-            RequestManager.getInstance().mRequestInterceptor.afterExecute(this, response);
+            RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, response);
         }
         return response;
     }
