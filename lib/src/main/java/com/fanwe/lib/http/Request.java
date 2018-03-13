@@ -33,14 +33,14 @@ public abstract class Request implements IRequest
     //---------- IRequest implements start ----------
 
     @Override
-    public IRequest setUrl(String url)
+    public final IRequest setUrl(String url)
     {
         mUrl = url;
         return this;
     }
 
     @Override
-    public IRequest param(String name, Object value)
+    public final IRequest param(String name, Object value)
     {
         if (value != null)
         {
@@ -53,7 +53,7 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public IRequest param(Map<String, Object> mapParam)
+    public final IRequest param(Map<String, Object> mapParam)
     {
         if (mapParam != null)
         {
@@ -63,7 +63,7 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public IRequest header(String name, String value)
+    public final IRequest header(String name, String value)
     {
         if (value != null)
         {
@@ -76,7 +76,7 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public IRequest header(Map<String, String> mapHeader)
+    public final IRequest header(Map<String, String> mapHeader)
     {
         if (mapHeader != null)
         {
@@ -86,41 +86,41 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public IRequest setTag(String tag)
+    public final IRequest setTag(String tag)
     {
         mTag = tag;
         return this;
     }
 
     @Override
-    public IRequest setConnectTimeout(int connectTimeout)
+    public final IRequest setConnectTimeout(int connectTimeout)
     {
         mConnectTimeout = connectTimeout;
         return this;
     }
 
     @Override
-    public IRequest setReadTimeout(int readTimeout)
+    public final IRequest setReadTimeout(int readTimeout)
     {
         mReadTimeout = readTimeout;
         return this;
     }
 
     @Override
-    public IRequest setUploadProgressCallback(IUploadProgressCallback callback)
+    public final IRequest setUploadProgressCallback(IUploadProgressCallback callback)
     {
         mUploadProgressCallback = callback;
         return this;
     }
 
     @Override
-    public String getUrl()
+    public final String getUrl()
     {
         return mUrl;
     }
 
     @Override
-    public String getTag()
+    public final String getTag()
     {
         return mTag;
     }
