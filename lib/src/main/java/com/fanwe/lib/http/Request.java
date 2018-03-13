@@ -10,11 +10,8 @@ import java.util.Map;
 /**
  * Created by zhengjun on 2017/10/11.
  */
-public abstract class Request
+public abstract class Request implements IRequest
 {
-    public static final int READ_TIMEOUT = 15 * 1000;
-    public static final int CONNECT_TIMEOUT = 15 * 1000;
-
     private String mUrl;
 
     private Map<String, Object> mMapParam;
@@ -22,8 +19,8 @@ public abstract class Request
 
     private String mTag;
 
-    private int mReadTimeout = READ_TIMEOUT;
-    private int mConnectTimeout = CONNECT_TIMEOUT;
+    private int mConnectTimeout = DEFAULT_CONNECT_TIMEOUT;
+    private int mReadTimeout = DEFAULT_READ_TIMEOUT;
 
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
@@ -33,26 +30,17 @@ public abstract class Request
         setUrl(url);
     }
 
-    /**
-     * 设置请求的url
-     *
-     * @param url
-     * @return
-     */
-    public Request setUrl(String url)
+    //---------- IRequest implements start ----------
+
+    @Override
+    public IRequest setUrl(String url)
     {
         mUrl = url;
         return this;
     }
 
-    /**
-     * 设置请求参数
-     *
-     * @param name
-     * @param value
-     * @return
-     */
-    public Request param(String name, Object value)
+    @Override
+    public IRequest param(String name, Object value)
     {
         if (value != null)
         {
@@ -64,13 +52,8 @@ public abstract class Request
         return this;
     }
 
-    /**
-     * 把mapParam中的请求参数都设置进去
-     *
-     * @param mapParam
-     * @return
-     */
-    public Request param(Map<String, Object> mapParam)
+    @Override
+    public IRequest param(Map<String, Object> mapParam)
     {
         if (mapParam != null)
         {
@@ -79,14 +62,8 @@ public abstract class Request
         return this;
     }
 
-    /**
-     * 设置header参数
-     *
-     * @param name
-     * @param value
-     * @return
-     */
-    public Request header(String name, String value)
+    @Override
+    public IRequest header(String name, String value)
     {
         if (value != null)
         {
@@ -98,13 +75,8 @@ public abstract class Request
         return this;
     }
 
-    /**
-     * 把mapHeader中的请求参数都设置进去
-     *
-     * @param mapHeader
-     * @return
-     */
-    public Request header(Map<String, String> mapHeader)
+    @Override
+    public IRequest header(Map<String, String> mapHeader)
     {
         if (mapHeader != null)
         {
@@ -113,131 +85,59 @@ public abstract class Request
         return this;
     }
 
-    /**
-     * 设置请求对应的tag
-     *
-     * @param tag
-     * @return
-     */
-    public Request setTag(String tag)
+    @Override
+    public IRequest setTag(String tag)
     {
         mTag = tag;
         return this;
     }
 
-    public Request setReadTimeout(int readTimeout)
-    {
-        mReadTimeout = readTimeout;
-        return this;
-    }
-
-    public Request setConnectTimeout(int connectTimeout)
+    @Override
+    public IRequest setConnectTimeout(int connectTimeout)
     {
         mConnectTimeout = connectTimeout;
         return this;
     }
 
-    public int getReadTimeout()
+    @Override
+    public IRequest setReadTimeout(int readTimeout)
     {
-        return mReadTimeout;
-    }
-
-    public int getConnectTimeout()
-    {
-        return mConnectTimeout;
-    }
-
-    /**
-     * 设置上传回调（后台线程通知回调）
-     *
-     * @param uploadProgressCallback
-     * @return
-     */
-    public Request setUploadProgressCallback(IUploadProgressCallback uploadProgressCallback)
-    {
-        mUploadProgressCallback = uploadProgressCallback;
+        mReadTimeout = readTimeout;
         return this;
     }
 
-    public IUploadProgressCallback getUploadProgressCallback()
+    @Override
+    public IRequest setUploadProgressCallback(IUploadProgressCallback callback)
     {
-        if (mUploadProgressCallback == null)
-        {
-            mUploadProgressCallback = IUploadProgressCallback.DEFAULT;
-        }
-        return mUploadProgressCallback;
+        mUploadProgressCallback = callback;
+        return this;
     }
 
-    public TransmitParam getTransmitParam()
-    {
-        if (mTransmitParam == null)
-        {
-            mTransmitParam = new TransmitParam();
-        }
-        return mTransmitParam;
-    }
-
-    public String getTag()
-    {
-        return mTag;
-    }
-
+    @Override
     public String getUrl()
     {
         return mUrl;
     }
 
-    public Map<String, Object> getMapParam()
+    @Override
+    public String getTag()
     {
-        if (mMapParam == null)
-        {
-            mMapParam = new LinkedHashMap<>();
-        }
-        return mMapParam;
+        return mTag;
     }
 
-    public Map<String, String> getMapHeader()
-    {
-        if (mMapHeader == null)
-        {
-            mMapHeader = new LinkedHashMap<>();
-        }
-        return mMapHeader;
-    }
-
-    protected final void notifyProgressUpload(long uploaded, long total)
-    {
-        getTransmitParam().transmit(uploaded, total);
-        getUploadProgressCallback().onProgressUpload(getTransmitParam());
-    }
-
-    /**
-     * 异步请求
-     *
-     * @param callback
-     */
+    @Override
     public final RequestHandler execute(RequestCallback callback)
     {
         return RequestManager.getInstance().execute(this, callback);
     }
 
-    /**
-     * 异步请求，在单线程线程池执行(发起的异步请求会按顺序一个个执行)
-     *
-     * @param callback
-     * @return
-     */
+    @Override
     public final RequestHandler executeSequence(RequestCallback callback)
     {
         return RequestManager.getInstance().execute(this, true, callback);
     }
 
-    /**
-     * 同步请求
-     *
-     * @return
-     * @throws Exception
-     */
+    @Override
     public final Response execute() throws Exception
     {
         Response response = new Response();
@@ -252,6 +152,8 @@ public abstract class Request
         return response;
     }
 
+    //---------- IRequest implements end ----------
+
     /**
      * 发起请求，并将请求结果填充到response
      *
@@ -259,4 +161,45 @@ public abstract class Request
      * @throws Exception
      */
     protected abstract void doExecute(Response response) throws Exception;
+
+    protected final int getReadTimeout()
+    {
+        return mReadTimeout;
+    }
+
+    protected final int getConnectTimeout()
+    {
+        return mConnectTimeout;
+    }
+
+    protected final Map<String, Object> getMapParam()
+    {
+        if (mMapParam == null)
+        {
+            mMapParam = new LinkedHashMap<>();
+        }
+        return mMapParam;
+    }
+
+    protected final Map<String, String> getMapHeader()
+    {
+        if (mMapHeader == null)
+        {
+            mMapHeader = new LinkedHashMap<>();
+        }
+        return mMapHeader;
+    }
+
+    protected final void notifyProgressUpload(long uploaded, long total)
+    {
+        if (mUploadProgressCallback != null)
+        {
+            if (mTransmitParam == null)
+            {
+                mTransmitParam = new TransmitParam();
+            }
+            mTransmitParam.transmit(uploaded, total);
+            mUploadProgressCallback.onProgressUpload(mTransmitParam);
+        }
+    }
 }
