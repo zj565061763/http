@@ -16,7 +16,7 @@ public abstract class PersistentCookieStore implements ICookieStore
     @Override
     public void add(URI uri, List<HttpCookie> listCookie)
     {
-        if (listCookie != null)
+        if (listCookie != null && !listCookie.isEmpty())
         {
             getMemoryCookieStore().add(uri, listCookie);
             save();
