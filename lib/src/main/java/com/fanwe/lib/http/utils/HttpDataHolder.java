@@ -39,6 +39,12 @@ public class HttpDataHolder<K, V>
         return mMap.get(key);
     }
 
+    public HttpDataHolder<K, V> clear()
+    {
+        mMap.clear();
+        return this;
+    }
+
     public Map<K, V> toMap()
     {
         final Map<K, V> result = new LinkedHashMap<>();
