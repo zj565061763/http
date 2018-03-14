@@ -22,6 +22,18 @@ public class HttpDataHolder<K, V>
         return this;
     }
 
+    public HttpDataHolder<K, V> putAll(Map<K, V> map)
+    {
+        if (map != null)
+        {
+            for (Map.Entry<K, V> item : map.entrySet())
+            {
+                put(item.getKey(), item.getValue());
+            }
+        }
+        return this;
+    }
+
     public V get(Object key)
     {
         return mMap.get(key);
