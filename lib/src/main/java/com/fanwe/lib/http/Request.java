@@ -12,7 +12,7 @@ public abstract class Request implements IRequest
 {
     private String mUrl;
 
-    private HttpDataHolder<String, String> mParams;
+    private HttpDataHolder<String, Object> mParams;
     private HttpDataHolder<String, String> mHeaders;
 
     private String mTag;
@@ -65,7 +65,7 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public final HttpDataHolder<String, String> getParams()
+    public final HttpDataHolder<String, Object> getParams()
     {
         if (mParams == null)
         {

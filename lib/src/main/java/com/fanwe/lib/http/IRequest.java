@@ -63,7 +63,7 @@ public interface IRequest
      *
      * @return
      */
-    HttpDataHolder<String, String> getParams();
+    HttpDataHolder<String, Object> getParams();
 
     /**
      * 返回设置的Header
