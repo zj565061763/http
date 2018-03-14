@@ -14,7 +14,7 @@ public abstract class Request implements IRequest
 {
     private String mUrl;
 
-    private final Map<String, Object> mParams = new LinkedHashMap<>();
+    private final Map<String, String> mParams = new LinkedHashMap<>();
     private final Map<String, String> mHeaders = new LinkedHashMap<>();
 
     private String mTag;
@@ -35,7 +35,7 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public final IRequest param(String key, Object value)
+    public final IRequest param(String key, String value)
     {
         if (value != null)
         {
@@ -95,21 +95,28 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public final Object getParam(String key)
+    public final String getParam(String key)
     {
-        return mParams.get(key);
+        final Object value = mParams.get(key);
+        if (value == null)
+        {
+            return null;
+        } else
+        {
+            return String.valueOf(value);
+        }
     }
 
     @Override
     public String getHeader(String key)
     {
-        final Object header = mHeaders.get(key);
-        if (header == null)
+        final Object value = mHeaders.get(key);
+        if (value == null)
         {
             return null;
         } else
         {
-            return String.valueOf(header);
+            return String.valueOf(value);
         }
     }
 
@@ -166,7 +173,7 @@ public abstract class Request implements IRequest
         return mConnectTimeout;
     }
 
-    protected final Map<String, Object> getParams()
+    protected final Map<String, String> getParams()
     {
         return mParams;
     }

@@ -32,7 +32,7 @@ public interface IRequest
      * @param value
      * @return
      */
-    IRequest param(String key, Object value);
+    IRequest param(String key, String value);
 
     /**
      * 设置header
@@ -88,7 +88,7 @@ public interface IRequest
      * @param key
      * @return
      */
-    Object getParam(String key);
+    String getParam(String key);
 
     /**
      * 返回某个key对应的header
