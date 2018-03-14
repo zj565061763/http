@@ -106,7 +106,7 @@ public class RequestManager
      * @param request  请求对象
      * @param callback
      */
-    public synchronized RequestHandler execute(IRequest request, RequestCallback callback)
+    public RequestHandler execute(IRequest request, RequestCallback callback)
     {
         return execute(request, false, callback);
     }
