@@ -11,10 +11,10 @@ import com.fanwe.lib.task.FTask;
  */
 class RequestTask extends FTask implements IUploadProgressCallback
 {
-    private final Request mRequest;
+    private final IRequest mRequest;
     private final RequestCallback mCallback;
 
-    public RequestTask(Request request, RequestCallback callback)
+    public RequestTask(IRequest request, RequestCallback callback)
     {
         mRequest = request;
         mCallback = callback;
@@ -41,7 +41,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
         HttpLogger.i(getLogPrefix() + " 4 resumeThread");
 
-        final Response response = mRequest.execute();
+        final IResponse response = mRequest.execute();
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 

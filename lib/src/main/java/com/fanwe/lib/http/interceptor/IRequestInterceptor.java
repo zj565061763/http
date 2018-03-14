@@ -1,7 +1,7 @@
 package com.fanwe.lib.http.interceptor;
 
-import com.fanwe.lib.http.Request;
-import com.fanwe.lib.http.Response;
+import com.fanwe.lib.http.IRequest;
+import com.fanwe.lib.http.IResponse;
 
 /**
  * 用于请求拦截
@@ -14,7 +14,7 @@ public interface IRequestInterceptor
      *
      * @param request
      */
-    void beforeExecute(Request request);
+    void beforeExecute(IRequest request);
 
     /**
      * 发起网络请求之后回调
@@ -22,5 +22,5 @@ public interface IRequestInterceptor
      * @param request
      * @param response
      */
-    void afterExecute(Request request, Response response);
+    void afterExecute(IRequest request, IResponse response);
 }

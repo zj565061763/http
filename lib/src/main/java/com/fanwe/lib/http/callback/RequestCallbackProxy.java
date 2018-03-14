@@ -1,7 +1,7 @@
 package com.fanwe.lib.http.callback;
 
-import com.fanwe.lib.http.Request;
-import com.fanwe.lib.http.Response;
+import com.fanwe.lib.http.IRequest;
+import com.fanwe.lib.http.IResponse;
 import com.fanwe.lib.http.utils.TransmitParam;
 
 /**
@@ -37,7 +37,7 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public void setRequest(Request request)
+    public void setRequest(IRequest request)
     {
         for (RequestCallback item : getArrCallback())
         {
@@ -49,7 +49,7 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public Request getRequest()
+    public IRequest getRequest()
     {
         int length = getArrCallback().length;
         if (length > 0)
@@ -60,7 +60,7 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public void setResponse(Response response)
+    public void setResponse(IResponse response)
     {
         for (RequestCallback item : getArrCallback())
         {
@@ -72,7 +72,7 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public Response getResponse()
+    public IResponse getResponse()
     {
         int length = getArrCallback().length;
         if (length > 0)
@@ -83,7 +83,7 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public void onPrepare(Request request)
+    public void onPrepare(IRequest request)
     {
         for (RequestCallback item : getArrCallback())
         {

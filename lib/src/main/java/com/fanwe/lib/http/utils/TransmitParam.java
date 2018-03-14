@@ -37,12 +37,12 @@ public class TransmitParam
         mProgress = (int) (current * 100 / total);
     }
 
-    public synchronized boolean isFinish()
+    public boolean isFinish()
     {
         return mCurrent == mTotal && mCurrent > 0;
     }
 
-    public synchronized void setCalculateSpeedInterval(long calculateSpeedInterval)
+    public void setCalculateSpeedInterval(long calculateSpeedInterval)
     {
         if (calculateSpeedInterval <= 0)
         {

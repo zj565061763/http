@@ -1,7 +1,7 @@
 package com.fanwe.lib.http.callback;
 
-import com.fanwe.lib.http.Request;
-import com.fanwe.lib.http.Response;
+import com.fanwe.lib.http.IRequest;
+import com.fanwe.lib.http.IResponse;
 import com.fanwe.lib.http.utils.TransmitParam;
 
 /**
@@ -10,32 +10,32 @@ import com.fanwe.lib.http.utils.TransmitParam;
 
 public abstract class RequestCallback
 {
-    private Request mRequest;
-    private Response mResponse;
+    private IRequest mRequest;
+    private IResponse mResponse;
 
-    public void setRequest(Request request)
+    public void setRequest(IRequest request)
     {
         this.mRequest = request;
     }
 
-    public Request getRequest()
+    public IRequest getRequest()
     {
         return mRequest;
     }
 
-    public void setResponse(Response response)
+    public void setResponse(IResponse response)
     {
         mResponse = response;
     }
 
-    public Response getResponse()
+    public IResponse getResponse()
     {
         return mResponse;
     }
 
     //---------- notify method start ----------
 
-    public void onPrepare(Request request)
+    public void onPrepare(IRequest request)
     {
     }
 

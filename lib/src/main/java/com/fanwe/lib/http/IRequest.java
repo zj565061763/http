@@ -3,8 +3,6 @@ package com.fanwe.lib.http;
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
 
-import java.util.Map;
-
 /**
  * Created by zhengjun on 2018/3/13.
  */
@@ -30,36 +28,20 @@ public interface IRequest
     /**
      * 设置请求参数
      *
-     * @param name
+     * @param key
      * @param value
      * @return
      */
-    IRequest param(String name, Object value);
-
-    /**
-     * 设置请求参数
-     *
-     * @param mapParam
-     * @return
-     */
-    IRequest param(Map<String, Object> mapParam);
+    IRequest param(String key, Object value);
 
     /**
      * 设置header
      *
-     * @param name
+     * @param key
      * @param value
      * @return
      */
-    IRequest header(String name, String value);
-
-    /**
-     * 设置header
-     *
-     * @param mapHeader
-     * @return
-     */
-    IRequest header(Map<String, String> mapHeader);
+    IRequest header(String key, String value);
 
     /**
      * 设置请求标识
@@ -101,6 +83,22 @@ public interface IRequest
     String getUrl();
 
     /**
+     * 返回某个key对应的参数
+     *
+     * @param key
+     * @return
+     */
+    Object getParam(String key);
+
+    /**
+     * 返回某个key对应的header
+     *
+     * @param key
+     * @return
+     */
+    String getHeader(String key);
+
+    /**
      * 返回设置的标识{@link #setTag(String)}
      *
      * @return
@@ -129,5 +127,5 @@ public interface IRequest
      * @return
      * @throws Exception
      */
-    Response execute() throws Exception;
+    IResponse execute() throws Exception;
 }

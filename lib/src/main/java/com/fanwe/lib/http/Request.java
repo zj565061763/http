@@ -14,8 +14,8 @@ public abstract class Request implements IRequest
 {
     private String mUrl;
 
-    private Map<String, Object> mMapParam;
-    private Map<String, String> mMapHeader;
+    private final Map<String, Object> mParams = new LinkedHashMap<>();
+    private final Map<String, String> mHeaders = new LinkedHashMap<>();
 
     private String mTag;
 
@@ -24,11 +24,6 @@ public abstract class Request implements IRequest
 
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
-
-    public Request(String url)
-    {
-        setUrl(url);
-    }
 
     //---------- IRequest implements start ----------
 
@@ -40,24 +35,14 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public final IRequest param(String name, Object value)
+    public final IRequest param(String key, Object value)
     {
         if (value != null)
         {
-            getMapParam().put(name, value);
+            mParams.put(key, value);
         } else
         {
-            getMapParam().remove(name);
-        }
-        return this;
-    }
-
-    @Override
-    public final IRequest param(Map<String, Object> mapParam)
-    {
-        if (mapParam != null)
-        {
-            getMapParam().putAll(mapParam);
+            mParams.remove(key);
         }
         return this;
     }
@@ -67,20 +52,10 @@ public abstract class Request implements IRequest
     {
         if (value != null)
         {
-            getMapHeader().put(name, value);
+            mHeaders.put(name, value);
         } else
         {
-            getMapHeader().remove(name);
-        }
-        return this;
-    }
-
-    @Override
-    public final IRequest header(Map<String, String> mapHeader)
-    {
-        if (mapHeader != null)
-        {
-            getMapHeader().putAll(mapHeader);
+            mHeaders.remove(name);
         }
         return this;
     }
@@ -120,6 +95,25 @@ public abstract class Request implements IRequest
     }
 
     @Override
+    public final Object getParam(String key)
+    {
+        return mParams.get(key);
+    }
+
+    @Override
+    public String getHeader(String key)
+    {
+        final Object header = mHeaders.get(key);
+        if (header == null)
+        {
+            return null;
+        } else
+        {
+            return String.valueOf(header);
+        }
+    }
+
+    @Override
     public final String getTag()
     {
         return mTag;
@@ -138,13 +132,13 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public final Response execute() throws Exception
+    public final IResponse execute() throws Exception
     {
-        Response response = new Response();
+        IResponse response = null;
         try
         {
             RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
-            doExecute(response);
+            response = doExecute();
         } finally
         {
             RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, response);
@@ -155,12 +149,12 @@ public abstract class Request implements IRequest
     //---------- IRequest implements end ----------
 
     /**
-     * 发起请求，并将请求结果填充到response
+     * 发起请求
      *
-     * @param response
+     * @return
      * @throws Exception
      */
-    protected abstract void doExecute(Response response) throws Exception;
+    protected abstract IResponse doExecute() throws Exception;
 
     protected final int getReadTimeout()
     {
@@ -172,22 +166,14 @@ public abstract class Request implements IRequest
         return mConnectTimeout;
     }
 
-    protected final Map<String, Object> getMapParam()
+    protected final Map<String, Object> getParams()
     {
-        if (mMapParam == null)
-        {
-            mMapParam = new LinkedHashMap<>();
-        }
-        return mMapParam;
+        return mParams;
     }
 
-    protected final Map<String, String> getMapHeader()
+    protected final Map<String, String> getHeaders()
     {
-        if (mMapHeader == null)
-        {
-            mMapHeader = new LinkedHashMap<>();
-        }
-        return mMapHeader;
+        return mHeaders;
     }
 
     protected final void notifyProgressUpload(long uploaded, long total)

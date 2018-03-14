@@ -9,7 +9,7 @@ public interface IRequestIdentifierProvider
     IRequestIdentifierProvider DEFAULT = new IRequestIdentifierProvider()
     {
         @Override
-        public String provideRequestIdentifier(Request request)
+        public String provideRequestIdentifier(IRequest request)
         {
             return null;
         }
@@ -21,5 +21,5 @@ public interface IRequestIdentifierProvider
      * @param request
      * @return
      */
-    String provideRequestIdentifier(Request request);
+    String provideRequestIdentifier(IRequest request);
 }

@@ -6,11 +6,11 @@ import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.cookie.ICookieStore;
 import com.fanwe.lib.http.interceptor.IRequestInterceptor;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -24,7 +24,7 @@ public class RequestManager
 
     private ICookieStore mCookieStore;
     private IRequestIdentifierProvider mRequestIdentifierProvider;
-    private List<IRequestInterceptor> mListRequestInterceptor = new ArrayList<>();
+    private List<IRequestInterceptor> mListRequestInterceptor = new CopyOnWriteArrayList<>();
 
     private boolean isDebug = false;
 
@@ -106,7 +106,7 @@ public class RequestManager
      * @param request  请求对象
      * @param callback
      */
-    public synchronized RequestHandler execute(Request request, RequestCallback callback)
+    public synchronized RequestHandler execute(IRequest request, RequestCallback callback)
     {
         return execute(request, false, callback);
     }
@@ -119,7 +119,7 @@ public class RequestManager
      * @param callback
      * @return
      */
-    public synchronized RequestHandler execute(Request request, boolean sequence, RequestCallback callback)
+    public synchronized RequestHandler execute(IRequest request, boolean sequence, RequestCallback callback)
     {
         if (request == null)
         {
@@ -199,7 +199,7 @@ public class RequestManager
      * @param request
      * @return
      */
-    public synchronized int cancelRequestIdentifier(Request request)
+    public synchronized int cancelRequestIdentifier(IRequest request)
     {
         if (request == null || mMapRequest.isEmpty())
         {
@@ -263,7 +263,7 @@ public class RequestManager
     IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
     {
         @Override
-        public void beforeExecute(Request request)
+        public void beforeExecute(IRequest request)
         {
             synchronized (RequestManager.this)
             {
@@ -275,7 +275,7 @@ public class RequestManager
         }
 
         @Override
-        public void afterExecute(Request request, Response response)
+        public void afterExecute(IRequest request, IResponse response)
         {
             synchronized (RequestManager.this)
             {
