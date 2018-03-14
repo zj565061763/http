@@ -24,6 +24,7 @@ public abstract class FileRequestCallback extends RequestCallback
     public FileRequestCallback(File file)
     {
         mFile = file;
+        checkFile();
     }
 
     public final File getFile()
@@ -31,7 +32,7 @@ public abstract class FileRequestCallback extends RequestCallback
         return mFile;
     }
 
-    public TransmitParam getTransmitParam()
+    public final TransmitParam getTransmitParam()
     {
         return mTransmitParam;
     }
@@ -59,11 +60,10 @@ public abstract class FileRequestCallback extends RequestCallback
     public void onSuccessBackground() throws Exception
     {
         super.onSuccessBackground();
-        checkFile();
 
         final long total = getResponse().getContentLength();
-        InputStream input = getResponse().getInputStream();
-        OutputStream ouput = new FileOutputStream(getFile());
+        final InputStream input = getResponse().getInputStream();
+        final OutputStream ouput = new FileOutputStream(getFile());
 
         try
         {
