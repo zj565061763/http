@@ -25,6 +25,10 @@ public abstract class Request implements IRequest
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
 
+    protected Request()
+    {
+    }
+
     //---------- IRequest implements start ----------
 
     @Override
