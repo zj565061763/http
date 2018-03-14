@@ -6,16 +6,16 @@ import com.fanwe.lib.http.utils.HttpIOUtil;
 import com.fanwe.lib.http.utils.HttpLogger;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.HttpCookie;
-import java.net.URI;
-import java.util.List;
 
 /**
- * Created by zhengjun on 2017/10/13.
+ * 通过序列化和反序列化实现的可持久化CookieStore
  */
-
-public class SerializableCookieStore implements ICookieStore, Serializable
+public class SerializableCookieStore extends PersistentCookieStore
 {
     private Context mContext;
     private ModifyMemoryCookieStore mMemoryCookieStore;
@@ -26,13 +26,14 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         mContext = context.getApplicationContext();
     }
 
-    private synchronized ModifyMemoryCookieStore getMemoryCookieStore()
+    @Override
+    protected synchronized ModifyMemoryCookieStore getMemoryCookieStore()
     {
         if (mMemoryCookieStore == null)
         {
             try
             {
-                mMemoryCookieStore = HttpIOUtil.deserializeObject(getFile());
+                mMemoryCookieStore = deserializeObject(getFile());
             } catch (Exception e)
             {
                 HttpLogger.e("cookie deserialize cookiestore error:" + e);
@@ -69,11 +70,12 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         return mFile;
     }
 
-    private synchronized void save()
+    @Override
+    protected synchronized void save()
     {
         try
         {
-            HttpIOUtil.serializeObject(getMemoryCookieStore(), getFile());
+            serializeObject(getMemoryCookieStore(), getFile());
             HttpLogger.i("cookie save cookiestore success");
         } catch (Exception e)
         {
@@ -81,60 +83,31 @@ public class SerializableCookieStore implements ICookieStore, Serializable
         }
     }
 
-    @Override
-    public void add(URI uri, List<HttpCookie> listCookie)
+    private static <T extends Serializable> void serializeObject(T object, File file) throws Exception
     {
-        if (listCookie != null)
+        ObjectOutputStream oos = null;
+        try
         {
-            getMemoryCookieStore().add(uri, listCookie);
-            save();
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(object);
+            oos.flush();
+        } finally
+        {
+            HttpIOUtil.closeQuietly(oos);
         }
     }
 
-    @Override
-    public void add(URI uri, HttpCookie cookie)
+    private static <T extends Serializable> T deserializeObject(File file) throws Exception
     {
-        getMemoryCookieStore().add(uri, cookie);
-        save();
-    }
-
-    @Override
-    public List<HttpCookie> get(URI uri)
-    {
-        return getMemoryCookieStore().get(uri);
-    }
-
-    @Override
-    public List<HttpCookie> getCookies()
-    {
-        return getMemoryCookieStore().getCookies();
-    }
-
-    @Override
-    public List<URI> getURIs()
-    {
-        return getMemoryCookieStore().getURIs();
-    }
-
-    @Override
-    public boolean remove(URI uri, HttpCookie cookie)
-    {
-        boolean result = getMemoryCookieStore().remove(uri, cookie);
-        if (result)
+        ObjectInputStream ois = null;
+        try
         {
-            save();
-        }
-        return result;
-    }
-
-    @Override
-    public boolean removeAll()
-    {
-        boolean result = getMemoryCookieStore().removeAll();
-        if (result)
+            ois = new ObjectInputStream(new FileInputStream(file));
+            Object object = ois.readObject();
+            return (T) object;
+        } finally
         {
-            save();
+            HttpIOUtil.closeQuietly(ois);
         }
-        return result;
     }
 }

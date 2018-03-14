@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Edward Wang
  * @since 1.6
  */
-class ModifyMemoryCookieStore implements ICookieStore, Serializable
+public class ModifyMemoryCookieStore implements ICookieStore, Serializable
 {
     static final long serialVersionUID = 0L;
 
