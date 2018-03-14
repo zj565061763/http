@@ -119,7 +119,7 @@ public class RequestManager
      * @param callback
      * @return
      */
-    public synchronized RequestHandler execute(IRequest request, boolean sequence, RequestCallback callback)
+    public synchronized RequestHandler execute(final IRequest request, final boolean sequence, RequestCallback callback)
     {
         if (request == null)
         {
@@ -140,7 +140,7 @@ public class RequestManager
         callback.setRequest(request);
         callback.onPrepare(request);
 
-        RequestTask task = new RequestTask(request, callback);
+        final RequestTask task = new RequestTask(request, callback);
         if (sequence)
         {
             task.submitSequence();
@@ -149,7 +149,7 @@ public class RequestManager
             task.submit();
         }
 
-        RequestInfo info = new RequestInfo();
+        final RequestInfo info = new RequestInfo();
         info.tag = request.getTag();
         info.requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
 
@@ -163,7 +163,7 @@ public class RequestManager
      * @param tag
      * @return 申请取消成功的数量
      */
-    public synchronized int cancelTag(String tag)
+    public synchronized int cancelTag(final String tag)
     {
         if (tag == null || mMapRequest.isEmpty())
         {
@@ -171,12 +171,12 @@ public class RequestManager
         }
 
         int count = 0;
-        Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
+        final Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
         while (it.hasNext())
         {
-            Map.Entry<RequestTask, RequestInfo> item = it.next();
-            RequestTask task = item.getKey();
-            RequestInfo info = item.getValue();
+            final Map.Entry<RequestTask, RequestInfo> item = it.next();
+            final RequestTask task = item.getKey();
+            final RequestInfo info = item.getValue();
 
             if (task.isDone())
             {
@@ -199,25 +199,25 @@ public class RequestManager
      * @param request
      * @return
      */
-    public synchronized int cancelRequestIdentifier(IRequest request)
+    public synchronized int cancelRequestIdentifier(final IRequest request)
     {
         if (request == null || mMapRequest.isEmpty())
         {
             return 0;
         }
-        String identifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
+        final String identifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
         if (TextUtils.isEmpty(identifier))
         {
             return 0;
         }
 
         int count = 0;
-        Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
+        final Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
         while (it.hasNext())
         {
-            Map.Entry<RequestTask, RequestInfo> item = it.next();
-            RequestTask task = item.getKey();
-            RequestInfo info = item.getValue();
+            final Map.Entry<RequestTask, RequestInfo> item = it.next();
+            final RequestTask task = item.getKey();
+            final RequestInfo info = item.getValue();
 
             if (task.isDone())
             {
@@ -241,7 +241,7 @@ public class RequestManager
      *
      * @param interceptor
      */
-    public synchronized void addRequestInterceptor(IRequestInterceptor interceptor)
+    public void addRequestInterceptor(IRequestInterceptor interceptor)
     {
         if (interceptor == null || mListRequestInterceptor.contains(interceptor))
         {
@@ -255,7 +255,7 @@ public class RequestManager
      *
      * @param interceptor
      */
-    public synchronized void removeRequestInterceptor(IRequestInterceptor interceptor)
+    public void removeRequestInterceptor(IRequestInterceptor interceptor)
     {
         mListRequestInterceptor.remove(interceptor);
     }
@@ -265,24 +265,18 @@ public class RequestManager
         @Override
         public void beforeExecute(IRequest request)
         {
-            synchronized (RequestManager.this)
+            for (IRequestInterceptor item : mListRequestInterceptor)
             {
-                for (IRequestInterceptor item : mListRequestInterceptor)
-                {
-                    item.beforeExecute(request);
-                }
+                item.beforeExecute(request);
             }
         }
 
         @Override
         public void afterExecute(IRequest request, IResponse response)
         {
-            synchronized (RequestManager.this)
+            for (IRequestInterceptor item : mListRequestInterceptor)
             {
-                for (IRequestInterceptor item : mListRequestInterceptor)
-                {
-                    item.afterExecute(request, response);
-                }
+                item.afterExecute(request, response);
             }
         }
     };
