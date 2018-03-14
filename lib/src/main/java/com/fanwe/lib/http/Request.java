@@ -2,10 +2,8 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
+import com.fanwe.lib.http.utils.HttpDataHolder;
 import com.fanwe.lib.http.utils.TransmitParam;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -14,8 +12,8 @@ public abstract class Request implements IRequest
 {
     private String mUrl;
 
-    private final Map<String, String> mParams = new LinkedHashMap<>();
-    private final Map<String, String> mHeaders = new LinkedHashMap<>();
+    private HttpDataHolder<String, String> mParams;
+    private HttpDataHolder<String, String> mHeaders;
 
     private String mTag;
 
@@ -35,32 +33,6 @@ public abstract class Request implements IRequest
     public final IRequest setUrl(String url)
     {
         mUrl = url;
-        return this;
-    }
-
-    @Override
-    public final IRequest param(String key, String value)
-    {
-        if (value != null)
-        {
-            mParams.put(key, value);
-        } else
-        {
-            mParams.remove(key);
-        }
-        return this;
-    }
-
-    @Override
-    public final IRequest header(String name, String value)
-    {
-        if (value != null)
-        {
-            mHeaders.put(name, value);
-        } else
-        {
-            mHeaders.remove(name);
-        }
         return this;
     }
 
@@ -93,35 +65,29 @@ public abstract class Request implements IRequest
     }
 
     @Override
+    public final HttpDataHolder<String, String> getParams()
+    {
+        if (mParams == null)
+        {
+            mParams = new HttpDataHolder<>();
+        }
+        return mParams;
+    }
+
+    @Override
+    public final HttpDataHolder<String, String> getHeaders()
+    {
+        if (mHeaders == null)
+        {
+            mHeaders = new HttpDataHolder<>();
+        }
+        return mHeaders;
+    }
+
+    @Override
     public final String getUrl()
     {
         return mUrl;
-    }
-
-    @Override
-    public final String getParam(String key)
-    {
-        final Object value = mParams.get(key);
-        if (value == null)
-        {
-            return null;
-        } else
-        {
-            return String.valueOf(value);
-        }
-    }
-
-    @Override
-    public String getHeader(String key)
-    {
-        final Object value = mHeaders.get(key);
-        if (value == null)
-        {
-            return null;
-        } else
-        {
-            return String.valueOf(value);
-        }
     }
 
     @Override
@@ -175,16 +141,6 @@ public abstract class Request implements IRequest
     protected final int getConnectTimeout()
     {
         return mConnectTimeout;
-    }
-
-    protected final Map<String, String> getParams()
-    {
-        return mParams;
-    }
-
-    protected final Map<String, String> getHeaders()
-    {
-        return mHeaders;
     }
 
     protected final void notifyProgressUpload(long uploaded, long total)

@@ -2,6 +2,7 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
+import com.fanwe.lib.http.utils.HttpDataHolder;
 
 /**
  * Created by zhengjun on 2018/3/13.
@@ -24,24 +25,6 @@ public interface IRequest
      * @return
      */
     IRequest setUrl(String url);
-
-    /**
-     * 设置请求参数
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    IRequest param(String key, String value);
-
-    /**
-     * 设置header
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    IRequest header(String key, String value);
 
     /**
      * 设置请求标识
@@ -76,27 +59,25 @@ public interface IRequest
     IRequest setUploadProgressCallback(IUploadProgressCallback callback);
 
     /**
+     * 返回设置的请求参数
+     *
+     * @return
+     */
+    HttpDataHolder<String, String> getParams();
+
+    /**
+     * 返回设置的Header
+     *
+     * @return
+     */
+    HttpDataHolder<String, String> getHeaders();
+
+    /**
      * 返回设置的url{@link #setUrl(String)}
      *
      * @return
      */
     String getUrl();
-
-    /**
-     * 返回某个key对应的参数
-     *
-     * @param key
-     * @return
-     */
-    String getParam(String key);
-
-    /**
-     * 返回某个key对应的header
-     *
-     * @param key
-     * @return
-     */
-    String getHeader(String key);
 
     /**
      * 返回设置的标识{@link #setTag(String)}

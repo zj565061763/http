@@ -1,0 +1,36 @@
+package com.fanwe.lib.http.utils;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Created by zhengjun on 2018/3/14.
+ */
+public class HttpDataHolder<K, V>
+{
+    private final Map<K, V> mMap = new LinkedHashMap<>();
+
+    public HttpDataHolder<K, V> put(K key, V value)
+    {
+        if (value == null)
+        {
+            mMap.remove(key);
+        } else
+        {
+            mMap.put(key, value);
+        }
+        return this;
+    }
+
+    public V get(Object key)
+    {
+        return mMap.get(key);
+    }
+
+    public Map<K, V> toMap()
+    {
+        final Map<K, V> result = new LinkedHashMap<>();
+        result.putAll(mMap);
+        return result;
+    }
+}
