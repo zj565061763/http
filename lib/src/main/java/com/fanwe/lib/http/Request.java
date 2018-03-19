@@ -92,6 +92,7 @@ public abstract class Request implements IRequest
         return mUrl + getPath();
     }
 
+    @Override
     public final String getPath()
     {
         if (mPath == null)
