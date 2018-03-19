@@ -11,6 +11,7 @@ import com.fanwe.lib.http.utils.TransmitParam;
 public abstract class Request implements IRequest
 {
     private String mUrl;
+    private String mPath;
 
     private final HttpDataHolder<String, Object> mParams = new HttpDataHolder<>();
     private final HttpDataHolder<String, String> mHeaders = new HttpDataHolder<>();
@@ -25,6 +26,8 @@ public abstract class Request implements IRequest
 
     protected Request()
     {
+        final String baseUrl = RequestManager.getInstance().getBaseUrl();
+        setUrl(baseUrl);
     }
 
     //---------- IRequest implements start ----------
@@ -33,6 +36,13 @@ public abstract class Request implements IRequest
     public final IRequest setUrl(String url)
     {
         mUrl = url;
+        return this;
+    }
+
+    @Override
+    public final IRequest setPath(String path)
+    {
+        mPath = path;
         return this;
     }
 
@@ -79,7 +89,16 @@ public abstract class Request implements IRequest
     @Override
     public final String getUrl()
     {
-        return mUrl;
+        return mUrl + getPath();
+    }
+
+    public final String getPath()
+    {
+        if (mPath == null)
+        {
+            mPath = "";
+        }
+        return mPath;
     }
 
     @Override

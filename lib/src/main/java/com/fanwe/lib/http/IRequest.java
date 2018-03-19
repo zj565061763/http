@@ -27,6 +27,14 @@ public interface IRequest
     IRequest setUrl(String url);
 
     /**
+     * 设置url的路径
+     *
+     * @param path
+     * @return
+     */
+    IRequest setPath(String path);
+
+    /**
      * 设置请求标识
      *
      * @param tag
@@ -73,11 +81,20 @@ public interface IRequest
     HttpDataHolder<String, String> getHeaders();
 
     /**
-     * 返回设置的url{@link #setUrl(String)}
+     * 返回最终发起请求的地址(url和url路径组拼起来)<br>
+     * 设置的url{@link #setUrl(String)}<br>
+     * 设置的url路径{@link #setPath(String)}
      *
      * @return
      */
     String getUrl();
+
+    /**
+     * 返回设置的url路径{@link #setPath(String)}
+     *
+     * @return
+     */
+    String getPath();
 
     /**
      * 返回设置的标识{@link #setTag(String)}

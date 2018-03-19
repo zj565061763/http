@@ -20,6 +20,7 @@ public class RequestManager
 {
     private static RequestManager sInstance;
 
+    private String mBaseUrl;
     private Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
 
     private ICookieStore mCookieStore;
@@ -55,6 +56,26 @@ public class RequestManager
     public boolean isDebug()
     {
         return isDebug;
+    }
+
+    /**
+     * 设置基础请求url
+     *
+     * @param baseUrl
+     */
+    public void setBaseUrl(String baseUrl)
+    {
+        mBaseUrl = baseUrl;
+    }
+
+    /**
+     * 返回设置的基础请求url
+     *
+     * @return
+     */
+    public String getBaseUrl()
+    {
+        return mBaseUrl;
     }
 
     /**
