@@ -20,12 +20,13 @@ public class RequestManager
 {
     private static RequestManager sInstance;
 
-    private String mBaseUrl;
     private Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
 
     private ICookieStore mCookieStore;
+
     private IRequestIdentifierProvider mRequestIdentifierProvider;
     private List<IRequestInterceptor> mListRequestInterceptor = new CopyOnWriteArrayList<>();
+    private IRequestIniter mRequestIniter;
 
     private boolean isDebug = false;
 
@@ -56,26 +57,6 @@ public class RequestManager
     public boolean isDebug()
     {
         return isDebug;
-    }
-
-    /**
-     * 设置基础请求url
-     *
-     * @param baseUrl
-     */
-    public void setBaseUrl(String baseUrl)
-    {
-        mBaseUrl = baseUrl;
-    }
-
-    /**
-     * 返回设置的基础请求url
-     *
-     * @return
-     */
-    public String getBaseUrl()
-    {
-        return mBaseUrl;
     }
 
     /**
@@ -116,9 +97,90 @@ public class RequestManager
     {
         if (mRequestIdentifierProvider == null)
         {
-            mRequestIdentifierProvider = IRequestIdentifierProvider.DEFAULT;
+            mRequestIdentifierProvider = new IRequestIdentifierProvider()
+            {
+                @Override
+                public String provideRequestIdentifier(IRequest request)
+                {
+                    return null;
+                }
+            };
         }
         return mRequestIdentifierProvider;
+    }
+
+    //---------- IRequestInterceptor start ----------
+
+    /**
+     * 添加请求拦截对象
+     *
+     * @param interceptor
+     */
+    public void addRequestInterceptor(IRequestInterceptor interceptor)
+    {
+        if (interceptor == null || mListRequestInterceptor.contains(interceptor))
+        {
+            return;
+        }
+        mListRequestInterceptor.add(interceptor);
+    }
+
+    /**
+     * 移除请求拦截对象
+     *
+     * @param interceptor
+     */
+    public void removeRequestInterceptor(IRequestInterceptor interceptor)
+    {
+        mListRequestInterceptor.remove(interceptor);
+    }
+
+    IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
+    {
+        @Override
+        public void beforeExecute(IRequest request)
+        {
+            for (IRequestInterceptor item : mListRequestInterceptor)
+            {
+                item.beforeExecute(request);
+            }
+        }
+
+        @Override
+        public void afterExecute(IRequest request, IResponse response)
+        {
+            for (IRequestInterceptor item : mListRequestInterceptor)
+            {
+                item.afterExecute(request, response);
+            }
+        }
+    };
+
+    //---------- IRequestInterceptor end ----------
+
+    /**
+     * 设置请求初始化对象
+     *
+     * @param requestIniter
+     */
+    public void setRequestIniter(IRequestIniter requestIniter)
+    {
+        mRequestIniter = requestIniter;
+    }
+
+    IRequestIniter getRequestIniter()
+    {
+        if (mRequestIniter == null)
+        {
+            mRequestIniter = new IRequestIniter()
+            {
+                @Override
+                public void onInitRequest(IRequest request)
+                {
+                }
+            };
+        }
+        return mRequestIniter;
     }
 
     /**
@@ -255,54 +317,6 @@ public class RequestManager
         return count;
     }
 
-    //---------- IRequestInterceptor start ----------
-
-    /**
-     * 添加请求拦截对象
-     *
-     * @param interceptor
-     */
-    public void addRequestInterceptor(IRequestInterceptor interceptor)
-    {
-        if (interceptor == null || mListRequestInterceptor.contains(interceptor))
-        {
-            return;
-        }
-        mListRequestInterceptor.add(interceptor);
-    }
-
-    /**
-     * 移除请求拦截对象
-     *
-     * @param interceptor
-     */
-    public void removeRequestInterceptor(IRequestInterceptor interceptor)
-    {
-        mListRequestInterceptor.remove(interceptor);
-    }
-
-    IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
-    {
-        @Override
-        public void beforeExecute(IRequest request)
-        {
-            for (IRequestInterceptor item : mListRequestInterceptor)
-            {
-                item.beforeExecute(request);
-            }
-        }
-
-        @Override
-        public void afterExecute(IRequest request, IResponse response)
-        {
-            for (IRequestInterceptor item : mListRequestInterceptor)
-            {
-                item.afterExecute(request, response);
-            }
-        }
-    };
-
-    //---------- IRequestInterceptor end ----------
 
     private class RequestInfo
     {

@@ -6,15 +6,6 @@ package com.fanwe.lib.http;
  */
 public interface IRequestIdentifierProvider
 {
-    IRequestIdentifierProvider DEFAULT = new IRequestIdentifierProvider()
-    {
-        @Override
-        public String provideRequestIdentifier(IRequest request)
-        {
-            return null;
-        }
-    };
-
     /**
      * 根据Request生成它的唯一标识
      *

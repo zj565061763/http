@@ -26,8 +26,7 @@ public abstract class Request implements IRequest
 
     protected Request()
     {
-        final String baseUrl = RequestManager.getInstance().getBaseUrl();
-        setUrl(baseUrl);
+        RequestManager.getInstance().getRequestIniter().onInitRequest(this);
     }
 
     //---------- IRequest implements start ----------
