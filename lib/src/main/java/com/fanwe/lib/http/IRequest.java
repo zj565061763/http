@@ -27,12 +27,12 @@ public interface IRequest
     IRequest setUrl(String url);
 
     /**
-     * 设置url的路径
+     * 设置url地址的后缀字符串
      *
-     * @param path
+     * @param urlSuffix
      * @return
      */
-    IRequest setPath(String path);
+    IRequest setUrlSuffix(String urlSuffix);
 
     /**
      * 设置请求标识
@@ -81,20 +81,20 @@ public interface IRequest
     HttpDataHolder<String, String> getHeaders();
 
     /**
-     * 返回最终发起请求的地址(url和url路径组拼起来)<br>
+     * 返回最终发起请求的地址(url和url后缀组拼起来)<br>
      * 设置的url{@link #setUrl(String)}<br>
-     * 设置的url路径{@link #setPath(String)}
+     * 设置的url后缀{@link #setUrlSuffix(String)}
      *
      * @return
      */
     String getUrl();
 
     /**
-     * 返回设置的url路径{@link #setPath(String)}
+     * 返回设置的url后缀{@link #setUrlSuffix(String)}
      *
      * @return
      */
-    String getPath();
+    String getUrlSuffix();
 
     /**
      * 返回设置的标识{@link #setTag(String)}
