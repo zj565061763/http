@@ -92,10 +92,10 @@ public abstract class Request implements IRequest
         if (mUrl == null)
         {
             return null;
+        } else
+        {
+            return mUrl + getUrlSuffix();
         }
-
-        final String suffix = getUrlSuffix();
-        return mUrl + suffix;
     }
 
     @Override
