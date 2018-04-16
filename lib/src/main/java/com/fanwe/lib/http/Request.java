@@ -1,7 +1,5 @@
 package com.fanwe.lib.http;
 
-import android.text.TextUtils;
-
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.utils.HttpDataHolder;
@@ -12,7 +10,7 @@ import com.fanwe.lib.http.utils.TransmitParam;
  */
 public abstract class Request implements IRequest
 {
-    private String mUrl;
+    private String mBaseUrl;
     private String mUrlSuffix;
 
     private final HttpDataHolder<String, Object> mParams = new HttpDataHolder<>();
@@ -34,9 +32,9 @@ public abstract class Request implements IRequest
     //---------- IRequest implements start ----------
 
     @Override
-    public final IRequest setUrl(String url)
+    public final IRequest setBaseUrl(String baseUrl)
     {
-        mUrl = url;
+        mBaseUrl = baseUrl;
         return this;
     }
 
@@ -88,27 +86,29 @@ public abstract class Request implements IRequest
     }
 
     @Override
-    public final String getUrl()
+    public final String getBaseUrl()
     {
-        if (mUrl == null)
+        if (mBaseUrl == null)
         {
-            return null;
+            mBaseUrl = "";
         }
-
-        final String suffix = getUrlSuffix();
-        if (!TextUtils.isEmpty(suffix))
-        {
-            return mUrl + suffix;
-        } else
-        {
-            return mUrl;
-        }
+        return mBaseUrl;
     }
 
     @Override
     public final String getUrlSuffix()
     {
+        if (mUrlSuffix == null)
+        {
+            mUrlSuffix = "";
+        }
         return mUrlSuffix;
+    }
+
+    @Override
+    public String getUrl()
+    {
+        return getBaseUrl() + getUrlSuffix();
     }
 
     @Override

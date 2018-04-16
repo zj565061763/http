@@ -19,12 +19,12 @@ public interface IRequest
     int DEFAULT_READ_TIMEOUT = 15 * 1000;
 
     /**
-     * 设置请求的url
+     * 设置基础url
      *
-     * @param url
+     * @param baseUrl
      * @return
      */
-    IRequest setUrl(String url);
+    IRequest setBaseUrl(String baseUrl);
 
     /**
      * 设置url地址的后缀字符串
@@ -81,13 +81,11 @@ public interface IRequest
     HttpDataHolder<String, String> getHeaders();
 
     /**
-     * 返回最终发起请求的地址(url和url后缀组拼起来)<br>
-     * 设置的url{@link #setUrl(String)}<br>
-     * 设置的url后缀{@link #setUrlSuffix(String)}
+     * 返回设置的基础url{@link #setBaseUrl(String)}
      *
      * @return
      */
-    String getUrl();
+    String getBaseUrl();
 
     /**
      * 返回设置的url后缀{@link #setUrlSuffix(String)}
@@ -95,6 +93,14 @@ public interface IRequest
      * @return
      */
     String getUrlSuffix();
+
+    /**
+     * 返回组拼后的基础url<br>
+     * {@link #setBaseUrl(String)} 和 {@link #setUrlSuffix(String)} 组拼成的
+     *
+     * @return
+     */
+    String getUrl();
 
     /**
      * 返回设置的标识{@link #setTag(String)}
