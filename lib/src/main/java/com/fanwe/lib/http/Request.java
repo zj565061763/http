@@ -1,5 +1,7 @@
 package com.fanwe.lib.http;
 
+import android.text.TextUtils;
+
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.utils.HttpDataHolder;
@@ -91,19 +93,21 @@ public abstract class Request implements IRequest
         if (mUrl == null)
         {
             return null;
+        }
+
+        final String suffix = getUrlSuffix();
+        if (!TextUtils.isEmpty(suffix))
+        {
+            return mUrl + suffix;
         } else
         {
-            return mUrl + getUrlSuffix();
+            return mUrl;
         }
     }
 
     @Override
     public final String getUrlSuffix()
     {
-        if (mUrlSuffix == null)
-        {
-            mUrlSuffix = "";
-        }
         return mUrlSuffix;
     }
 

@@ -39,6 +39,11 @@ public class HttpDataHolder<K, V>
         return mMap.get(key);
     }
 
+    public int size()
+    {
+        return mMap.size();
+    }
+
     public HttpDataHolder<K, V> clear()
     {
         mMap.clear();
