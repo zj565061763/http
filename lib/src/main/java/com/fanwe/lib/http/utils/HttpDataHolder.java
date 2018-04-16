@@ -52,8 +52,6 @@ public class HttpDataHolder<K, V>
 
     public Map<K, V> toMap()
     {
-        final Map<K, V> result = new LinkedHashMap<>();
-        result.putAll(mMap);
-        return result;
+        return new LinkedHashMap<>(mMap);
     }
 }
