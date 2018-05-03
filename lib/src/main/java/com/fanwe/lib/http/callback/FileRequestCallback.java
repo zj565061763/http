@@ -1,7 +1,5 @@
 package com.fanwe.lib.http.callback;
 
-import android.os.CountDownTimer;
-
 import com.fanwe.lib.http.utils.HttpIOUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.FTask;
@@ -19,7 +17,6 @@ public abstract class FileRequestCallback extends RequestCallback
 {
     private final File mFile;
     private TransmitParam mTransmitParam = new TransmitParam();
-    private CountDownTimer mTimer;
 
     public FileRequestCallback(File file)
     {
@@ -67,66 +64,28 @@ public abstract class FileRequestCallback extends RequestCallback
 
         try
         {
-            startTimer();
             HttpIOUtil.copy(input, ouput, new HttpIOUtil.ProgressCallback()
             {
+                private int lastProgress;
+
                 @Override
                 public void onProgress(long count)
                 {
                     getTransmitParam().transmit(count, total);
+
+                    final int newProgress = getTransmitParam().getProgress();
+                    if (newProgress != lastProgress)
+                    {
+                        FTask.runOnUiThread(mUpdateProgressRunnable);
+                        lastProgress = newProgress;
+                    }
                 }
             });
         } finally
         {
-            stopTimer();
             FTask.runOnUiThread(mUpdateProgressRunnable);
             HttpIOUtil.closeQuietly(input);
             HttpIOUtil.closeQuietly(ouput);
-        }
-    }
-
-    private synchronized void startTimer()
-    {
-        if (mTimer != null)
-        {
-            return;
-        }
-
-        FTask.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                synchronized (FileRequestCallback.this)
-                {
-                    if (mTimer == null)
-                    {
-                        mTimer = new CountDownTimer(Long.MAX_VALUE, 1000)
-                        {
-                            @Override
-                            public void onTick(long millisUntilFinished)
-                            {
-                                mUpdateProgressRunnable.run();
-                            }
-
-                            @Override
-                            public void onFinish()
-                            {
-                            }
-                        };
-                        mTimer.start();
-                    }
-                }
-            }
-        });
-    }
-
-    private synchronized void stopTimer()
-    {
-        if (mTimer != null)
-        {
-            mTimer.cancel();
-            mTimer = null;
         }
     }
 

@@ -4,6 +4,7 @@ import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.utils.HttpDataHolder;
 import com.fanwe.lib.http.utils.TransmitParam;
+import com.fanwe.lib.task.FTask;
 
 /**
  * Created by zhengjun on 2017/10/11.
@@ -164,16 +165,38 @@ public abstract class Request implements IRequest
         return mConnectTimeout;
     }
 
+    private int mLastProgress;
+
     protected final void notifyProgressUpload(long uploaded, long total)
     {
-        if (mUploadProgressCallback != null)
+        if (mUploadProgressCallback == null)
         {
-            if (mTransmitParam == null)
-            {
-                mTransmitParam = new TransmitParam();
-            }
-            mTransmitParam.transmit(uploaded, total);
-            mUploadProgressCallback.onProgressUpload(mTransmitParam);
+            return;
+        }
+
+        if (mTransmitParam == null)
+        {
+            mTransmitParam = new TransmitParam();
+        }
+        mTransmitParam.transmit(uploaded, total);
+
+        final int newProgress = mTransmitParam.getProgress();
+        if (newProgress != mLastProgress)
+        {
+            FTask.runOnUiThread(mUploadProgressRunnable);
+            mLastProgress = newProgress;
         }
     }
+
+    private final Runnable mUploadProgressRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if (mUploadProgressCallback != null)
+            {
+                mUploadProgressCallback.onProgressUpload(mTransmitParam);
+            }
+        }
+    };
 }
