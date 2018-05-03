@@ -89,7 +89,7 @@ public abstract class FileRequestCallback extends RequestCallback
         }
     }
 
-    private Runnable mUpdateProgressRunnable = new Runnable()
+    private final Runnable mUpdateProgressRunnable = new Runnable()
     {
         @Override
         public void run()
