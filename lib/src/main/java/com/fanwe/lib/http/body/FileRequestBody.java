@@ -18,6 +18,11 @@ public class FileRequestBody extends RequestBody
         mFile = file;
     }
 
+    public File getFile()
+    {
+        return mFile;
+    }
+
     public String getFilename()
     {
         return mFile.getName();
