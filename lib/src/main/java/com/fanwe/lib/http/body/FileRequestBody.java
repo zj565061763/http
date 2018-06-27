@@ -11,48 +11,35 @@ import java.net.HttpURLConnection;
 
 public class FileRequestBody extends RequestBody
 {
-    private File file;
+    private File mFile;
 
-    public File getFile()
+    public FileRequestBody(File file)
     {
-        return file;
+        mFile = file;
     }
 
-    public void setFile(File file)
-    {
-        this.file = file;
-    }
-
-    @Override
     public String getFilename()
     {
-        String result = super.getFilename();
-        if (TextUtils.isEmpty(result) && getFile() != null)
-        {
-            result = getFile().getName();
-        }
-        return result;
+        return mFile.getName();
     }
 
     @Override
     public String getContentType()
     {
         String result = super.getContentType();
-        if (TextUtils.isEmpty(result) && getFile() != null)
-        {
-            result = getFileContentType(getFile());
-        }
+        if (TextUtils.isEmpty(result) && mFile != null)
+            result = getFileContentType(mFile);
+
         return result;
     }
 
     public static String getFileContentType(File file)
     {
-        String filename = file.getName();
+        final String filename = file.getName();
         String contentType = HttpURLConnection.guessContentTypeFromName(filename);
         if (TextUtils.isEmpty(contentType))
-        {
             contentType = "application/octet-stream";
-        }
+
         return contentType;
     }
 }

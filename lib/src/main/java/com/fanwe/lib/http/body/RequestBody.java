@@ -6,37 +6,26 @@ package com.fanwe.lib.http.body;
 
 public class RequestBody
 {
-    private String name;
-    private String filename;
-    private String contentType;
+    private String mName;
+    private String mContentType;
 
     public String getName()
     {
-        return name;
+        return mName;
     }
 
     public void setName(String name)
     {
-        this.name = name;
-    }
-
-    public String getFilename()
-    {
-        return filename;
-    }
-
-    public void setFilename(String filename)
-    {
-        this.filename = filename;
+        this.mName = name;
     }
 
     public String getContentType()
     {
-        return contentType;
+        return mContentType;
     }
 
     public void setContentType(String contentType)
     {
-        this.contentType = contentType;
+        this.mContentType = contentType;
     }
 }
