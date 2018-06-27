@@ -11,7 +11,7 @@ public abstract class StringRequestCallback extends RequestCallback
     public void onSuccessBackground() throws Exception
     {
         super.onSuccessBackground();
-        mResult = getResponse().getBody();
+        mResult = getResponse().getAsString();
     }
 
     /**

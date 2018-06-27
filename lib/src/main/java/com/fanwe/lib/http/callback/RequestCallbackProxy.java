@@ -30,9 +30,7 @@ public class RequestCallbackProxy extends RequestCallback
     public RequestCallback[] getArrCallback()
     {
         if (mArrCallback == null)
-        {
             mArrCallback = new RequestCallback[0];
-        }
         return mArrCallback;
     }
 
@@ -42,20 +40,17 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.setRequest(request);
-            }
         }
     }
 
     @Override
     public IRequest getRequest()
     {
-        int length = getArrCallback().length;
+        final int length = getArrCallback().length;
         if (length > 0)
-        {
             return getArrCallback()[length - 1].getRequest();
-        }
+
         return null;
     }
 
@@ -65,20 +60,17 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.setResponse(response);
-            }
         }
     }
 
     @Override
     public IResponse getResponse()
     {
-        int length = getArrCallback().length;
+        final int length = getArrCallback().length;
         if (length > 0)
-        {
             return getArrCallback()[length - 1].getResponse();
-        }
+
         return null;
     }
 
@@ -88,9 +80,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onPrepare(request);
-            }
         }
     }
 
@@ -100,9 +90,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onStart();
-            }
         }
     }
 
@@ -112,9 +100,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onSuccessBackground();
-            }
         }
     }
 
@@ -124,9 +110,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onSuccessBefore();
-            }
         }
     }
 
@@ -136,9 +120,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onSuccess();
-            }
         }
     }
 
@@ -148,9 +130,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onError(e);
-            }
         }
     }
 
@@ -160,9 +140,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onCancel();
-            }
         }
     }
 
@@ -172,9 +150,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onFinish();
-            }
         }
     }
 
@@ -184,9 +160,7 @@ public class RequestCallbackProxy extends RequestCallback
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-            {
                 item.onProgressUpload(param);
-            }
         }
     }
 }

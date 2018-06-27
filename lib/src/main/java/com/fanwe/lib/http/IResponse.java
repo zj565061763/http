@@ -11,14 +11,6 @@ import java.util.Map;
 public interface IResponse
 {
     /**
-     * 读取输入流的内容，并以字符串返回(必须在非UI线程调用)
-     *
-     * @return
-     * @throws IOException
-     */
-    String getBody() throws IOException;
-
-    /**
      * http返回码
      *
      * @return
@@ -32,4 +24,12 @@ public interface IResponse
     String getCharset();
 
     InputStream getInputStream();
+
+    /**
+     * 读取输入流的内容，并以字符串返回(必须在非UI线程调用)
+     *
+     * @return
+     * @throws IOException
+     */
+    String getAsString() throws IOException;
 }
