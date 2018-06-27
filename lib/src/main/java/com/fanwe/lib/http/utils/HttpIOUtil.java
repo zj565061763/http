@@ -27,9 +27,9 @@ public class HttpIOUtil
         if (!(in instanceof BufferedInputStream))
             in = new BufferedInputStream(in);
 
-        Reader reader = new InputStreamReader(in, charset);
-        StringBuilder sb = new StringBuilder();
-        char[] buffer = new char[1024];
+        final Reader reader = new InputStreamReader(in, charset);
+        final StringBuilder sb = new StringBuilder();
+        final char[] buffer = new char[1024];
         int len;
         while ((len = reader.read(buffer)) >= 0)
         {
@@ -43,7 +43,7 @@ public class HttpIOUtil
         if (TextUtils.isEmpty(charset))
             charset = "UTF-8";
 
-        Writer writer = new OutputStreamWriter(out, charset);
+        final Writer writer = new OutputStreamWriter(out, charset);
         writer.write(content);
         writer.flush();
     }
@@ -58,7 +58,7 @@ public class HttpIOUtil
 
         long count = 0;
         int len = 0;
-        byte[] buffer = new byte[1024];
+        final byte[] buffer = new byte[1024];
         while ((len = in.read(buffer)) != -1)
         {
             out.write(buffer, 0, len);

@@ -51,22 +51,20 @@ public abstract class PersistentCookieStore implements ICookieStore
     @Override
     public boolean remove(URI uri, HttpCookie cookie)
     {
-        boolean result = getMemoryCookieStore().remove(uri, cookie);
+        final boolean result = getMemoryCookieStore().remove(uri, cookie);
         if (result)
-        {
             save();
-        }
+
         return result;
     }
 
     @Override
     public boolean removeAll()
     {
-        boolean result = getMemoryCookieStore().removeAll();
+        final boolean result = getMemoryCookieStore().removeAll();
         if (result)
-        {
             save();
-        }
+
         return result;
     }
 }
