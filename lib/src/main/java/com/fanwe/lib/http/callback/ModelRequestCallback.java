@@ -15,10 +15,17 @@ public abstract class ModelRequestCallback<T> extends StringRequestCallback
     {
         super.onSuccessBackground();
 
-        final Type[] types = getGenericTypes(getClass(), ModelRequestCallback.class);
+        final Class<T> modelClass = getModelClass();
+        mActModel = parseToModel(getResult(), modelClass);
+    }
+
+    protected Class<T> getModelClass()
+    {
+        final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
+        final Type[] types = parameterizedType.getActualTypeArguments();
         if (types != null && types.length > 0)
         {
-            mActModel = parseToModel(getResult(), (Class<T>) types[0]);
+            return (Class<T>) types[0];
         } else
         {
             throw new RuntimeException("generic type not found");
@@ -38,21 +45,4 @@ public abstract class ModelRequestCallback<T> extends StringRequestCallback
      * @return
      */
     protected abstract T parseToModel(String content, Class<T> clazz);
-
-    private static Type[] getGenericTypes(Class<?> clazz, Class<?> superClass)
-    {
-        if (clazz == null || superClass == null)
-            throw new NullPointerException("params must not be null");
-
-        while (true)
-        {
-            if (clazz.getSuperclass() == superClass)
-                break;
-            else
-                clazz = clazz.getSuperclass();
-        }
-
-        final ParameterizedType parameterizedType = (ParameterizedType) clazz.getGenericSuperclass();
-        return parameterizedType.getActualTypeArguments();
-    }
 }
