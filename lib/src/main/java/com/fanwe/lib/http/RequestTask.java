@@ -50,7 +50,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
         runOnUiThread(mSuccessRunnable);
     }
 
-    private Runnable mStartRunnable = new Runnable()
+    private final Runnable mStartRunnable = new Runnable()
     {
         @Override
         public void run()
@@ -64,7 +64,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
         }
     };
 
-    private Runnable mSuccessRunnable = new Runnable()
+    private final Runnable mSuccessRunnable = new Runnable()
     {
         @Override
         public void run()

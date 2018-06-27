@@ -36,11 +36,10 @@ public abstract class FileRequestCallback extends RequestCallback
 
     private void checkFile()
     {
-        File file = getFile();
+        final File file = getFile();
         if (file == null)
-        {
             throw new NullPointerException("file is null");
-        }
+
         if (!file.exists())
         {
             try
@@ -66,7 +65,7 @@ public abstract class FileRequestCallback extends RequestCallback
         {
             HttpIOUtil.copy(input, ouput, new HttpIOUtil.ProgressCallback()
             {
-                private int lastProgress;
+                private int mLastProgress;
 
                 @Override
                 public void onProgress(long count)
@@ -74,10 +73,10 @@ public abstract class FileRequestCallback extends RequestCallback
                     getTransmitParam().transmit(count, total);
 
                     final int newProgress = getTransmitParam().getProgress();
-                    if (newProgress != lastProgress)
+                    if (newProgress != mLastProgress)
                     {
                         FTask.runOnUiThread(mUpdateProgressRunnable);
-                        lastProgress = newProgress;
+                        mLastProgress = newProgress;
                     }
                 }
             });

@@ -27,7 +27,7 @@ public class TransmitParam
         final long timeInterval = currentTime - mLastTime;
         if (timeInterval >= mCalculateSpeedInterval)
         {
-            long count = current - mLastCount;
+            final long count = current - mLastCount;
             mSpeedBps = (int) (count * (1000f / timeInterval));
 
             mLastTime = currentTime;
@@ -45,9 +45,8 @@ public class TransmitParam
     public void setCalculateSpeedInterval(long calculateSpeedInterval)
     {
         if (calculateSpeedInterval <= 0)
-        {
             calculateSpeedInterval = CALCULATE_SPEED_INTERVAL;
-        }
+
         mCalculateSpeedInterval = calculateSpeedInterval;
     }
 

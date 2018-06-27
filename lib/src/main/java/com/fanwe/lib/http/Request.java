@@ -90,9 +90,7 @@ public abstract class Request implements IRequest
     public final String getBaseUrl()
     {
         if (mBaseUrl == null)
-        {
             mBaseUrl = "";
-        }
         return mBaseUrl;
     }
 
@@ -100,9 +98,7 @@ public abstract class Request implements IRequest
     public final String getUrlSuffix()
     {
         if (mUrlSuffix == null)
-        {
             mUrlSuffix = "";
-        }
         return mUrlSuffix;
     }
 
@@ -170,14 +166,11 @@ public abstract class Request implements IRequest
     protected final void notifyProgressUpload(long uploaded, long total)
     {
         if (mUploadProgressCallback == null)
-        {
             return;
-        }
 
         if (mTransmitParam == null)
-        {
             mTransmitParam = new TransmitParam();
-        }
+
         mTransmitParam.transmit(uploaded, total);
 
         final int newProgress = mTransmitParam.getProgress();
@@ -194,9 +187,7 @@ public abstract class Request implements IRequest
         public void run()
         {
             if (mUploadProgressCallback != null)
-            {
                 mUploadProgressCallback.onProgressUpload(mTransmitParam);
-            }
         }
     };
 }

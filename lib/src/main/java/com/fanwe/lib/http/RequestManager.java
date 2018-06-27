@@ -20,7 +20,7 @@ public class RequestManager
 {
     private static RequestManager sInstance;
 
-    private Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
+    private final Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
 
     private ICookieStore mCookieStore;
 
@@ -41,9 +41,7 @@ public class RequestManager
             synchronized (RequestManager.class)
             {
                 if (sInstance == null)
-                {
                     sInstance = new RequestManager();
-                }
             }
         }
         return sInstance;
@@ -77,9 +75,7 @@ public class RequestManager
     public ICookieStore getCookieStore()
     {
         if (mCookieStore == null)
-        {
             mCookieStore = ICookieStore.DEFAULT;
-        }
         return mCookieStore;
     }
 
@@ -119,9 +115,8 @@ public class RequestManager
     public void addRequestInterceptor(IRequestInterceptor interceptor)
     {
         if (interceptor == null || mListRequestInterceptor.contains(interceptor))
-        {
             return;
-        }
+
         mListRequestInterceptor.add(interceptor);
     }
 
@@ -135,7 +130,7 @@ public class RequestManager
         mListRequestInterceptor.remove(interceptor);
     }
 
-    IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
+    final IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
     {
         @Override
         public void beforeExecute(IRequest request)
@@ -205,9 +200,7 @@ public class RequestManager
     public synchronized RequestHandler execute(final IRequest request, final boolean sequence, RequestCallback callback)
     {
         if (request == null)
-        {
             return null;
-        }
 
         if (callback == null)
         {
@@ -249,9 +242,7 @@ public class RequestManager
     public synchronized int cancelTag(final String tag)
     {
         if (tag == null || mMapRequest.isEmpty())
-        {
             return 0;
-        }
 
         int count = 0;
         final Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
@@ -285,14 +276,11 @@ public class RequestManager
     public synchronized int cancelRequestIdentifier(final IRequest request)
     {
         if (request == null || mMapRequest.isEmpty())
-        {
             return 0;
-        }
+
         final String identifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
         if (TextUtils.isEmpty(identifier))
-        {
             return 0;
-        }
 
         int count = 0;
         final Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
@@ -318,7 +306,7 @@ public class RequestManager
     }
 
 
-    private class RequestInfo
+    private static final class RequestInfo
     {
         public String tag;
         public String requestIdentifier;

@@ -21,12 +21,12 @@ public class HttpIOUtil
 
     public static String readString(InputStream in, String charset) throws IOException
     {
-        if (TextUtils.isEmpty(charset)) charset = "UTF-8";
+        if (TextUtils.isEmpty(charset))
+            charset = "UTF-8";
 
         if (!(in instanceof BufferedInputStream))
-        {
             in = new BufferedInputStream(in);
-        }
+
         Reader reader = new InputStreamReader(in, charset);
         StringBuilder sb = new StringBuilder();
         char[] buffer = new char[1024];
@@ -40,7 +40,8 @@ public class HttpIOUtil
 
     public static void writeString(OutputStream out, String content, String charset) throws IOException
     {
-        if (TextUtils.isEmpty(charset)) charset = "UTF-8";
+        if (TextUtils.isEmpty(charset))
+            charset = "UTF-8";
 
         Writer writer = new OutputStreamWriter(out, charset);
         writer.write(content);
@@ -50,25 +51,21 @@ public class HttpIOUtil
     public static void copy(InputStream in, OutputStream out, ProgressCallback callback) throws IOException
     {
         if (!(in instanceof BufferedInputStream))
-        {
             in = new BufferedInputStream(in);
-        }
+
         if (!(out instanceof BufferedOutputStream))
-        {
             out = new BufferedOutputStream(out);
-        }
+
         long count = 0;
         int len = 0;
         byte[] buffer = new byte[1024];
         while ((len = in.read(buffer)) != -1)
         {
             out.write(buffer, 0, len);
-
             count += len;
+
             if (callback != null)
-            {
                 callback.onProgress(count);
-            }
         }
         out.flush();
     }
