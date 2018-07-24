@@ -103,6 +103,6 @@ public abstract class FileRequestCallback extends RequestCallback
     public void onCancel()
     {
         super.onCancel();
-        FTask.MAIN_HANDLER.removeCallbacks(mUpdateProgressRunnable);
+        FTask.removeCallbacks(mUpdateProgressRunnable);
     }
 }
