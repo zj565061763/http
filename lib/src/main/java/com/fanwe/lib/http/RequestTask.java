@@ -2,7 +2,7 @@ package com.fanwe.lib.http;
 
 import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
-import com.fanwe.lib.http.utils.HttpLogger;
+import com.fanwe.lib.http.utils.HttpLog;
 import com.fanwe.lib.http.utils.TransmitParam;
 import com.fanwe.lib.task.FTask;
 
@@ -30,22 +30,22 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Exception
     {
-        HttpLogger.e(getLogPrefix() + " 1 onRun---------->");
+        HttpLog.e(getLogPrefix() + " 1 onRun---------->");
 
         synchronized (RequestTask.this)
         {
             runOnUiThread(mStartRunnable);
-            HttpLogger.i(getLogPrefix() + " 2 waitThread");
+            HttpLog.i(getLogPrefix() + " 2 waitThread");
             RequestTask.this.wait(); //等待开始回调完成
         }
 
-        HttpLogger.i(getLogPrefix() + " 4 resumeThread");
+        HttpLog.i(getLogPrefix() + " 4 resumeThread");
 
         final IResponse response = mRequest.execute();
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
-        HttpLogger.i(getLogPrefix() + " 5 onSuccess");
+        HttpLog.i(getLogPrefix() + " 5 onSuccess");
 
         runOnUiThread(mSuccessRunnable);
     }
@@ -58,7 +58,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             synchronized (RequestTask.this)
             {
                 mCallback.onStart();
-                HttpLogger.i(getLogPrefix() + " 3 notifyThread");
+                HttpLog.i(getLogPrefix() + " 3 notifyThread");
                 RequestTask.this.notifyAll();
             }
         }
@@ -78,7 +78,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onError(final Exception e)
     {
         super.onError(e);
-        HttpLogger.i(getLogPrefix() + " onError:" + e);
+        HttpLog.i(getLogPrefix() + " onError:" + e);
         if (isCancelled())
         {
             runOnUiThread(new Runnable()
@@ -106,6 +106,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onFinally()
     {
         super.onFinally();
+        HttpLog.i(getLogPrefix() + " onFinish");
         runOnUiThread(new Runnable()
         {
             @Override

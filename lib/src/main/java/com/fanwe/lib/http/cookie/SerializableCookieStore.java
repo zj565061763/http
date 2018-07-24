@@ -3,7 +3,7 @@ package com.fanwe.lib.http.cookie;
 import android.content.Context;
 
 import com.fanwe.lib.http.utils.HttpIOUtil;
-import com.fanwe.lib.http.utils.HttpLogger;
+import com.fanwe.lib.http.utils.HttpLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,16 +36,16 @@ public class SerializableCookieStore extends PersistentCookieStore
                 mMemoryCookieStore = deserializeObject(getFile());
             } catch (Exception e)
             {
-                HttpLogger.e("cookie deserialize cookiestore error:" + e);
+                HttpLog.e("cookie deserialize cookiestore error:" + e);
             }
 
             if (mMemoryCookieStore == null)
             {
                 mMemoryCookieStore = new ModifyMemoryCookieStore();
-                HttpLogger.i("cookie create MemoryCookieStore");
+                HttpLog.i("cookie create MemoryCookieStore");
             } else
             {
-                HttpLogger.i("cookie deserialize cookiestore success");
+                HttpLog.i("cookie deserialize cookiestore success");
             }
         }
         return mMemoryCookieStore;
@@ -64,7 +64,7 @@ public class SerializableCookieStore extends PersistentCookieStore
                 mFile.createNewFile();
             } catch (Exception e)
             {
-                HttpLogger.e("cookie create httpcookie file error:" + e);
+                HttpLog.e("cookie create httpcookie file error:" + e);
             }
         }
         return mFile;
@@ -76,10 +76,10 @@ public class SerializableCookieStore extends PersistentCookieStore
         try
         {
             serializeObject(getMemoryCookieStore(), getFile());
-            HttpLogger.i("cookie save cookiestore success");
+            HttpLog.i("cookie save cookiestore success");
         } catch (Exception e)
         {
-            HttpLogger.e("cookie save cookiestore error:" + e);
+            HttpLog.e("cookie save cookiestore error:" + e);
         }
     }
 
