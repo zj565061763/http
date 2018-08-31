@@ -2,7 +2,7 @@ package com.fanwe.lib.http.callback;
 
 import com.fanwe.lib.http.utils.HttpIOUtil;
 import com.fanwe.lib.http.utils.TransmitParam;
-import com.fanwe.lib.task.FTask;
+import com.sd.lib.task.FTask;
 
 import java.io.File;
 import java.io.FileOutputStream;

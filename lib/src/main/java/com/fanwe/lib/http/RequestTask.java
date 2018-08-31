@@ -4,7 +4,7 @@ import com.fanwe.lib.http.callback.IUploadProgressCallback;
 import com.fanwe.lib.http.callback.RequestCallback;
 import com.fanwe.lib.http.utils.HttpLog;
 import com.fanwe.lib.http.utils.TransmitParam;
-import com.fanwe.lib.task.FTask;
+import com.sd.lib.task.FTask;
 
 /**
  * Created by zhengjun on 2017/10/11.
