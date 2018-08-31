@@ -1,8 +1,8 @@
 package com.sd.lib.http.callback;
 
+import com.sd.lib.http.task.FTask;
 import com.sd.lib.http.utils.HttpIOUtil;
 import com.sd.lib.http.utils.TransmitParam;
-import com.sd.lib.task.FTask;
 
 import java.io.File;
 import java.io.FileOutputStream;

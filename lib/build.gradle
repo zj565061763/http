@@ -9,9 +9,9 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 20180831
-        versionName "1.1.0"
+        versionName "1.1.1"
     }
-    
+
     buildTypes {
         release {
             minifyEnabled false
@@ -26,9 +26,7 @@ android {
 }
 
 dependencies {
-    api 'com.github.zj565061763:task:1.1.0'
 }
-
 
 // 指定编码
 tasks.withType(Javadoc) {
