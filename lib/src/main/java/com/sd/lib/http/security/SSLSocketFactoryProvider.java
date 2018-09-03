@@ -7,10 +7,13 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -42,7 +45,7 @@ public class SSLSocketFactoryProvider
         return context.getSocketFactory();
     }
 
-    public static SSLSocketFactory get(InputStream... inputStreams) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException
+    public static SSLSocketFactory get(InputStream keyStoreInput, char[] keyStorePassword, InputStream... inputStreams) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException
     {
         final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
         final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -61,8 +64,22 @@ public class SSLSocketFactoryProvider
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(keyStore);
 
+
+        KeyManager[] keyManagers = null;
+        if (keyStoreInput != null && keyStorePassword != null)
+        {
+            final KeyStore clientKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            clientKeyStore.load(keyStoreInput, keyStorePassword);
+
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(clientKeyStore, keyStorePassword);
+
+            keyManagers = keyManagerFactory.getKeyManagers();
+        }
+
+
         final SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+        sslContext.init(keyManagers, trustManagerFactory.getTrustManagers(), new SecureRandom());
         return sslContext.getSocketFactory();
     }
 }
