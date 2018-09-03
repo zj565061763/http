@@ -45,14 +45,19 @@ public class SSLSocketFactoryProvider
         return context.getSocketFactory();
     }
 
-    public static SSLSocketFactory get(InputStream keyStoreInput, char[] keyStorePassword, InputStream... inputStreams) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException
+    public static SSLSocketFactory get(InputStream... certificatesInput) throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException
+    {
+        return get(null, null, certificatesInput);
+    }
+
+    public static SSLSocketFactory get(InputStream keyStoreInput, char[] keyStorePassword, InputStream... certificatesInput) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException
     {
         final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
         final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(null);
 
         int index = 0;
-        for (InputStream item : inputStreams)
+        for (InputStream item : certificatesInput)
         {
             index++;
             keyStore.setCertificateEntry(String.valueOf(index), certificateFactory.generateCertificate(item));
