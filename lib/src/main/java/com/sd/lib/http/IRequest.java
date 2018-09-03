@@ -4,6 +4,9 @@ import com.sd.lib.http.callback.IUploadProgressCallback;
 import com.sd.lib.http.callback.RequestCallback;
 import com.sd.lib.http.utils.HttpDataHolder;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 public interface IRequest
 {
     /**
@@ -63,6 +66,10 @@ public interface IRequest
      */
     IRequest setUploadProgressCallback(IUploadProgressCallback callback);
 
+    IRequest setSSLSocketFactory(SSLSocketFactory SSLSocketFactory);
+
+    IRequest setHostnameVerifier(HostnameVerifier hostnameVerifier);
+
     /**
      * 返回设置的请求参数
      *
@@ -105,6 +112,10 @@ public interface IRequest
      * @return
      */
     String getTag();
+
+    SSLSocketFactory getSSLSocketFactory();
+
+    HostnameVerifier getHostnameVerifier();
 
     /**
      * 异步请求

@@ -6,6 +6,9 @@ import com.sd.lib.http.task.FTask;
 import com.sd.lib.http.utils.HttpDataHolder;
 import com.sd.lib.http.utils.TransmitParam;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 public abstract class Request implements IRequest
 {
     private String mBaseUrl;
@@ -18,6 +21,9 @@ public abstract class Request implements IRequest
 
     private int mConnectTimeout = DEFAULT_CONNECT_TIMEOUT;
     private int mReadTimeout = DEFAULT_READ_TIMEOUT;
+
+    private SSLSocketFactory mSSLSocketFactory;
+    private HostnameVerifier mHostnameVerifier;
 
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
@@ -72,6 +78,19 @@ public abstract class Request implements IRequest
     }
 
     @Override
+    public final IRequest setSSLSocketFactory(SSLSocketFactory sslSocketFactory)
+    {
+        mSSLSocketFactory = sslSocketFactory;
+        return this;
+    }
+
+    public final IRequest setHostnameVerifier(HostnameVerifier hostnameVerifier)
+    {
+        mHostnameVerifier = hostnameVerifier;
+        return this;
+    }
+
+    @Override
     public final HttpDataHolder<String, Object> getParams()
     {
         return mParams;
@@ -109,6 +128,18 @@ public abstract class Request implements IRequest
     public final String getTag()
     {
         return mTag;
+    }
+
+    @Override
+    public final SSLSocketFactory getSSLSocketFactory()
+    {
+        return mSSLSocketFactory;
+    }
+
+    @Override
+    public final HostnameVerifier getHostnameVerifier()
+    {
+        return mHostnameVerifier;
     }
 
     @Override
