@@ -100,9 +100,6 @@ public abstract class FTask implements Runnable
         try
         {
             onRun();
-        } catch (final Exception e)
-        {
-            onError(e);
         } finally
         {
             onFinally();
@@ -111,19 +108,8 @@ public abstract class FTask implements Runnable
 
     /**
      * 任务执行回调（任务执行线程）
-     *
-     * @throws Exception
      */
-    protected abstract void onRun() throws Exception;
-
-    /**
-     * 任务执行异常回调（任务执行线程）
-     *
-     * @param e
-     */
-    protected void onError(Exception e)
-    {
-    }
+    protected abstract void onRun();
 
     /**
      * 任务执行完成回调（任务执行线程）
