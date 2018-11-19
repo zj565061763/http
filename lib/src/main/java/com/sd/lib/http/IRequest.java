@@ -70,6 +70,8 @@ public interface IRequest
 
     IRequest setHostnameVerifier(HostnameVerifier hostnameVerifier);
 
+    IRequest setInterceptExecute(boolean intercept);
+
     /**
      * 返回设置的请求参数
      *

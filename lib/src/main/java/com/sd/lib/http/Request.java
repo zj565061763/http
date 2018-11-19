@@ -28,6 +28,8 @@ public abstract class Request implements IRequest
     private IUploadProgressCallback mUploadProgressCallback;
     private TransmitParam mTransmitParam;
 
+    private boolean mInterceptExecute = true;
+
     protected Request()
     {
         RequestManager.getInstance().getRequestIniter().onInitRequest(this);
@@ -87,6 +89,13 @@ public abstract class Request implements IRequest
     public final IRequest setHostnameVerifier(HostnameVerifier hostnameVerifier)
     {
         mHostnameVerifier = hostnameVerifier;
+        return this;
+    }
+
+    @Override
+    public final IRequest setInterceptExecute(boolean interceptExecute)
+    {
+        mInterceptExecute = interceptExecute;
         return this;
     }
 
@@ -157,14 +166,19 @@ public abstract class Request implements IRequest
     @Override
     public final IResponse execute() throws Exception
     {
+        final boolean intercept = mInterceptExecute;
+
         IResponse response = null;
         try
         {
-            RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
+            if (intercept)
+                RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
+
             response = doExecute();
         } finally
         {
-            RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, response);
+            if (intercept)
+                RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, response);
         }
         return response;
     }
