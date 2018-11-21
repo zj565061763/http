@@ -118,10 +118,16 @@ public class RequestManager
         }
 
         @Override
-        public void afterExecute(IRequest request, IResponse response)
+        public IResponse afterExecute(IRequest request, IResponse response)
         {
             if (mRequestInterceptor != null)
-                mRequestInterceptor.afterExecute(request, response);
+            {
+                final IResponse responseTemp = mRequestInterceptor.afterExecute(request, response);
+                if (responseTemp != null)
+                    return responseTemp;
+            }
+
+            return response;
         }
     };
 

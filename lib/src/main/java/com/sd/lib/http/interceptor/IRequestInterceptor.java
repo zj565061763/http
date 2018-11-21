@@ -12,7 +12,7 @@ public interface IRequestInterceptor
      * 发起网络请求之前回调
      *
      * @param request
-     * @return
+     * @return 如果返回值不为null，则用此方法的返回值
      */
     IResponse beforeExecute(IRequest request);
 
@@ -21,6 +21,7 @@ public interface IRequestInterceptor
      *
      * @param request
      * @param response
+     * @return 返回值不能为null
      */
-    void afterExecute(IRequest request, IResponse response);
+    IResponse afterExecute(IRequest request, IResponse response);
 }

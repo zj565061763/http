@@ -169,21 +169,22 @@ public abstract class Request implements IRequest
         final boolean intercept = mInterceptExecute;
 
         IResponse response = null;
-        try
-        {
-            if (intercept)
-            {
-                final IResponse beforeExecuteResponse = RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
-                if (beforeExecuteResponse != null)
-                    return beforeExecuteResponse;
-            }
 
-            response = doExecute();
-        } finally
+        if (intercept)
         {
-            if (intercept)
-                RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, response);
+            response = RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
+            if (response != null)
+                return response;
         }
+
+        response = doExecute();
+
+        if (intercept)
+            response = RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, response);
+
+        if (response == null)
+            throw new NullPointerException("IResponse is null");
+
         return response;
     }
 
