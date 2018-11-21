@@ -172,7 +172,11 @@ public abstract class Request implements IRequest
         try
         {
             if (intercept)
-                RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
+            {
+                final IResponse beforeExecuteResponse = RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
+                if (beforeExecuteResponse != null)
+                    return beforeExecuteResponse;
+            }
 
             response = doExecute();
         } finally

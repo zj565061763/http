@@ -7,10 +7,8 @@ import com.sd.lib.http.cookie.ICookieStore;
 import com.sd.lib.http.interceptor.IRequestInterceptor;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RequestManager
 {
@@ -21,7 +19,7 @@ public class RequestManager
     private ICookieStore mCookieStore;
 
     private IRequestIdentifierProvider mRequestIdentifierProvider;
-    private List<IRequestInterceptor> mListRequestInterceptor = new CopyOnWriteArrayList<>();
+    private IRequestInterceptor mRequestInterceptor;
     private IRequestIniter mRequestIniter;
 
     private boolean isDebug = false;
@@ -103,47 +101,27 @@ public class RequestManager
 
     //---------- IRequestInterceptor start ----------
 
-    /**
-     * 添加请求拦截对象
-     *
-     * @param interceptor
-     */
-    public void addRequestInterceptor(IRequestInterceptor interceptor)
+    public void setRequestInterceptor(IRequestInterceptor requestInterceptor)
     {
-        if (interceptor == null || mListRequestInterceptor.contains(interceptor))
-            return;
-
-        mListRequestInterceptor.add(interceptor);
-    }
-
-    /**
-     * 移除请求拦截对象
-     *
-     * @param interceptor
-     */
-    public void removeRequestInterceptor(IRequestInterceptor interceptor)
-    {
-        mListRequestInterceptor.remove(interceptor);
+        mRequestInterceptor = requestInterceptor;
     }
 
     final IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
     {
         @Override
-        public void beforeExecute(IRequest request)
+        public IResponse beforeExecute(IRequest request)
         {
-            for (IRequestInterceptor item : mListRequestInterceptor)
-            {
-                item.beforeExecute(request);
-            }
+            if (mRequestInterceptor != null)
+                return mRequestInterceptor.beforeExecute(request);
+
+            return null;
         }
 
         @Override
         public void afterExecute(IRequest request, IResponse response)
         {
-            for (IRequestInterceptor item : mListRequestInterceptor)
-            {
-                item.afterExecute(request, response);
-            }
+            if (mRequestInterceptor != null)
+                mRequestInterceptor.afterExecute(request, response);
         }
     };
 

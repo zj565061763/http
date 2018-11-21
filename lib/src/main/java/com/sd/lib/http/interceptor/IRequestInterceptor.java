@@ -12,8 +12,9 @@ public interface IRequestInterceptor
      * 发起网络请求之前回调
      *
      * @param request
+     * @return
      */
-    void beforeExecute(IRequest request);
+    IResponse beforeExecute(IRequest request);
 
     /**
      * 发起网络请求之后回调
