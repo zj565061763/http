@@ -121,11 +121,7 @@ public class RequestManager
         public IResponse afterExecute(IRequest request, IResponse response)
         {
             if (mRequestInterceptor != null)
-            {
-                final IResponse responseTemp = mRequestInterceptor.afterExecute(request, response);
-                if (responseTemp != null)
-                    return responseTemp;
-            }
+                return mRequestInterceptor.afterExecute(request, response);
 
             return response;
         }
