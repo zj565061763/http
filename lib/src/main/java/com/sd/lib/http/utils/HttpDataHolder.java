@@ -19,7 +19,7 @@ public class HttpDataHolder<K, V>
         return this;
     }
 
-    public HttpDataHolder<K, V> putAll(Map<K, V> map)
+    public HttpDataHolder<K, V> put(Map<K, V> map)
     {
         if (map != null)
         {
@@ -28,6 +28,13 @@ public class HttpDataHolder<K, V>
                 put(item.getKey(), item.getValue());
             }
         }
+        return this;
+    }
+
+    public HttpDataHolder<K, V> put(HttpDataHolder<K, V> data)
+    {
+        if (data != null)
+            put(data.toMap());
         return this;
     }
 
