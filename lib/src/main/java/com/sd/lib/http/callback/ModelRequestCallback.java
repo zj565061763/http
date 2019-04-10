@@ -12,17 +12,17 @@ public abstract class ModelRequestCallback<T> extends StringRequestCallback
     {
         super.onSuccessBackground();
 
-        final Class<T> modelClass = getModelClass();
-        mActModel = parseToModel(getResult(), modelClass);
+        final Type type = getModelType();
+        mActModel = parseToModel(getResult(), type);
     }
 
-    protected Class<T> getModelClass()
+    protected Type getModelType()
     {
         final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
         final Type[] types = parameterizedType.getActualTypeArguments();
         if (types != null && types.length > 0)
         {
-            return (Class<T>) types[0];
+            return types[0];
         } else
         {
             throw new RuntimeException("generic type not found");
@@ -38,8 +38,8 @@ public abstract class ModelRequestCallback<T> extends StringRequestCallback
      * 将字符串解析为实体
      *
      * @param content
-     * @param clazz
+     * @param type
      * @return
      */
-    protected abstract T parseToModel(String content, Class<T> clazz);
+    protected abstract T parseToModel(String content, Type type);
 }
