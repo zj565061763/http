@@ -91,7 +91,18 @@ public abstract class FTask implements Runnable
     public final boolean isDone()
     {
         final FTaskInfo taskInfo = FTaskManager.getInstance().getTaskInfo(this);
-        return taskInfo == null ? false : taskInfo.isDone();
+        return taskInfo != null && taskInfo.isDone();
+    }
+
+    /**
+     * 任务是否还在执行中
+     *
+     * @return
+     */
+    public final boolean isRunning()
+    {
+        final FTaskInfo taskInfo = FTaskManager.getInstance().getTaskInfo(this);
+        return taskInfo != null && !taskInfo.isDone();
     }
 
     @Override
