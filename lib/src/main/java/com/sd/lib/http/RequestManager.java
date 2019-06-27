@@ -18,9 +18,8 @@ public class RequestManager
 
     private ICookieStore mCookieStore;
 
-    private IRequestIdentifierProvider mRequestIdentifierProvider;
     private IRequestInterceptor mRequestInterceptor;
-    private IRequestIniter mRequestIniter;
+    private IRequestIdentifierProvider mRequestIdentifierProvider;
 
     private boolean isDebug = false;
 
@@ -128,31 +127,6 @@ public class RequestManager
     };
 
     //---------- IRequestInterceptor end ----------
-
-    /**
-     * 设置请求初始化对象
-     *
-     * @param requestIniter
-     */
-    public void setRequestIniter(IRequestIniter requestIniter)
-    {
-        mRequestIniter = requestIniter;
-    }
-
-    IRequestIniter getRequestIniter()
-    {
-        if (mRequestIniter == null)
-        {
-            mRequestIniter = new IRequestIniter()
-            {
-                @Override
-                public void onInitRequest(IRequest request)
-                {
-                }
-            };
-        }
-        return mRequestIniter;
-    }
 
     /**
      * 异步执行请求
