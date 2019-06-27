@@ -95,9 +95,9 @@ public abstract class FTask implements Runnable
     }
 
     /**
-     * 任务是否还在执行中
+     * 任务是否还在进行中
      *
-     * @return
+     * @return true-已提交未执行或者执行中
      */
     public final boolean isRunning()
     {
