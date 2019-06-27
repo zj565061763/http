@@ -12,7 +12,7 @@ import java.io.OutputStream;
 public abstract class FileRequestCallback extends RequestCallback
 {
     private final File mFile;
-    private TransmitParam mTransmitParam = new TransmitParam();
+    private final TransmitParam mTransmitParam = new TransmitParam();
 
     public FileRequestCallback(File file)
     {
