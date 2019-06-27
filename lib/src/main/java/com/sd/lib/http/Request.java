@@ -30,11 +30,6 @@ public abstract class Request implements IRequest
 
     private boolean mInterceptExecute = true;
 
-    protected Request()
-    {
-        RequestManager.getInstance().getRequestIniter().onInitRequest(this);
-    }
-
     //---------- IRequest implements start ----------
 
     @Override
