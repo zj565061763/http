@@ -4,7 +4,7 @@ import com.sd.lib.http.IRequest;
 import com.sd.lib.http.IResponse;
 import com.sd.lib.http.utils.TransmitParam;
 
-public abstract class RequestCallback
+public abstract class RequestCallback implements IUploadProgressCallback
 {
     private IRequest mRequest;
     private IResponse mResponse;
@@ -49,6 +49,7 @@ public abstract class RequestCallback
 
     public abstract void onSuccess();
 
+    @Override
     public void onProgressUpload(TransmitParam param)
     {
     }
