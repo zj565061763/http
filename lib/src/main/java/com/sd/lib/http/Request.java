@@ -212,7 +212,7 @@ public abstract class Request implements IRequest
         if (mTransmitParam == null)
             mTransmitParam = new TransmitParam();
 
-        mTransmitParam.transmit(uploaded, total);
+        mTransmitParam.transmit(total, uploaded);
 
         final int newProgress = mTransmitParam.getProgress();
         if (newProgress != mLastProgress)

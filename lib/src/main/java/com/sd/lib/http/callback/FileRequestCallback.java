@@ -66,7 +66,7 @@ public abstract class FileRequestCallback extends RequestCallback
                 @Override
                 public void onProgress(long count)
                 {
-                    getTransmitParam().transmit(count, total);
+                    getTransmitParam().transmit(total, count);
 
                     final int newProgress = getTransmitParam().getProgress();
                     if (newProgress != mLastProgress)

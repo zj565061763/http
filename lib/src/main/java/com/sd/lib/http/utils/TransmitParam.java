@@ -14,10 +14,10 @@ public class TransmitParam
 
     private long mCalculateSpeedInterval = CALCULATE_SPEED_INTERVAL;
 
-    public synchronized void transmit(long current, long total)
+    public synchronized void transmit(long total, long current)
     {
-        mCurrent = current;
         mTotal = total;
+        mCurrent = current;
 
         if (mTotal <= 0)
         {
