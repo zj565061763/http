@@ -2,6 +2,7 @@ package com.sd.lib.http.callback;
 
 import com.sd.lib.http.IRequest;
 import com.sd.lib.http.IResponse;
+import com.sd.lib.http.exception.HttpResponseCodeException;
 import com.sd.lib.http.utils.TransmitParam;
 
 public abstract class RequestCallback implements IUploadProgressCallback
@@ -41,6 +42,20 @@ public abstract class RequestCallback implements IUploadProgressCallback
 
     public void onSuccessBackground() throws Exception
     {
+        processResponseCode(getResponse().getCode());
+    }
+
+    /**
+     * 处理返回码
+     *
+     * @param code
+     * @throws Exception
+     */
+    protected void processResponseCode(int code) throws Exception
+    {
+        final HttpResponseCodeException codeException = HttpResponseCodeException.from(code);
+        if (codeException != null)
+            throw codeException;
     }
 
     public void onSuccessBefore()
