@@ -19,15 +19,21 @@ public class TransmitParam
         mCurrent = current;
         mTotal = total;
 
-        final long currentTime = System.currentTimeMillis();
-        final long timeInterval = currentTime - mLastTime;
-        if (timeInterval >= mCalculateSpeedInterval)
+        if (mTotal <= 0)
         {
-            final long count = current - mLastCount;
-            mSpeedBps = (int) (count * (1000f / timeInterval));
+            mProgress = 0;
+        } else
+        {
+            final long currentTime = System.currentTimeMillis();
+            final long timeInterval = currentTime - mLastTime;
+            if (timeInterval >= mCalculateSpeedInterval)
+            {
+                final long count = current - mLastCount;
+                mSpeedBps = (int) (count * (1000f / timeInterval));
 
-            mLastTime = currentTime;
-            mLastCount = current;
+                mLastTime = currentTime;
+                mLastCount = current;
+            }
         }
 
         mProgress = (int) (current * 100 / total);
