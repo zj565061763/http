@@ -1,5 +1,5 @@
 # About
-封装了一层Http的接口，默认点实现方案是：[http-request](https://github.com/kevinsawicki/http-request)
+封装了一层Http的接口，默认实现用的是：[http-request](https://github.com/kevinsawicki/http-request)
 
 # Gradle
 [![](https://jitpack.io/v/zj565061763/http.svg)](https://jitpack.io/#zj565061763/http)
@@ -199,20 +199,22 @@ RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));
 ## 请求拦截
 在实际开发中，有些业务需要全局处理，比如发起请求之前对参数加密，打印每次请求的地址等。可以实现IRequestInterceptor接口，把对象设置给RequestManager
 ```java
-//设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边传入的对象如果是和资源相关的对象，需要在资源销毁的时候remove
+//设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑
 RequestManager.getInstance().addRequestInterceptor(new IRequestInterceptor()
 {
     @Override
-    public void beforeExecute(IRequest request)
+    public IResponse beforeExecute(IRequest request)
     {
         //请求被真正执行之前回调
         Log.i(TAG, "beforeExecute:" + request);
+        return null;
     }
 
     @Override
-    public void afterExecute(IRequest request, IResponse response);
+    public IResponse afterExecute(IRequest request, IResponse response);
     {
         //请求被真正执行之后回调
+        return null;
     }
 });
 ```
