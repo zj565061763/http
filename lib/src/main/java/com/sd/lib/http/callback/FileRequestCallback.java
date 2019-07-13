@@ -55,24 +55,18 @@ public abstract class FileRequestCallback extends RequestCallback
 
         final long total = getResponse().getContentLength();
         final InputStream input = getResponse().getInputStream();
-        final OutputStream ouput = new FileOutputStream(getFile());
+        final OutputStream output = new FileOutputStream(getFile());
 
         try
         {
-            HttpIOUtil.copy(input, ouput, new HttpIOUtil.ProgressCallback()
+            HttpIOUtil.copy(input, output, new HttpIOUtil.ProgressCallback()
             {
-                private int mLastProgress;
-
                 @Override
                 public void onProgress(long count)
                 {
-                    getTransmitParam().transmit(total, count);
-
-                    final int newProgress = getTransmitParam().getProgress();
-                    if (newProgress != mLastProgress)
+                    if (getTransmitParam().transmit(total, count))
                     {
                         FTask.runOnUiThread(mUpdateProgressRunnable);
-                        mLastProgress = newProgress;
                     }
                 }
             });
@@ -80,7 +74,7 @@ public abstract class FileRequestCallback extends RequestCallback
         {
             FTask.runOnUiThread(mUpdateProgressRunnable);
             HttpIOUtil.closeQuietly(input);
-            HttpIOUtil.closeQuietly(ouput);
+            HttpIOUtil.closeQuietly(output);
         }
     }
 

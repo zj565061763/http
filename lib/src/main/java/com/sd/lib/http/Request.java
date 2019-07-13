@@ -202,8 +202,6 @@ public abstract class Request implements IRequest
         return mConnectTimeout;
     }
 
-    private int mLastProgress;
-
     protected final void notifyProgressUpload(long uploaded, long total)
     {
         if (mUploadProgressCallback == null)
@@ -212,13 +210,9 @@ public abstract class Request implements IRequest
         if (mTransmitParam == null)
             mTransmitParam = new TransmitParam();
 
-        mTransmitParam.transmit(total, uploaded);
-
-        final int newProgress = mTransmitParam.getProgress();
-        if (newProgress != mLastProgress)
+        if (mTransmitParam.transmit(total, uploaded))
         {
             FTask.runOnUiThread(mUploadProgressRunnable);
-            mLastProgress = newProgress;
         }
     }
 
