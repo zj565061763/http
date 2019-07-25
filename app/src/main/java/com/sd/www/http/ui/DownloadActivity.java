@@ -44,17 +44,12 @@ public class DownloadActivity extends AppCompatActivity
                 mProgressBar.setProgress(param.getProgress());
                 mTvProgress.setText(param.getProgress() + "%");
                 mTvSpeed.setText(param.getSpeedKBps() + "KB/秒");
-                if (param.isFinish())
-                {
-                    mTvSpeed.setText("");
-                    Log.i(TAG, "download finish");
-                }
             }
 
             @Override
             public void onSuccess()
             {
-
+                Log.i(TAG, "download finish");
             }
 
             @Override
