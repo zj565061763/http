@@ -104,6 +104,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             if (getState() == State.DoneCancel)
             {
                 // 如果被取消的话，此处不通知开始事件，由取消回调中通知开始事件
+                HttpLog.e(getLogPrefix() + " start runnable but state:" + getState());
                 return;
             }
 
@@ -148,7 +149,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             });
         } else
         {
-            HttpLog.e(getLogPrefix() + "receive error:" + e + " when state:" + getState());
+            HttpLog.e(getLogPrefix() + " receive error:" + e + " when state:" + getState());
         }
     }
 
