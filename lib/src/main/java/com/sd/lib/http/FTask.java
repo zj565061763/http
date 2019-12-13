@@ -5,10 +5,10 @@ import android.os.Looper;
 
 import java.util.concurrent.ExecutorService;
 
-abstract class FTask implements Runnable
+abstract class FTask
 {
     private final String mTag;
-    private State mState = State.None;
+    private volatile State mState = State.None;
 
     private OnStateChangeCallback mOnStateChangeCallback;
 
@@ -59,7 +59,7 @@ abstract class FTask implements Runnable
      */
     public final FTaskInfo submit()
     {
-        return FTaskManager.getInstance().submit(this, getTag(), mTaskCallback);
+        return FTaskManager.getInstance().submit(mRunnable, getTag(), mTaskCallback);
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class FTask implements Runnable
      */
     public final FTaskInfo submitSequence()
     {
-        return FTaskManager.getInstance().submitSequence(this, getTag(), mTaskCallback);
+        return FTaskManager.getInstance().submitSequence(mRunnable, getTag(), mTaskCallback);
     }
 
     /**
@@ -80,7 +80,7 @@ abstract class FTask implements Runnable
      */
     public final FTaskInfo submitTo(ExecutorService executorService)
     {
-        return FTaskManager.getInstance().submitTo(this, getTag(), executorService, mTaskCallback);
+        return FTaskManager.getInstance().submitTo(mRunnable, getTag(), executorService, mTaskCallback);
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class FTask implements Runnable
      */
     public final boolean cancel(boolean mayInterruptIfRunning)
     {
-        return FTaskManager.getInstance().cancel(this, mayInterruptIfRunning);
+        return FTaskManager.getInstance().cancel(mRunnable, mayInterruptIfRunning);
     }
 
     private final FTaskManager.TaskCallback mTaskCallback = new FTaskManager.TaskCallback()
@@ -99,21 +99,21 @@ abstract class FTask implements Runnable
         @Override
         public void onSubmit()
         {
-            setState(State.Submit);
+            FTask.this.setState(State.Submit);
             FTask.this.onSubmit();
         }
 
         @Override
         public void onError(Throwable e)
         {
-            setState(State.DoneError);
+            FTask.this.setState(State.DoneError);
             FTask.this.onError(e);
         }
 
         @Override
         public void onCancel()
         {
-            setState(State.DoneCancel);
+            FTask.this.setState(State.DoneCancel);
             FTask.this.onCancel();
         }
 
@@ -121,28 +121,31 @@ abstract class FTask implements Runnable
         public void onFinish()
         {
             if (getState() == State.Running)
-                setState(State.DoneSuccess);
+                FTask.this.setState(State.DoneSuccess);
 
             FTask.this.onFinish();
         }
     };
 
-    @Override
-    public final void run()
+    private final Runnable mRunnable = new Runnable()
     {
-        setState(State.Running);
+        @Override
+        public void run()
+        {
+            FTask.this.setState(State.Running);
 
-        try
-        {
-            onRun();
-        } catch (Throwable e)
-        {
-            if (getState() == State.Running)
-                mTaskCallback.onError(e);
-            else
-                FTask.this.onError(e);
+            try
+            {
+                FTask.this.onRun();
+            } catch (Throwable e)
+            {
+                if (getState() == State.Running)
+                    mTaskCallback.onError(e);
+                else
+                    FTask.this.onError(e);
+            }
         }
-    }
+    };
 
     /**
      * 执行回调（执行线程）
