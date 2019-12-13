@@ -127,6 +127,12 @@ class RequestTask extends FTask implements IUploadProgressCallback
         @Override
         public void run()
         {
+            if (getState() == State.DoneCancel)
+            {
+                HttpLog.e(getLogPrefix() + " success runnable but state:" + getState());
+                return;
+            }
+
             mCallback.onSuccessBefore();
             mCallback.onSuccess();
         }
