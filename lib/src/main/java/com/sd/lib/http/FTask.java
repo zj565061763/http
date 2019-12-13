@@ -137,7 +137,10 @@ abstract class FTask implements Runnable
             onRun();
         } catch (Throwable e)
         {
-            mTaskCallback.onError(e);
+            if (getState() == State.Running)
+                mTaskCallback.onError(e);
+            else
+                FTask.this.onError(e);
         }
     }
 
