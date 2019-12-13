@@ -35,9 +35,15 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Throwable
     {
+        HttpLog.i(getLogPrefix() + " 1 onRun state:" + getState());
+        if (getState() == State.DoneCancel)
+        {
+            HttpLog.i(getLogPrefix() + " check state !!!");
+            return;
+        }
+
         synchronized (RequestTask.this)
         {
-            HttpLog.i(getLogPrefix() + " 1 onRun state:" + getState());
             if (!mIsStartNotified)
             {
                 // 等待开始回调完成
