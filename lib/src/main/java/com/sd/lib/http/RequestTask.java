@@ -28,7 +28,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     public boolean cancel(boolean mayInterruptIfRunning)
     {
-        HttpLog.i(getLogPrefix() + " cancel called state" + getState());
+        HttpLog.i(getLogPrefix() + " cancel called state:" + getState());
         return super.cancel(mayInterruptIfRunning);
     }
 
@@ -47,8 +47,9 @@ class RequestTask extends FTask implements IUploadProgressCallback
                     RequestTask.this.wait();
                 } catch (InterruptedException e)
                 {
-                    HttpLog.e(getLogPrefix() + " wait interrupted state:" + getState());
-                    if (getState() == State.DoneCancel)
+                    final State state = getState();
+                    HttpLog.e(getLogPrefix() + " wait interrupted state:" + state);
+                    if (state == State.DoneCancel)
                         return;
                 }
                 HttpLog.i(getLogPrefix() + " wait finish");
