@@ -35,13 +35,16 @@ class RequestTask extends FTask implements IUploadProgressCallback
             RequestTask.this.wait(); //等待开始回调完成
         }
 
-        HttpLog.i(getLogPrefix() + " 4 resumeThread");
+        final State state = getState();
+        HttpLog.i(getLogPrefix() + " 4 resumeThread state:" + state);
+        if (state == State.DoneCancel)
+            return;
 
         final IResponse response = mRequest.execute();
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
-        HttpLog.i(getLogPrefix() + " 5 onSuccess");
+        HttpLog.i(getLogPrefix() + " 5 executed");
         runOnUiThread(mSuccessRunnable);
     }
 
