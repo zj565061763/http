@@ -47,10 +47,12 @@ class RequestTask extends FTask implements IUploadProgressCallback
                     RequestTask.this.wait();
                 } catch (InterruptedException e)
                 {
-                    final State state = getState();
-                    HttpLog.e(getLogPrefix() + " wait interrupted state:" + state);
-                    if (state == State.DoneCancel)
+                    HttpLog.e(getLogPrefix() + " wait interrupted state:" + getState());
+                    if (getState() == State.DoneCancel)
+                    {
+                        HttpLog.i(getLogPrefix() + " check state !!!");
                         return;
+                    }
                 }
                 HttpLog.i(getLogPrefix() + " wait finish");
             }
@@ -58,20 +60,29 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
         HttpLog.i(getLogPrefix() + " 2 execute before state:" + getState());
         if (getState() == State.DoneCancel)
+        {
+            HttpLog.i(getLogPrefix() + " check state !!!");
             return;
+        }
 
         final IResponse response = mRequest.execute();
 
         HttpLog.i(getLogPrefix() + " 3 execute after state:" + getState());
         if (getState() == State.DoneCancel)
+        {
+            HttpLog.i(getLogPrefix() + " check state !!!");
             return;
+        }
 
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
         HttpLog.i(getLogPrefix() + " 4 onSuccessBackground state:" + getState());
         if (getState() == State.DoneCancel)
+        {
+            HttpLog.i(getLogPrefix() + " check state !!!");
             return;
+        }
 
         HttpLog.i(getLogPrefix() + " 5 success");
         runOnUiThread(mSuccessRunnable);
