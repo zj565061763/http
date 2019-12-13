@@ -149,11 +149,11 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onCancel()
     {
         super.onCancel();
+        HttpLog.i(getLogPrefix() + " onCancel mIsStartNotified:" + mIsStartNotified);
         synchronized (RequestTask.this)
         {
             if (mIsStartNotified)
             {
-                HttpLog.i(getLogPrefix() + " onCancel");
                 runOnUiThread(new Runnable()
                 {
                     @Override
@@ -164,7 +164,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 });
             } else
             {
-                HttpLog.e(getLogPrefix() + " onCancel need onStart");
                 mIsStartNotified = true;
                 runOnUiThread(new Runnable()
                 {
