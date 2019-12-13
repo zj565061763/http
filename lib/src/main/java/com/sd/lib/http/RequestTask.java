@@ -92,7 +92,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
             return;
         }
 
-        HttpLog.i(getLogPrefix() + " 5 success");
+        HttpLog.i(getLogPrefix() + " 5 notify success state:" + getState());
+
         runOnUiThread(mSuccessRunnable);
     }
 
