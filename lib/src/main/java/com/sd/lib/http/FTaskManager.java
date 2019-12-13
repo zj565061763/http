@@ -22,7 +22,7 @@ class FTaskManager
     private final ExecutorService DEFAULT_EXECUTOR = Executors.newCachedThreadPool();
     private final ExecutorService SINGLE_EXECUTOR = Executors.newSingleThreadExecutor();
 
-    private final Map<Runnable, FTaskInfo> mMapTaskInfo = new HashMap<>();
+    private final Map<TaskRunnable, FTaskInfo> mMapTaskInfo = new HashMap<>();
     private final Map<String, Map<FTaskInfo, String>> mMapTaskTag = new HashMap<>();
 
     private boolean mDebug;
@@ -54,34 +54,24 @@ class FTaskManager
         mDebug = debug;
     }
 
-    public FTaskInfo submit(Runnable runnable)
+    public FTaskInfo submit(TaskRunnable runnable)
     {
         return submit(runnable, null);
     }
 
-    public FTaskInfo submit(Runnable runnable, TaskCallback callback)
+    public FTaskInfo submit(TaskRunnable runnable, String tag)
     {
-        return submit(runnable, null, callback);
+        return submitTo(runnable, tag, DEFAULT_EXECUTOR);
     }
 
-    public FTaskInfo submit(Runnable runnable, String tag, TaskCallback callback)
-    {
-        return submitTo(runnable, tag, DEFAULT_EXECUTOR, callback);
-    }
-
-    public FTaskInfo submitSequence(Runnable runnable)
+    public FTaskInfo submitSequence(TaskRunnable runnable)
     {
         return submitSequence(runnable, null);
     }
 
-    public FTaskInfo submitSequence(Runnable runnable, TaskCallback callback)
+    public FTaskInfo submitSequence(TaskRunnable runnable, String tag)
     {
-        return submitSequence(runnable, null, callback);
-    }
-
-    public FTaskInfo submitSequence(Runnable runnable, String tag, TaskCallback callback)
-    {
-        return submitTo(runnable, tag, SINGLE_EXECUTOR, callback);
+        return submitTo(runnable, tag, SINGLE_EXECUTOR);
     }
 
     /**
@@ -90,17 +80,16 @@ class FTaskManager
      * @param runnable        要执行的Runnable
      * @param executorService 要执行Runnable的线程池
      * @param tag             对应的tag，可用于取消
-     * @param callback        任务执行回调
      * @return
      */
-    public synchronized FTaskInfo submitTo(Runnable runnable, String tag, ExecutorService executorService, TaskCallback callback)
+    public synchronized FTaskInfo submitTo(TaskRunnable runnable, String tag, ExecutorService executorService)
     {
         if (tag == null)
             tag = "";
 
         cancel(runnable, true);
 
-        final RunnableWrapper wrapper = new RunnableWrapper(runnable, callback);
+        final RunnableWrapper wrapper = new RunnableWrapper(runnable);
         final FTaskInfo info = new FTaskInfo(tag, wrapper);
         mMapTaskInfo.put(runnable, info);
 
@@ -114,7 +103,7 @@ class FTaskManager
 
         if (isDebug())
         {
-            Log.i(FTaskManager.class.getName(), "+++++ submitTo runnable:" + runnable + " tag:" + tag + " callback:" + callback + "\r\n" +
+            Log.i(FTaskManager.class.getName(), "+++++ submitTo runnable:" + runnable + " tag:" + tag + "\r\n" +
                     "size:" + mMapTaskInfo.size() + "," + mMapTaskTag.size() + "-" + mapTagInfo.size());
         }
 
@@ -129,7 +118,7 @@ class FTaskManager
      * @param runnable
      * @return
      */
-    public synchronized FTaskInfo getTaskInfo(Runnable runnable)
+    public synchronized FTaskInfo getTaskInfo(TaskRunnable runnable)
     {
         return mMapTaskInfo.get(runnable);
     }
@@ -163,7 +152,7 @@ class FTaskManager
      * @param mayInterruptIfRunning true-如果线程已经执行有可能被打断
      * @return true-申请取消成功
      */
-    public synchronized boolean cancel(Runnable runnable, boolean mayInterruptIfRunning)
+    public synchronized boolean cancel(TaskRunnable runnable, boolean mayInterruptIfRunning)
     {
         final FTaskInfo info = getTaskInfo(runnable);
         if (info == null)
@@ -207,7 +196,7 @@ class FTaskManager
         return count;
     }
 
-    private synchronized boolean removeTask(Runnable runnable)
+    private synchronized boolean removeTask(TaskRunnable runnable)
     {
         if (runnable == null)
             throw new IllegalArgumentException("runnable is null");
@@ -239,14 +228,12 @@ class FTaskManager
 
     private final class RunnableWrapper extends FutureTask<String>
     {
-        private final Runnable mRunnable;
-        private final TaskCallback mCallback;
+        private final TaskRunnable mRunnable;
 
-        public RunnableWrapper(Runnable runnable, TaskCallback callback)
+        public RunnableWrapper(TaskRunnable runnable)
         {
             super(new CallableRunnable(runnable));
             mRunnable = runnable;
-            mCallback = callback;
         }
 
         @Override
@@ -272,19 +259,22 @@ class FTaskManager
                 onCancel();
             } catch (ExecutionException e)
             {
-                onError(e.getCause());
+                final Throwable cause = e.getCause();
+                if (cause instanceof Exception)
+                    onError((Exception) cause);
+                else
+                    onError(e);
             }
 
             onFinish();
         }
 
-        protected void onError(Throwable throwable)
+        protected void onError(Exception e)
         {
             if (isDebug())
-                Log.i(FTaskManager.class.getName(), "done onError:" + throwable + " runnable:" + mRunnable);
+                Log.i(FTaskManager.class.getName(), "done onError:" + e + " runnable:" + mRunnable);
 
-            if (mCallback != null)
-                mCallback.onError(throwable);
+            mRunnable.onError(e);
         }
 
         protected void onCancel()
@@ -292,8 +282,7 @@ class FTaskManager
             if (isDebug())
                 Log.i(FTaskManager.class.getName(), "done onCancel:" + mRunnable);
 
-            if (mCallback != null)
-                mCallback.onCancel();
+            mRunnable.onCancel();
         }
 
         protected void onFinish()
@@ -301,16 +290,15 @@ class FTaskManager
             if (isDebug())
                 Log.i(FTaskManager.class.getName(), "done onFinish:" + mRunnable);
 
-            if (mCallback != null)
-                mCallback.onFinish();
+            mRunnable.onFinish();
         }
     }
 
     private final class CallableRunnable implements Callable<String>
     {
-        private final Runnable mRunnable;
+        private final TaskRunnable mRunnable;
 
-        public CallableRunnable(Runnable runnable)
+        public CallableRunnable(TaskRunnable runnable)
         {
             if (runnable == null)
                 throw new IllegalArgumentException("runnable is null");
@@ -323,14 +311,16 @@ class FTaskManager
             if (isDebug())
                 Log.i(FTaskManager.class.getName(), "call runnable:" + mRunnable);
 
-            mRunnable.run();
+            mRunnable.onRun();
             return null;
         }
     }
 
-    public interface TaskCallback
+    public interface TaskRunnable
     {
-        void onError(Throwable e);
+        void onRun() throws Exception;
+
+        void onError(Exception e);
 
         void onCancel();
 

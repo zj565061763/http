@@ -53,7 +53,7 @@ public class DownloadActivity extends AppCompatActivity
             }
 
             @Override
-            public void onError(Throwable e)
+            public void onError(Exception e)
             {
                 super.onError(e);
                 Log.i(TAG, "download error:" + e);

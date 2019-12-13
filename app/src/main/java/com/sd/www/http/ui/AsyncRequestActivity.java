@@ -89,7 +89,7 @@ public class AsyncRequestActivity extends AppCompatActivity
             }
 
             @Override
-            public void onError(Throwable e)
+            public void onError(Exception e)
             {
                 super.onError(e);
                 // 异常回调，请求异常或者转实体出错(UI线程)

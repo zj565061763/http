@@ -33,7 +33,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     }
 
     @Override
-    protected void onRun() throws Throwable
+    protected void onRun() throws Exception
     {
         HttpLog.i(getLogPrefix() + " 1 onRun state:" + getState());
         if (getState() == State.DoneCancel)
@@ -140,7 +140,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     };
 
     @Override
-    protected void onError(final Throwable e)
+    protected void onError(final Exception e)
     {
         super.onError(e);
         if (getState() == State.DoneError)
