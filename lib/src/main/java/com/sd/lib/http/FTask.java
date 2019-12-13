@@ -97,13 +97,6 @@ abstract class FTask
     private final FTaskManager.TaskCallback mTaskCallback = new FTaskManager.TaskCallback()
     {
         @Override
-        public void onSubmit()
-        {
-            FTask.this.setState(State.Submit);
-            FTask.this.onSubmit();
-        }
-
-        @Override
         public void onError(Throwable e)
         {
             FTask.this.setState(State.DoneError);
@@ -155,13 +148,6 @@ abstract class FTask
     protected abstract void onRun() throws Throwable;
 
     /**
-     * 提交回调（提交线程）
-     */
-    protected void onSubmit()
-    {
-    }
-
-    /**
      * 错误回调（执行线程）
      *
      * @param e
@@ -202,7 +188,6 @@ abstract class FTask
     public enum State
     {
         None,
-        Submit,
         Running,
         DoneCancel,
         DoneError,

@@ -42,6 +42,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
             return;
         }
 
+        runOnUiThread(mStartRunnable);
+
         synchronized (RequestTask.this)
         {
             if (!mIsStartNotified)
@@ -92,14 +94,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
         HttpLog.i(getLogPrefix() + " 5 success");
         runOnUiThread(mSuccessRunnable);
-    }
-
-    @Override
-    protected void onSubmit()
-    {
-        super.onSubmit();
-        HttpLog.i(getLogPrefix() + " onSubmit---------->");
-        runOnUiThread(mStartRunnable);
     }
 
     private final Runnable mStartRunnable = new Runnable()
