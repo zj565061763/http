@@ -1,26 +1,24 @@
 package com.sd.lib.http.exception;
 
-import java.io.IOException;
-
 /**
  * Http返回码异常
  */
-public class HttpResponseCodeException extends IOException
+public class HttpExceptionResponseCode extends HttpException
 {
     private final int mCode;
     private final String mDetails;
 
-    public HttpResponseCodeException(int code, String details)
+    public HttpExceptionResponseCode(int code, String details)
     {
         mCode = code;
         mDetails = details;
     }
 
-    public static HttpResponseCodeException from(int code)
+    public static HttpExceptionResponseCode from(int code)
     {
         if (code >= 400)
         {
-            return new HttpResponseCodeException(code, null);
+            return new HttpExceptionResponseCode(code, null);
         }
         return null;
     }
