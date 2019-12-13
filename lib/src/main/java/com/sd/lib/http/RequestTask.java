@@ -26,6 +26,13 @@ class RequestTask extends FTask implements IUploadProgressCallback
     }
 
     @Override
+    public boolean cancel(boolean mayInterruptIfRunning)
+    {
+        HttpLog.i(getLogPrefix() + " cancel called state" + getState());
+        return super.cancel(mayInterruptIfRunning);
+    }
+
+    @Override
     protected void onRun() throws Throwable
     {
         synchronized (RequestTask.this)

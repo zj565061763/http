@@ -89,7 +89,7 @@ abstract class FTask
      * @param mayInterruptIfRunning true-如果线程已经执行有可能被打断
      * @return
      */
-    public final boolean cancel(boolean mayInterruptIfRunning)
+    public boolean cancel(boolean mayInterruptIfRunning)
     {
         return FTaskManager.getInstance().cancel(mRunnable, mayInterruptIfRunning);
     }
