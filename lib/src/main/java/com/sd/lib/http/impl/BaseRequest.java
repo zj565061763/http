@@ -92,6 +92,17 @@ public abstract class BaseRequest extends Request
             return mHttpRequest.code();
         }
 
+        public int getCodeOrThrow() throws Exception
+        {
+            try
+            {
+                return getCode();
+            } catch (HttpRequest.HttpRequestException e)
+            {
+                throw e.getCause();
+            }
+        }
+
         @Override
         public int getContentLength()
         {

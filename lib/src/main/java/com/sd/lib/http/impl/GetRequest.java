@@ -11,7 +11,7 @@ public class GetRequest extends BaseRequest implements IGetRequest
         final HttpRequest request = newHttpRequest(HttpRequest.append(getUrl(), getParams().toMap()), HttpRequest.METHOD_GET);
 
         final Response response = new Response(request);
-        response.getCode();
+        response.getCodeOrThrow();
 
         return response;
     }

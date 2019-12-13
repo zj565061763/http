@@ -86,7 +86,7 @@ public class PostRequest extends BaseRequest implements IPostRequest
         }
 
         final Response response = new Response(request);
-        response.getCode();
+        response.getCodeOrThrow();
 
         return response;
     }
