@@ -65,7 +65,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onSubmit()
     {
         super.onSubmit();
-        HttpLog.i(getLogPrefix() + "onSubmit---------->");
+        HttpLog.i(getLogPrefix() + " onSubmit---------->");
         runOnUiThread(mStartRunnable);
     }
 
