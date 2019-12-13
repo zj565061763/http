@@ -2,7 +2,6 @@ package com.sd.lib.http;
 
 import com.sd.lib.http.callback.IUploadProgressCallback;
 import com.sd.lib.http.callback.RequestCallback;
-import com.sd.lib.http.task.FTask;
 import com.sd.lib.http.utils.HttpLog;
 import com.sd.lib.http.utils.TransmitParam;
 
@@ -25,32 +24,26 @@ class RequestTask extends FTask implements IUploadProgressCallback
     }
 
     @Override
-    protected void onRun()
+    protected void onRun() throws Throwable
     {
-        try
+        HttpLog.e(getLogPrefix() + " 1 onRun---------->");
+
+        synchronized (RequestTask.this)
         {
-            HttpLog.e(getLogPrefix() + " 1 onRun---------->");
-
-            synchronized (RequestTask.this)
-            {
-                runOnUiThread(mStartRunnable);
-                HttpLog.i(getLogPrefix() + " 2 waitThread");
-                RequestTask.this.wait(); //等待开始回调完成
-            }
-
-            HttpLog.i(getLogPrefix() + " 4 resumeThread");
-
-            final IResponse response = mRequest.execute();
-            mCallback.setResponse(response);
-            mCallback.onSuccessBackground();
-
-            HttpLog.i(getLogPrefix() + " 5 onSuccess");
-
-            runOnUiThread(mSuccessRunnable);
-        } catch (Exception e)
-        {
-            onError(e);
+            runOnUiThread(mStartRunnable);
+            HttpLog.i(getLogPrefix() + " 2 waitThread");
+            RequestTask.this.wait(); //等待开始回调完成
         }
+
+        HttpLog.i(getLogPrefix() + " 4 resumeThread");
+
+        final IResponse response = mRequest.execute();
+        mCallback.setResponse(response);
+        mCallback.onSuccessBackground();
+
+        HttpLog.i(getLogPrefix() + " 5 onSuccess");
+
+        runOnUiThread(mSuccessRunnable);
     }
 
     private final Runnable mStartRunnable = new Runnable()
@@ -77,36 +70,38 @@ class RequestTask extends FTask implements IUploadProgressCallback
         }
     };
 
-    protected void onError(final Exception e)
+    @Override
+    protected void onError(final Throwable e)
     {
-        HttpLog.i(getLogPrefix() + " onError:" + e);
-        if (isCancelled())
+        super.onError(e);
+        runOnUiThread(new Runnable()
         {
-            runOnUiThread(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
-                {
-                    mCallback.onCancel();
-                }
-            });
-        } else
-        {
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    mCallback.onError(e);
-                }
-            });
-        }
+                mCallback.onError(e);
+            }
+        });
     }
 
     @Override
-    protected void onFinally()
+    protected void onCancel()
     {
-        super.onFinally();
+        super.onCancel();
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mCallback.onCancel();
+            }
+        });
+    }
+
+    @Override
+    protected void onFinish()
+    {
+        super.onFinish();
         HttpLog.i(getLogPrefix() + " onFinish");
         runOnUiThread(new Runnable()
         {

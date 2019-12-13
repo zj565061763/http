@@ -1,6 +1,8 @@
 package com.sd.lib.http.callback;
 
-import com.sd.lib.http.task.FTask;
+import android.os.Handler;
+import android.os.Looper;
+
 import com.sd.lib.http.utils.HttpIOUtil;
 import com.sd.lib.http.utils.TransmitParam;
 
@@ -13,6 +15,8 @@ public abstract class FileRequestCallback extends RequestCallback
 {
     private final File mFile;
     private final TransmitParam mTransmitParam = new TransmitParam();
+
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     public FileRequestCallback(File file)
     {
@@ -65,14 +69,12 @@ public abstract class FileRequestCallback extends RequestCallback
                 public void onProgress(long count)
                 {
                     if (getTransmitParam().transmit(total, count))
-                    {
-                        FTask.runOnUiThread(mUpdateProgressRunnable);
-                    }
+                        runOnUiThread(mUpdateProgressRunnable);
                 }
             });
         } finally
         {
-            FTask.runOnUiThread(mUpdateProgressRunnable);
+            runOnUiThread(mUpdateProgressRunnable);
             HttpIOUtil.closeQuietly(input);
             HttpIOUtil.closeQuietly(output);
         }
@@ -93,6 +95,18 @@ public abstract class FileRequestCallback extends RequestCallback
     public void onCancel()
     {
         super.onCancel();
-        FTask.removeCallbacks(mUpdateProgressRunnable);
+        mHandler.removeCallbacks(mUpdateProgressRunnable);
+    }
+
+
+    private void runOnUiThread(Runnable runnable)
+    {
+        if (runnable == null)
+            return;
+
+        if (Looper.myLooper() == Looper.getMainLooper())
+            runnable.run();
+        else
+            mHandler.post(runnable);
     }
 }

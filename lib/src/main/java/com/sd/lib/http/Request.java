@@ -2,7 +2,6 @@ package com.sd.lib.http;
 
 import com.sd.lib.http.callback.IUploadProgressCallback;
 import com.sd.lib.http.callback.RequestCallback;
-import com.sd.lib.http.task.FTask;
 import com.sd.lib.http.utils.HttpDataHolder;
 import com.sd.lib.http.utils.TransmitParam;
 

@@ -1,14 +1,17 @@
-package com.sd.lib.http.task;
+package com.sd.lib.http;
 
 import java.util.concurrent.Future;
 
-public class FTaskInfo
+class FTaskInfo
 {
     private final String mTag;
     private final Future mFuture;
 
     FTaskInfo(String tag, Future future)
     {
+        if (tag == null || future == null)
+            throw new IllegalArgumentException();
+
         mTag = tag;
         mFuture = future;
     }

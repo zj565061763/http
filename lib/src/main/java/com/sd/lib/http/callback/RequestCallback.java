@@ -69,7 +69,7 @@ public abstract class RequestCallback implements IUploadProgressCallback
     {
     }
 
-    public void onError(Exception e)
+    public void onError(Throwable e)
     {
     }
 

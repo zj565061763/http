@@ -122,7 +122,7 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public void onError(Exception e)
+    public void onError(Throwable e)
     {
         for (RequestCallback item : getArrCallback())
         {

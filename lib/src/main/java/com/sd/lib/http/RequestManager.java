@@ -43,6 +43,7 @@ public class RequestManager
     public void setDebug(boolean debug)
     {
         isDebug = debug;
+        FTaskManager.getInstance().setDebug(debug);
     }
 
     public boolean isDebug()
@@ -202,7 +203,7 @@ public class RequestManager
             final RequestTask task = item.getKey();
             final RequestInfo info = item.getValue();
 
-            if (task.isDone())
+            if (task.getState().isDone())
             {
                 it.remove();
             } else
@@ -240,7 +241,7 @@ public class RequestManager
             final RequestTask task = item.getKey();
             final RequestInfo info = item.getValue();
 
-            if (task.isDone())
+            if (task.getState().isDone())
             {
                 it.remove();
             } else
