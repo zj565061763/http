@@ -99,8 +99,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 if (!mIsStartNotified)
                 {
                     mIsStartNotified = true;
+                    HttpLog.i(getLogPrefix() + " notify onStart");
                     mCallback.onStart();
-                    HttpLog.i(getLogPrefix() + " onStart");
                 }
 
                 RequestTask.this.notifyAll();
