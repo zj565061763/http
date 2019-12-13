@@ -26,7 +26,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Throwable
     {
-        HttpLog.e(getLogPrefix() + " 1 onRun---------->");
+        HttpLog.i(getLogPrefix() + " 1 onRun---------->");
 
         synchronized (RequestTask.this)
         {
@@ -42,7 +42,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
         mCallback.onSuccessBackground();
 
         HttpLog.i(getLogPrefix() + " 5 onSuccess");
-
         runOnUiThread(mSuccessRunnable);
     }
 
@@ -74,6 +73,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onError(final Throwable e)
     {
         super.onError(e);
+        HttpLog.i(getLogPrefix() + " onError:" + e);
         runOnUiThread(new Runnable()
         {
             @Override
@@ -88,6 +88,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onCancel()
     {
         super.onCancel();
+        HttpLog.i(getLogPrefix() + " onCancel");
         runOnUiThread(new Runnable()
         {
             @Override
