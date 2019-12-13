@@ -36,14 +36,10 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onRun() throws Exception
     {
         HttpLog.i(getLogPrefix() + " 1 onRun state:" + getState());
-        if (getState() == State.DoneCancel)
-        {
-            HttpLog.i(getLogPrefix() + " check state !!!");
+        if (checkCancel())
             return;
-        }
 
         runOnUiThread(mStartRunnable);
-
         synchronized (RequestTask.this)
         {
             if (!mIsStartNotified)
@@ -56,34 +52,34 @@ class RequestTask extends FTask implements IUploadProgressCallback
         }
 
         HttpLog.i(getLogPrefix() + " 2 before execute state:" + getState());
-        if (getState() == State.DoneCancel)
-        {
-            HttpLog.i(getLogPrefix() + " check state !!!");
+        if (checkCancel())
             return;
-        }
 
         final IResponse response = mRequest.execute();
 
         HttpLog.i(getLogPrefix() + " 3 after execute state:" + getState());
-        if (getState() == State.DoneCancel)
-        {
-            HttpLog.i(getLogPrefix() + " check state !!!");
+        if (checkCancel())
             return;
-        }
 
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
         HttpLog.i(getLogPrefix() + " 4 after onSuccessBackground state:" + getState());
-        if (getState() == State.DoneCancel)
-        {
-            HttpLog.i(getLogPrefix() + " check state !!!");
+        if (checkCancel())
             return;
-        }
 
         HttpLog.i(getLogPrefix() + " 5 notify success state:" + getState());
-
         runOnUiThread(mSuccessRunnable);
+    }
+
+    private boolean checkCancel()
+    {
+        if (getState() == State.DoneCancel)
+        {
+            HttpLog.i(getLogPrefix() + " check cancel !!!");
+            return true;
+        }
+        return false;
     }
 
     private final Runnable mStartRunnable = new Runnable()
