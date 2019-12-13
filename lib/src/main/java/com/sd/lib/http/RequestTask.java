@@ -10,6 +10,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
     private final IRequest mRequest;
     private final RequestCallback mCallback;
 
+    private volatile boolean mIsStartNotified = false;
+
     public RequestTask(IRequest request, RequestCallback callback)
     {
         mRequest = request;
@@ -26,34 +28,45 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     protected void onRun() throws Throwable
     {
-        HttpLog.i(getLogPrefix() + " 1 onRun---------->");
-
         synchronized (RequestTask.this)
         {
-            runOnUiThread(mStartRunnable);
-            HttpLog.i(getLogPrefix() + " 2 waitThread");
-            RequestTask.this.wait(); //等待开始回调完成
+            HttpLog.i(getLogPrefix() + " 1 onRun");
+            if (!mIsStartNotified)
+            {
+                // 等待开始回调完成
+                HttpLog.i(getLogPrefix() + " wait start...");
+                RequestTask.this.wait();
+                HttpLog.i(getLogPrefix() + " wait finish");
+            }
         }
 
-        HttpLog.i(getLogPrefix() + " 4 resumeThread state:" + getState());
+        HttpLog.i(getLogPrefix() + " 2 execute before state:" + getState());
         if (getState() == State.DoneCancel)
             return;
 
         final IResponse response = mRequest.execute();
 
-        HttpLog.i(getLogPrefix() + " 5 executed state:" + getState());
+        HttpLog.i(getLogPrefix() + " 3 execute after state:" + getState());
         if (getState() == State.DoneCancel)
             return;
 
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
-        HttpLog.i(getLogPrefix() + " 6 onSuccessBackground state:" + getState());
+        HttpLog.i(getLogPrefix() + " 4 onSuccessBackground state:" + getState());
         if (getState() == State.DoneCancel)
             return;
 
-        HttpLog.i(getLogPrefix() + " 7 success");
+        HttpLog.i(getLogPrefix() + " 5 success");
         runOnUiThread(mSuccessRunnable);
+    }
+
+    @Override
+    protected void onSubmit()
+    {
+        super.onSubmit();
+        HttpLog.i(getLogPrefix() + "onSubmit---------->");
+        runOnUiThread(mStartRunnable);
     }
 
     private final Runnable mStartRunnable = new Runnable()
@@ -61,10 +74,18 @@ class RequestTask extends FTask implements IUploadProgressCallback
         @Override
         public void run()
         {
+            if (getState() == State.DoneCancel)
+            {
+                // 如果被取消的话，此处不通知开始事件，由取消回调中通知开始事件
+                HttpLog.e(getLogPrefix() + " start runnable run with state:" + getState());
+                return;
+            }
+
             synchronized (RequestTask.this)
             {
                 mCallback.onStart();
-                HttpLog.i(getLogPrefix() + " 3 notifyThread");
+                mIsStartNotified = true;
+                HttpLog.i(getLogPrefix() + " onStart");
                 RequestTask.this.notifyAll();
             }
         }
@@ -105,15 +126,34 @@ class RequestTask extends FTask implements IUploadProgressCallback
     protected void onCancel()
     {
         super.onCancel();
-        HttpLog.i(getLogPrefix() + " onCancel");
-        runOnUiThread(new Runnable()
+        synchronized (RequestTask.this)
         {
-            @Override
-            public void run()
+            if (mIsStartNotified)
             {
-                mCallback.onCancel();
+                HttpLog.i(getLogPrefix() + " onCancel");
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mCallback.onCancel();
+                    }
+                });
+            } else
+            {
+                HttpLog.e(getLogPrefix() + " onCancel need onStart");
+                mIsStartNotified = true;
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mCallback.onStart();
+                        mCallback.onCancel();
+                    }
+                });
             }
-        });
+        }
     }
 
     @Override
