@@ -50,18 +50,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             {
                 // 等待开始回调完成
                 HttpLog.i(getLogPrefix() + " wait start...");
-                try
-                {
-                    RequestTask.this.wait();
-                } catch (InterruptedException e)
-                {
-                    HttpLog.e(getLogPrefix() + " wait interrupted state:" + getState());
-                    if (getState() == State.DoneCancel)
-                    {
-                        HttpLog.i(getLogPrefix() + " check state !!!");
-                        return;
-                    }
-                }
+                RequestTask.this.wait();
                 HttpLog.i(getLogPrefix() + " wait finish");
             }
         }
