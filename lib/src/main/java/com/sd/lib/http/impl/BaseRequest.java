@@ -84,7 +84,6 @@ public abstract class BaseRequest extends Request
         public Response(HttpRequest httpRequest)
         {
             mHttpRequest = httpRequest;
-            mHttpRequest.code();
         }
 
         @Override

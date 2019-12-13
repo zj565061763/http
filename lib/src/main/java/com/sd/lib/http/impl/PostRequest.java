@@ -85,7 +85,10 @@ public class PostRequest extends BaseRequest implements IPostRequest
             }
         }
 
-        return new Response(request);
+        final Response response = new Response(request);
+        response.getCode();
+
+        return response;
     }
 
     @Override
