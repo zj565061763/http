@@ -66,7 +66,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             }
         }
 
-        HttpLog.i(getLogPrefix() + " 2 execute before state:" + getState());
+        HttpLog.i(getLogPrefix() + " 2 before execute state:" + getState());
         if (getState() == State.DoneCancel)
         {
             HttpLog.i(getLogPrefix() + " check state !!!");
@@ -75,7 +75,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
 
         final IResponse response = mRequest.execute();
 
-        HttpLog.i(getLogPrefix() + " 3 execute after state:" + getState());
+        HttpLog.i(getLogPrefix() + " 3 after execute state:" + getState());
         if (getState() == State.DoneCancel)
         {
             HttpLog.i(getLogPrefix() + " check state !!!");
@@ -85,7 +85,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
         mCallback.setResponse(response);
         mCallback.onSuccessBackground();
 
-        HttpLog.i(getLogPrefix() + " 4 onSuccessBackground state:" + getState());
+        HttpLog.i(getLogPrefix() + " 4 after onSuccessBackground state:" + getState());
         if (getState() == State.DoneCancel)
         {
             HttpLog.i(getLogPrefix() + " check state !!!");
