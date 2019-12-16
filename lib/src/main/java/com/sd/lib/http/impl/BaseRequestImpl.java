@@ -19,7 +19,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
-public abstract class BaseRequest extends Request
+public abstract class BaseRequestImpl extends Request
 {
     private static SSLSocketFactory TRUSTED_FACTORY;
 
@@ -60,7 +60,7 @@ public abstract class BaseRequest extends Request
     {
         if (TRUSTED_FACTORY == null)
         {
-            synchronized (BaseRequest.class)
+            synchronized (BaseRequestImpl.class)
             {
                 if (TRUSTED_FACTORY == null)
                     TRUSTED_FACTORY = SSLSocketFactoryProvider.getTrustedFactory();
