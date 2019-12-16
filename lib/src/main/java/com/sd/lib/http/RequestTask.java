@@ -68,7 +68,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
         if (checkCancel())
             return;
 
-        HttpLog.i(getLogPrefix() + " 5 notify success state:" + getState());
+        HttpLog.i(getLogPrefix() + " 5 success state:" + getState());
         runOnUiThread(mSuccessRunnable);
     }
 
