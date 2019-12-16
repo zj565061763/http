@@ -94,6 +94,17 @@ abstract class FTask
         return FTaskManager.getInstance().cancel(mTaskRunnable, mayInterruptIfRunning);
     }
 
+    /**
+     * 任务是否已提交（提交未执行或者执行中）
+     *
+     * @return
+     */
+    public final boolean isSubmitted()
+    {
+        final FTaskInfo taskInfo = FTaskManager.getInstance().getTaskInfo(mTaskRunnable);
+        return taskInfo != null && !taskInfo.isDone();
+    }
+
     private final FTaskManager.TaskRunnable mTaskRunnable = new FTaskManager.TaskRunnable()
     {
         @Override
