@@ -35,7 +35,7 @@ class FHttpRequest extends HttpRequest
      */
     public static final String HEADER_COOKIE = "Cookie";
 
-    private int mCode = Integer.MAX_VALUE;
+    private Integer mCode = null;
 
     private List<HttpCookie> getResponseCookie()
     {
@@ -96,7 +96,7 @@ class FHttpRequest extends HttpRequest
     {
         final int code = super.code();
 
-        if (mCode == Integer.MAX_VALUE)
+        if (mCode == null)
         {
             mCode = code;
             saveCookieFromResponse();
