@@ -47,7 +47,7 @@ abstract class FTask
      *
      * @param callback
      */
-    public void setOnStateChangeCallback(OnStateChangeCallback callback)
+    public final void setOnStateChangeCallback(OnStateChangeCallback callback)
     {
         mOnStateChangeCallback = callback;
     }
