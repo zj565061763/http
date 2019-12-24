@@ -127,7 +127,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     protected void onError(final Exception e)
     {
-        super.onError(e);
         if (getState() == State.DoneError)
         {
             HttpLog.i(getLogPrefix() + " onError:" + e);

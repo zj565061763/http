@@ -150,8 +150,16 @@ abstract class FTask
      *
      * @param e
      */
-    protected void onError(Exception e)
+    protected void onError(final Exception e)
     {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
