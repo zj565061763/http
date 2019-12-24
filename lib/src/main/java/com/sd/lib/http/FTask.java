@@ -136,6 +136,12 @@ abstract class FTask
 
             FTask.this.onFinish();
         }
+
+        @Override
+        public String toString()
+        {
+            return FTask.this.toString();
+        }
     };
 
     /**
