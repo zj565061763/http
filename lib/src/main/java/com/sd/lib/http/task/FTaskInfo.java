@@ -2,6 +2,10 @@ package com.sd.lib.http.task;
 
 import java.util.concurrent.Future;
 
+/**
+ * https://github.com/zj565061763/task
+ */
+@Deprecated
 public class FTaskInfo
 {
     private final String mTag;

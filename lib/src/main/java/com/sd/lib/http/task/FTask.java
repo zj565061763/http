@@ -5,6 +5,10 @@ import android.os.Looper;
 
 import java.util.concurrent.ExecutorService;
 
+/**
+ * https://github.com/zj565061763/task
+ */
+@Deprecated
 public abstract class FTask implements Runnable
 {
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
