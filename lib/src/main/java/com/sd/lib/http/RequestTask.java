@@ -89,7 +89,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
         {
             if (getState() == State.DoneCancel)
             {
-                // 如果被取消的话，此处不通知开始事件，由取消回调中通知开始事件
+                // 如果被取消的话，此处不通知开始事件
                 HttpLog.e(getLogPrefix() + " start runnable but state:" + getState());
                 return;
             }
@@ -149,32 +149,14 @@ class RequestTask extends FTask implements IUploadProgressCallback
     {
         super.onCancel();
         HttpLog.i(getLogPrefix() + " onCancel mIsStartNotified:" + mIsStartNotified);
-        synchronized (RequestTask.this)
+        runOnUiThread(new Runnable()
         {
-            if (mIsStartNotified)
+            @Override
+            public void run()
             {
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mCallback.onCancel();
-                    }
-                });
-            } else
-            {
-                mIsStartNotified = true;
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mCallback.onStart();
-                        mCallback.onCancel();
-                    }
-                });
+                mCallback.onCancel();
             }
-        }
+        });
     }
 
     @Override
