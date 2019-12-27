@@ -173,13 +173,6 @@ public class RequestManager
             protected void onFinish()
             {
                 super.onFinish();
-
-                if (isDebug())
-                {
-                    Log.i(RequestManager.class.getName(), "task onFinish"
-                            + " task:" + this);
-                }
-
                 removeTask(this);
             }
         };
