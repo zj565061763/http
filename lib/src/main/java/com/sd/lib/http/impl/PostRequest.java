@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PostRequest extends BaseRequest implements IPostRequest
+public class PostRequest extends BaseRequestImpl implements IPostRequest
 {
     private List<FilePart> mListFile;
     private IRequestBody mBody;
@@ -85,7 +85,10 @@ public class PostRequest extends BaseRequest implements IPostRequest
             }
         }
 
-        return new Response(request);
+        final Response response = new Response(request);
+        response.getCodeOrThrow();
+
+        return response;
     }
 
     @Override

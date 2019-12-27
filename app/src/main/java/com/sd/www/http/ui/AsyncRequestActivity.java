@@ -25,6 +25,8 @@ public class AsyncRequestActivity extends AppCompatActivity
     public static final String TAG = AsyncRequestActivity.class.getSimpleName();
     public static final String URL = "http://www.weather.com.cn/data/cityinfo/101010100.html";
 
+    private RequestHandler mRequestHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -43,7 +45,7 @@ public class AsyncRequestActivity extends AppCompatActivity
         request.setTag(TAG);
 
         // 发起异步请求
-        final RequestHandler requestHandler = request.execute(new ModelRequestCallback<WeatherModel>()
+        mRequestHandler = request.execute(new ModelRequestCallback<WeatherModel>()
         {
             @Override
             public void onPrepare(IRequest request)
