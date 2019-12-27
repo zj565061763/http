@@ -187,10 +187,11 @@ public class RequestManager
 
         if (isDebug())
         {
-            Log.i(RequestManager.class.getName(), "execute tag:" + tag
-                    + " sequence:" + sequence
-                    + " callback:" + callback
+            Log.i(RequestManager.class.getName(), "execute"
                     + " task:" + task
+                    + " callback:" + callback
+                    + " requestIdentifier:" + requestIdentifier
+                    + " tag:" + tag
                     + " size:" + mMapRequest.size());
         }
 
@@ -216,7 +217,8 @@ public class RequestManager
 
         if (isDebug())
         {
-            Log.i(RequestManager.class.getName(), "removeTask task:" + task
+            Log.i(RequestManager.class.getName(), "removeTask"
+                    + " task:" + task
                     + " size:" + mMapRequest.size());
         }
 
