@@ -1,20 +1,20 @@
 package com.sd.lib.http;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.sd.lib.http.callback.RequestCallback;
 import com.sd.lib.http.cookie.ICookieStore;
 import com.sd.lib.http.interceptor.IRequestInterceptor;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestManager
 {
     private static RequestManager sInstance;
 
-    private final Map<RequestTask, RequestInfo> mMapRequest = new WeakHashMap<>();
+    private final Map<RequestTask, RequestInfo> mMapRequest = new ConcurrentHashMap<>();
 
     private ICookieStore mCookieStore;
 
@@ -167,7 +167,33 @@ public class RequestManager
         callback.setRequest(request);
         callback.onPrepare(request);
 
-        final RequestTask task = new RequestTask(request, callback);
+        final RequestTask task = new RequestTask(request, callback)
+        {
+            @Override
+            protected void onFinish()
+            {
+                super.onFinish();
+                removeTask(this);
+            }
+        };
+
+        final String tag = request.getTag();
+        final String requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
+
+        final RequestInfo info = new RequestInfo();
+        info.tag = tag;
+        info.requestIdentifier = requestIdentifier;
+        mMapRequest.put(task, info);
+
+        if (isDebug())
+        {
+            Log.i(RequestManager.class.getName(), "execute tag:" + tag
+                    + " sequence:" + sequence
+                    + " callback:" + callback
+                    + " task:" + task
+                    + " size:" + mMapRequest.size());
+        }
+
         if (sequence)
         {
             task.submitSequence();
@@ -176,12 +202,25 @@ public class RequestManager
             task.submit();
         }
 
-        final RequestInfo info = new RequestInfo();
-        info.tag = request.getTag();
-        info.requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
-
-        mMapRequest.put(task, info);
         return new RequestHandler(task);
+    }
+
+    private synchronized boolean removeTask(RequestTask task)
+    {
+        if (task == null)
+            throw new IllegalArgumentException("task is null");
+
+        final RequestInfo info = mMapRequest.remove(task);
+        if (info == null)
+            return false;
+
+        if (isDebug())
+        {
+            Log.i(RequestManager.class.getName(), "removeTask task:" + task
+                    + " size:" + mMapRequest.size());
+        }
+
+        return true;
     }
 
     /**
@@ -195,26 +234,22 @@ public class RequestManager
         if (tag == null || mMapRequest.isEmpty())
             return 0;
 
+        if (isDebug())
+            Log.i(RequestManager.class.getName(), "try cancelTag tag:" + tag);
+
         int count = 0;
-        final Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
-        while (it.hasNext())
+        for (Map.Entry<RequestTask, RequestInfo> item : mMapRequest.entrySet())
         {
-            final Map.Entry<RequestTask, RequestInfo> item = it.next();
             final RequestTask task = item.getKey();
             final RequestInfo info = item.getValue();
 
-            if (task.getState().isDone())
-            {
-                it.remove();
-            } else
-            {
-                if (tag.equals(info.tag) && task.cancel(true))
-                {
-                    it.remove();
-                    count++;
-                }
-            }
+            if (tag.equals(info.tag) && task.cancel(true))
+                count++;
         }
+
+        if (isDebug())
+            Log.i(RequestManager.class.getName(), "try cancelTag tag:" + tag + " count:" + count);
+
         return count;
     }
 
@@ -233,26 +268,22 @@ public class RequestManager
         if (TextUtils.isEmpty(identifier))
             return 0;
 
+        if (isDebug())
+            Log.i(RequestManager.class.getName(), "try cancelRequestIdentifier requestIdentifier:" + identifier);
+
         int count = 0;
-        final Iterator<Map.Entry<RequestTask, RequestInfo>> it = mMapRequest.entrySet().iterator();
-        while (it.hasNext())
+        for (Map.Entry<RequestTask, RequestInfo> item : mMapRequest.entrySet())
         {
-            final Map.Entry<RequestTask, RequestInfo> item = it.next();
             final RequestTask task = item.getKey();
             final RequestInfo info = item.getValue();
 
-            if (task.getState().isDone())
-            {
-                it.remove();
-            } else
-            {
-                if (identifier.equals(info.requestIdentifier) && task.cancel(true))
-                {
-                    it.remove();
-                    count++;
-                }
-            }
+            if (identifier.equals(info.requestIdentifier) && task.cancel(true))
+                count++;
         }
+
+        if (isDebug())
+            Log.i(RequestManager.class.getName(), "try cancelRequestIdentifier requestIdentifier:" + identifier + " count:" + count);
+
         return count;
     }
 
