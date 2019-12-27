@@ -178,19 +178,18 @@ class FTaskManager
      */
     public synchronized int cancelTag(String tag, boolean mayInterruptIfRunning)
     {
-        int count = 0;
+        final List<FTaskInfo> listInfo = getTaskInfo(tag);
+        if (listInfo == null)
+            return 0;
 
         if (isDebug())
             Log.i(FTaskManager.class.getName(), "try cancelTag tag:" + tag + " mayInterruptIfRunning:" + mayInterruptIfRunning);
 
-        final List<FTaskInfo> listInfo = getTaskInfo(tag);
-        if (listInfo != null)
+        int count = 0;
+        for (FTaskInfo item : listInfo)
         {
-            for (FTaskInfo item : listInfo)
-            {
-                if (item.cancel(mayInterruptIfRunning))
-                    count++;
-            }
+            if (item.cancel(mayInterruptIfRunning))
+                count++;
         }
 
         if (isDebug())
