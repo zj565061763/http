@@ -176,8 +176,7 @@ final class RequestTask extends FTask implements IUploadProgressCallback
             }
         });
 
-        if (mCallback != null)
-            mCallback.onFinish(this);
+        mCallback.onFinish(this);
     }
 
     @Override
