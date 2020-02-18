@@ -167,15 +167,14 @@ public class RequestManager
         callback.setRequest(request);
         callback.onPrepare(request);
 
-        final RequestTask task = new RequestTask(request, callback)
+        final RequestTask task = new RequestTask(request, callback, new RequestTask.Callback()
         {
             @Override
-            protected void onFinish()
+            public void onFinish(RequestTask task)
             {
-                super.onFinish();
-                removeTask(this);
+                removeTask(task);
             }
-        };
+        });
 
         final String tag = request.getTag();
         final String requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);

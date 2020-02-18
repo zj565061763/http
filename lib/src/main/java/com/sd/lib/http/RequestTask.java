@@ -5,17 +5,20 @@ import com.sd.lib.http.callback.RequestCallback;
 import com.sd.lib.http.utils.HttpLog;
 import com.sd.lib.http.utils.TransmitParam;
 
-class RequestTask extends FTask implements IUploadProgressCallback
+final class RequestTask extends FTask implements IUploadProgressCallback
 {
     private final IRequest mRequest;
     private final RequestCallback mRequestCallback;
 
+    private final Callback mCallback;
+
     private volatile boolean mIsStartNotified = false;
 
-    public RequestTask(IRequest request, RequestCallback requestCallback)
+    public RequestTask(IRequest request, RequestCallback requestCallback, Callback callback)
     {
         mRequest = request;
         mRequestCallback = requestCallback;
+        mCallback = callback;
 
         mRequest.setUploadProgressCallback(this);
     }
@@ -172,11 +175,19 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 mRequestCallback.onFinish();
             }
         });
+
+        if (mCallback != null)
+            mCallback.onFinish(this);
     }
 
     @Override
     public void onProgressUpload(TransmitParam param)
     {
         mRequestCallback.onProgressUpload(param);
+    }
+
+    public interface Callback
+    {
+        void onFinish(RequestTask task);
     }
 }
