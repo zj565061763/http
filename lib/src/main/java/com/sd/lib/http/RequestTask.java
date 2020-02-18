@@ -8,14 +8,14 @@ import com.sd.lib.http.utils.TransmitParam;
 class RequestTask extends FTask implements IUploadProgressCallback
 {
     private final IRequest mRequest;
-    private final RequestCallback mCallback;
+    private final RequestCallback mRequestCallback;
 
     private volatile boolean mIsStartNotified = false;
 
-    public RequestTask(IRequest request, RequestCallback callback)
+    public RequestTask(IRequest request, RequestCallback requestCallback)
     {
         mRequest = request;
-        mCallback = callback;
+        mRequestCallback = requestCallback;
 
         mRequest.setUploadProgressCallback(this);
     }
@@ -61,8 +61,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
         if (checkCancel())
             return;
 
-        mCallback.setResponse(response);
-        mCallback.onSuccessBackground();
+        mRequestCallback.setResponse(response);
+        mRequestCallback.onSuccessBackground();
 
         HttpLog.i(getLogPrefix() + " 4 after onSuccessBackground state:" + getState());
         if (checkCancel())
@@ -100,7 +100,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 {
                     mIsStartNotified = true;
                     HttpLog.i(getLogPrefix() + " notify onStart");
-                    mCallback.onStart();
+                    mRequestCallback.onStart();
                 }
 
                 RequestTask.this.notifyAll();
@@ -119,8 +119,8 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 return;
             }
 
-            mCallback.onSuccessBefore();
-            mCallback.onSuccess();
+            mRequestCallback.onSuccessBefore();
+            mRequestCallback.onSuccess();
         }
     };
 
@@ -135,7 +135,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
                 @Override
                 public void run()
                 {
-                    mCallback.onError(e);
+                    mRequestCallback.onError(e);
                 }
             });
         } else
@@ -154,7 +154,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             @Override
             public void run()
             {
-                mCallback.onCancel();
+                mRequestCallback.onCancel();
             }
         });
     }
@@ -169,7 +169,7 @@ class RequestTask extends FTask implements IUploadProgressCallback
             @Override
             public void run()
             {
-                mCallback.onFinish();
+                mRequestCallback.onFinish();
             }
         });
     }
@@ -177,6 +177,6 @@ class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     public void onProgressUpload(TransmitParam param)
     {
-        mCallback.onProgressUpload(param);
+        mRequestCallback.onProgressUpload(param);
     }
 }
