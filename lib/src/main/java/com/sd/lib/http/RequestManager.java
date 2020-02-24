@@ -1,5 +1,7 @@
 package com.sd.lib.http;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -109,7 +111,7 @@ public class RequestManager
     final IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
     {
         @Override
-        public IResponse beforeExecute(IRequest request)
+        public IResponse beforeExecute(IRequest request) throws Exception
         {
             if (mRequestInterceptor != null)
                 return mRequestInterceptor.beforeExecute(request);
@@ -118,12 +120,31 @@ public class RequestManager
         }
 
         @Override
-        public IResponse afterExecute(IRequest request, IResponse response)
+        public IResponse afterExecute(IRequest request, IResponse response) throws Exception
         {
             if (mRequestInterceptor != null)
                 return mRequestInterceptor.afterExecute(request, response);
 
             return response;
+        }
+
+        @Override
+        public void onError(final Exception e)
+        {
+            if (mRequestInterceptor != null)
+            {
+                mRequestInterceptor.onError(e);
+            } else
+            {
+                new Handler(Looper.getMainLooper()).post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
         }
     };
 
