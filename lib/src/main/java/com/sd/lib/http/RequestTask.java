@@ -32,8 +32,17 @@ final class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     public boolean cancel(boolean mayInterruptIfRunning)
     {
-        HttpLog.i(getLogPrefix() + " cancel called");
-        return super.cancel(mayInterruptIfRunning);
+        HttpLog.e(getLogPrefix() + " cancel called start");
+
+        final boolean result = super.cancel(mayInterruptIfRunning);
+        if (result)
+        {
+            // 正常情况下，父类的cancel执行之后onCancel中已经赋值，这里再次赋值
+            mIsCancelled = true;
+        }
+
+        HttpLog.e(getLogPrefix() + " cancel called result:" + result);
+        return result;
     }
 
     @Override
