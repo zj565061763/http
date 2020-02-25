@@ -89,7 +89,7 @@ final class RequestTask extends FTask implements IUploadProgressCallback
     {
         if (mIsCancelled)
         {
-            HttpLog.i(getLogPrefix() + " check cancel !!!");
+            HttpLog.i(getLogPrefix() + " check cancelled !!!");
             return true;
         }
         return false;
