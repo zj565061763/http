@@ -157,7 +157,7 @@ final class RequestTask extends FTask implements IUploadProgressCallback
         super.onCancel();
 
         mIsCancelled = true;
-        HttpLog.i(getLogPrefix() + " onCancel mIsStartNotified:" + mIsStartNotified);
+        HttpLog.i(getLogPrefix() + " onCancel");
 
         runOnUiThread(new Runnable()
         {
