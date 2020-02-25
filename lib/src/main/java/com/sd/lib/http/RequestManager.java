@@ -1,7 +1,5 @@
 package com.sd.lib.http;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -136,7 +134,7 @@ public class RequestManager
                 mRequestInterceptor.onError(e);
             } else
             {
-                new Handler(Looper.getMainLooper()).post(new Runnable()
+                FTask.runOnUiThread(new Runnable()
                 {
                     @Override
                     public void run()
