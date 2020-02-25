@@ -12,7 +12,8 @@ final class RequestTask extends FTask implements IUploadProgressCallback
 
     private final Callback mCallback;
 
-    private volatile boolean mIsStartNotified = false;
+    private volatile boolean mIsCancelled = false;
+    private boolean mIsStartNotified = false;
 
     public RequestTask(IRequest request, RequestCallback requestCallback, Callback callback)
     {
@@ -31,14 +32,14 @@ final class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     public boolean cancel(boolean mayInterruptIfRunning)
     {
-        HttpLog.i(getLogPrefix() + " cancel called state:" + getState());
+        HttpLog.i(getLogPrefix() + " cancel called");
         return super.cancel(mayInterruptIfRunning);
     }
 
     @Override
     protected void onRun() throws Exception
     {
-        HttpLog.i(getLogPrefix() + " 1 onRun state:" + getState());
+        HttpLog.i(getLogPrefix() + " 1 onRun");
         if (checkCancel())
             return;
 
@@ -54,30 +55,30 @@ final class RequestTask extends FTask implements IUploadProgressCallback
             }
         }
 
-        HttpLog.i(getLogPrefix() + " 2 before execute state:" + getState());
+        HttpLog.i(getLogPrefix() + " 2 before execute");
         if (checkCancel())
             return;
 
         final IResponse response = mRequest.execute();
 
-        HttpLog.i(getLogPrefix() + " 3 after execute state:" + getState());
+        HttpLog.i(getLogPrefix() + " 3 after execute");
         if (checkCancel())
             return;
 
         mRequestCallback.setResponse(response);
         mRequestCallback.onSuccessBackground();
 
-        HttpLog.i(getLogPrefix() + " 4 after onSuccessBackground state:" + getState());
+        HttpLog.i(getLogPrefix() + " 4 after onSuccessBackground");
         if (checkCancel())
             return;
 
-        HttpLog.i(getLogPrefix() + " 5 success state:" + getState());
+        HttpLog.i(getLogPrefix() + " 5 success");
         runOnUiThread(mSuccessRunnable);
     }
 
     private boolean checkCancel()
     {
-        if (getState() == State.DoneCancel)
+        if (mIsCancelled)
         {
             HttpLog.i(getLogPrefix() + " check cancel !!!");
             return true;
@@ -90,10 +91,10 @@ final class RequestTask extends FTask implements IUploadProgressCallback
         @Override
         public void run()
         {
-            if (getState() == State.DoneCancel)
+            if (mIsCancelled)
             {
                 // 如果被取消的话，此处不通知开始事件
-                HttpLog.e(getLogPrefix() + " start runnable but state:" + getState());
+                HttpLog.e(getLogPrefix() + " start runnable but is cancelled");
                 return;
             }
 
@@ -116,9 +117,9 @@ final class RequestTask extends FTask implements IUploadProgressCallback
         @Override
         public void run()
         {
-            if (getState() == State.DoneCancel)
+            if (mIsCancelled)
             {
-                HttpLog.e(getLogPrefix() + " success runnable but state:" + getState());
+                HttpLog.e(getLogPrefix() + " success runnable but is cancelled");
                 return;
             }
 
@@ -130,28 +131,25 @@ final class RequestTask extends FTask implements IUploadProgressCallback
     @Override
     protected void onError(final Exception e)
     {
-        if (getState() == State.DoneError)
+        HttpLog.i(getLogPrefix() + " onError:" + e);
+        runOnUiThread(new Runnable()
         {
-            HttpLog.i(getLogPrefix() + " onError:" + e);
-            runOnUiThread(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
-                {
-                    mRequestCallback.onError(e);
-                }
-            });
-        } else
-        {
-            HttpLog.e(getLogPrefix() + " receive error:" + e + " when state:" + getState());
-        }
+                mRequestCallback.onError(e);
+            }
+        });
     }
 
     @Override
     protected void onCancel()
     {
         super.onCancel();
+
+        mIsCancelled = true;
         HttpLog.i(getLogPrefix() + " onCancel mIsStartNotified:" + mIsStartNotified);
+
         runOnUiThread(new Runnable()
         {
             @Override
