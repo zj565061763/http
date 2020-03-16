@@ -8,7 +8,11 @@ import com.sd.lib.http.IResponse;
 import com.sd.lib.http.body.BytesBody;
 import com.sd.lib.http.body.FileBody;
 import com.sd.lib.http.body.IRequestBody;
+import com.sd.lib.http.body.JsonBody;
 import com.sd.lib.http.body.StringBody;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -20,6 +24,8 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
 {
     private List<FilePart> mListFile;
     private IRequestBody mBody;
+
+    private ParamsType mParamsType = ParamsType.Default;
 
     private List<FilePart> getListFile()
     {
@@ -44,44 +50,38 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
     }
 
     @Override
+    public PostRequest setBody(IRequestBody body)
+    {
+        mBody = body;
+        return this;
+    }
+
+    @Override
+    public IPostRequest setParamsType(ParamsType type)
+    {
+        if (type == null)
+            throw new NullPointerException("type is null");
+
+        mParamsType = type;
+        return this;
+    }
+
+    @Override
     protected IResponse doExecute() throws Exception
     {
         final HttpRequest request = newHttpRequest(getUrl(), HttpRequest.METHOD_POST);
 
         if (mBody != null)
         {
-            request.contentType(mBody.getContentType());
-            if (mBody instanceof StringBody)
-            {
-                final String body = ((StringBody) mBody).getBody();
-                request.send(body);
-            } else if (mBody instanceof FileBody)
-            {
-                final File body = ((FileBody) mBody).getBody();
-                request.send(body);
-            } else if (mBody instanceof BytesBody)
-            {
-                final byte[] body = ((BytesBody) mBody).getBody();
-                request.send(body);
-            }
+            executeBody(request);
         } else
         {
-            final Map<String, Object> params = getParams().toMap();
-            if (mListFile != null && !mListFile.isEmpty())
+            if (mParamsType == ParamsType.Default)
             {
-                for (Map.Entry<String, Object> item : params.entrySet())
-                {
-                    request.part(item.getKey(), String.valueOf(item.getValue()));
-                }
-
-                for (FilePart item : mListFile)
-                {
-                    request.part(item.name, item.filename, item.contentType, item.file);
-                }
-
-            } else
+                executeDefault(request);
+            } else if (mParamsType == ParamsType.Json)
             {
-                request.form(params);
+                executeJson(request);
             }
         }
 
@@ -91,11 +91,56 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
         return response;
     }
 
-    @Override
-    public PostRequest setBody(IRequestBody body)
+    private void executeBody(HttpRequest request)
     {
-        mBody = body;
-        return this;
+        request.contentType(mBody.getContentType());
+        if (mBody instanceof StringBody)
+        {
+            final String body = ((StringBody) mBody).getBody();
+            request.send(body);
+        } else if (mBody instanceof FileBody)
+        {
+            final File body = ((FileBody) mBody).getBody();
+            request.send(body);
+        } else if (mBody instanceof BytesBody)
+        {
+            final byte[] body = ((BytesBody) mBody).getBody();
+            request.send(body);
+        }
+    }
+
+    private void executeDefault(HttpRequest request)
+    {
+        final Map<String, Object> params = getParams().toMap();
+        if (mListFile != null && !mListFile.isEmpty())
+        {
+            for (Map.Entry<String, Object> item : params.entrySet())
+            {
+                request.part(item.getKey(), String.valueOf(item.getValue()));
+            }
+
+            for (FilePart item : mListFile)
+            {
+                request.part(item.name, item.filename, item.contentType, item.file);
+            }
+        } else
+        {
+            request.form(params);
+        }
+    }
+
+    private void executeJson(HttpRequest request) throws JSONException
+    {
+        final JSONObject jsonObject = new JSONObject();
+        final Map<String, Object> params = getParams().toMap();
+        for (Map.Entry<String, Object> item : params.entrySet())
+        {
+            jsonObject.put(item.getKey(), item.getValue());
+        }
+
+        final String json = jsonObject.toString();
+        setBody(new JsonBody(json));
+        executeBody(request);
     }
 
     private static final class FilePart
