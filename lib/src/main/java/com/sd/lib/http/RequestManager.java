@@ -109,7 +109,7 @@ public class RequestManager
     final IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
     {
         @Override
-        public IResponse beforeExecute(IRequest request)
+        public IResponse beforeExecute(IRequest request) throws Exception
         {
             if (mRequestInterceptor != null)
                 return mRequestInterceptor.beforeExecute(request);
@@ -118,12 +118,31 @@ public class RequestManager
         }
 
         @Override
-        public IResponse afterExecute(IRequest request, IResponse response)
+        public IResponse afterExecute(IRequest request, IResponse response) throws Exception
         {
             if (mRequestInterceptor != null)
                 return mRequestInterceptor.afterExecute(request, response);
 
             return response;
+        }
+
+        @Override
+        public void onError(final Exception e)
+        {
+            if (mRequestInterceptor != null)
+            {
+                mRequestInterceptor.onError(e);
+            } else
+            {
+                FTask.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
         }
     };
 
@@ -167,15 +186,14 @@ public class RequestManager
         callback.setRequest(request);
         callback.onPrepare(request);
 
-        final RequestTask task = new RequestTask(request, callback)
+        final RequestTask task = new RequestTask(request, callback, new RequestTask.Callback()
         {
             @Override
-            protected void onFinish()
+            public void onFinish(RequestTask task)
             {
-                super.onFinish();
-                removeTask(this);
+                removeTask(task);
             }
-        };
+        });
 
         final String tag = request.getTag();
         final String requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);

@@ -19,7 +19,7 @@ public class AppRequestInterceptor implements IRequestInterceptor
     private final Map<IRequest, Long> mMapTime = new WeakHashMap<>();
 
     @Override
-    public IResponse beforeExecute(IRequest request)
+    public IResponse beforeExecute(IRequest request) throws Exception
     {
         //请求发起之前回调
         mMapTime.put(request, System.currentTimeMillis());
@@ -28,11 +28,17 @@ public class AppRequestInterceptor implements IRequestInterceptor
     }
 
     @Override
-    public IResponse afterExecute(IRequest request, IResponse response)
+    public IResponse afterExecute(IRequest request, IResponse response) throws Exception
     {
         //请求发起之后回调
         long time = System.currentTimeMillis() - mMapTime.get(request);
         Log.i(TAG, "afterExecute:" + request + " " + time);
         return null;
+    }
+
+    @Override
+    public void onError(Exception e)
+    {
+
     }
 }

@@ -164,18 +164,30 @@ public abstract class Request implements IRequest
 
         if (intercept)
         {
-            final IResponse beforeResponse = RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
-            if (beforeResponse != null)
-                return beforeResponse;
+            try
+            {
+                final IResponse beforeResponse = RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this);
+                if (beforeResponse != null)
+                    return beforeResponse;
+            } catch (Exception e)
+            {
+                RequestManager.getInstance().mInternalRequestInterceptor.onError(e);
+            }
         }
 
         final IResponse realResponse = doExecute();
 
         if (intercept)
         {
-            final IResponse afterResponse = RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, realResponse);
-            if (afterResponse != null)
-                return afterResponse;
+            try
+            {
+                final IResponse afterResponse = RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, realResponse);
+                if (afterResponse != null)
+                    return afterResponse;
+            } catch (Exception e)
+            {
+                RequestManager.getInstance().mInternalRequestInterceptor.onError(e);
+            }
         }
 
         return realResponse;

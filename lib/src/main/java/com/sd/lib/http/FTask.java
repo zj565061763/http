@@ -8,9 +8,6 @@ import java.util.concurrent.ExecutorService;
 abstract class FTask
 {
     private final String mTag;
-    private volatile State mState = State.None;
-
-    private OnStateChangeCallback mOnStateChangeCallback;
 
     public FTask()
     {
@@ -30,26 +27,6 @@ abstract class FTask
     public final String getTag()
     {
         return mTag;
-    }
-
-    /**
-     * 返回当前状态
-     *
-     * @return
-     */
-    public final State getState()
-    {
-        return mState;
-    }
-
-    /**
-     * 设置状态变化回调
-     *
-     * @param callback
-     */
-    public final void setOnStateChangeCallback(OnStateChangeCallback callback)
-    {
-        mOnStateChangeCallback = callback;
     }
 
     /**
@@ -110,30 +87,24 @@ abstract class FTask
         @Override
         public void onRun() throws Exception
         {
-            FTask.this.setState(State.Running);
             FTask.this.onRun();
         }
 
         @Override
         public void onError(Exception e)
         {
-            FTask.this.setState(State.DoneError);
             FTask.this.onError(e);
         }
 
         @Override
         public void onCancel()
         {
-            FTask.this.setState(State.DoneCancel);
             FTask.this.onCancel();
         }
 
         @Override
         public void onFinish()
         {
-            if (getState() == State.Running)
-                FTask.this.setState(State.DoneSuccess);
-
             FTask.this.onFinish();
         }
 
@@ -180,49 +151,6 @@ abstract class FTask
      */
     protected void onFinish()
     {
-    }
-
-    private void setState(State state)
-    {
-        if (state == null)
-            throw new IllegalArgumentException("state is null");
-
-        final State old = mState;
-        if (old != state)
-        {
-            mState = state;
-
-            if (mOnStateChangeCallback != null)
-                mOnStateChangeCallback.onStateChanged(old, mState);
-        }
-    }
-
-    public enum State
-    {
-        None,
-        Running,
-        DoneCancel,
-        DoneError,
-        DoneSuccess;
-
-        public boolean isDone()
-        {
-            return this == DoneSuccess || this == DoneError || this == DoneCancel;
-        }
-    }
-
-    /**
-     * 状态变化回调
-     */
-    public interface OnStateChangeCallback
-    {
-        /**
-         * 状态变化回调，不一定在主线程回调
-         *
-         * @param oldState
-         * @param newState
-         */
-        void onStateChanged(State oldState, State newState);
     }
 
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());

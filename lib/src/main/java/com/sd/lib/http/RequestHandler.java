@@ -5,10 +5,12 @@ package com.sd.lib.http;
  */
 public class RequestHandler
 {
-    private RequestTask mRequestTask;
+    private final RequestTask mRequestTask;
 
     RequestHandler(RequestTask requestTask)
     {
+        if (requestTask == null)
+            throw new NullPointerException();
         mRequestTask = requestTask;
     }
 
