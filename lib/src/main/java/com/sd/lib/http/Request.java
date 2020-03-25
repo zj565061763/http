@@ -223,17 +223,16 @@ public abstract class Request implements IRequest
 
         if (mTransmitParam.transmit(total, uploaded))
         {
-            FTask.runOnUiThread(mUploadProgressRunnable);
+            final TransmitParam param = mTransmitParam.copy();
+            FTask.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (mUploadProgressCallback != null)
+                        mUploadProgressCallback.onProgressUpload(param);
+                }
+            });
         }
     }
-
-    private final Runnable mUploadProgressRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            if (mUploadProgressCallback != null)
-                mUploadProgressCallback.onProgressUpload(mTransmitParam);
-        }
-    };
 }
