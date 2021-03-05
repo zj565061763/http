@@ -80,8 +80,7 @@ class TransmitParam {
         return progress > oldProgress
     }
 
-    @Synchronized
-    fun reset() {
+    private fun reset() {
         current = 0
         total = 0
         progress = 0
