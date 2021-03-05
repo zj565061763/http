@@ -1,8 +1,7 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
-import com.sd.lib.http.body.IRequestBody;
+import com.sd.lib.http.body.IRequestBody
 
-public interface IBodyRequest
-{
-    IBodyRequest setBody(IRequestBody body);
+interface IBodyRequest {
+    fun setBody(body: IRequestBody<*>)
 }

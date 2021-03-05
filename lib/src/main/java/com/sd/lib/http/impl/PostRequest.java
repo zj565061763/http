@@ -50,10 +50,9 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
     }
 
     @Override
-    public PostRequest setBody(IRequestBody body)
+    public void setBody(IRequestBody body)
     {
         mBody = body;
-        return this;
     }
 
     @Override
