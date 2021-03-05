@@ -2,9 +2,13 @@ package com.sd.lib.http.body
 
 import com.sd.lib.http.ContentType
 
-class BytesBody(bytes: ByteArray) : IRequestBody<ByteArray> {
+class BytesBody : IRequestBody<ByteArray> {
+
+    constructor(bytes: ByteArray) {
+        this.body = bytes
+    }
 
     override val contentType: String = ContentType.STREAM
 
-    override val body: ByteArray = bytes
+    override val body: ByteArray
 }
