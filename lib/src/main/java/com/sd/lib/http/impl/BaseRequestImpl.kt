@@ -1,146 +1,98 @@
-package com.sd.lib.http.impl;
+package com.sd.lib.http.impl
 
-import android.text.TextUtils;
+import android.text.TextUtils
+import com.sd.lib.http.IResponse
+import com.sd.lib.http.Request
+import com.sd.lib.http.impl.HttpRequest
+import com.sd.lib.http.impl.HttpRequest.HttpRequestException
+import com.sd.lib.http.security.SSLSocketFactoryProvider
+import com.sd.lib.http.utils.HttpIOUtil
+import java.io.IOException
+import java.io.InputStream
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLSocketFactory
 
-import com.sd.lib.http.IResponse;
-import com.sd.lib.http.Request;
-import com.sd.lib.http.security.SSLSocketFactoryProvider;
-import com.sd.lib.http.utils.HttpIOUtil;
+abstract class BaseRequestImpl() : Request() {
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
+    protected fun newHttpRequest(url: String, method: String): HttpRequest {
+        val request = FHttpRequest(url, method)
+        request.headers(headers.toMap())
+        request.readTimeout(readTimeout)
+        request.connectTimeout(connectTimeout)
+        request.progress { uploaded, total -> notifyProgressUpload(uploaded, total) }
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocketFactory;
+        val connection = request.connection
+        if (connection is HttpsURLConnection) {
+            var sslSocketFactory = sSLSocketFactory ?: trustedFactory
+            connection.sslSocketFactory = sslSocketFactory
 
-public abstract class BaseRequestImpl extends Request
-{
-    private static SSLSocketFactory TRUSTED_FACTORY;
-
-    protected HttpRequest newHttpRequest(String url, String method) throws KeyManagementException, NoSuchAlgorithmException
-    {
-        final FHttpRequest request = new FHttpRequest(url, method);
-        request.headers(getHeaders().toMap());
-        request.readTimeout(getReadTimeout());
-        request.connectTimeout(getConnectTimeout());
-        request.progress(new HttpRequest.UploadProgress()
-        {
-            @Override
-            public void onUpload(long uploaded, long total)
-            {
-                notifyProgressUpload(uploaded, total);
-            }
-        });
-
-        final HttpURLConnection connection = request.getConnection();
-        if (connection instanceof HttpsURLConnection)
-        {
-            SSLSocketFactory sslSocketFactory = getSSLSocketFactory();
-            if (sslSocketFactory == null)
-                sslSocketFactory = getTrustedFactory();
-
-            final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
-            httpsConnection.setSSLSocketFactory(sslSocketFactory);
-
-            final HostnameVerifier hostnameVerifier = getHostnameVerifier();
-            if (hostnameVerifier != null)
-                httpsConnection.setHostnameVerifier(hostnameVerifier);
-        }
-
-        return request;
-    }
-
-    private static synchronized SSLSocketFactory getTrustedFactory() throws KeyManagementException, NoSuchAlgorithmException
-    {
-        if (TRUSTED_FACTORY == null)
-        {
-            synchronized (BaseRequestImpl.class)
-            {
-                if (TRUSTED_FACTORY == null)
-                    TRUSTED_FACTORY = SSLSocketFactoryProvider.getTrustedFactory();
+            val hostnameVerifier = hostnameVerifier
+            if (hostnameVerifier != null) {
+                connection.hostnameVerifier = hostnameVerifier
             }
         }
-        return TRUSTED_FACTORY;
+        return request
     }
 
-    @Override
-    public String toString()
-    {
-        final String url = HttpRequest.append(getUrl(), getParams().toMap());
-        return url + " " + super.toString();
+    override fun toString(): String {
+        val url = HttpRequest.append(url, params.toMap())
+        return url + " " + super.toString()
     }
 
-    public static class Response implements IResponse
-    {
-        private HttpRequest mHttpRequest;
-        private String mBody;
+    class Response : IResponse {
 
-        public Response(HttpRequest httpRequest)
-        {
-            mHttpRequest = httpRequest;
+        private val mHttpRequest: HttpRequest
+
+        constructor(httpRequest: HttpRequest) {
+            mHttpRequest = httpRequest
         }
 
-        @Override
-        public int getCode()
-        {
-            return mHttpRequest.code();
-        }
+        private var mBody: String? = null
 
-        public int getCodeOrThrow() throws Exception
-        {
-            try
-            {
-                return getCode();
-            } catch (HttpRequest.HttpRequestException e)
-            {
-                throw e.getCause();
-            }
-        }
+        override val code: Int
+            get() = mHttpRequest.code()
 
-        @Override
-        public int getContentLength()
-        {
-            return mHttpRequest.contentLength();
-        }
-
-        @Override
-        public Map<String, List<String>> getHeaders()
-        {
-            return mHttpRequest.headers();
-        }
-
-        @Override
-        public String getCharset()
-        {
-            return mHttpRequest.charset();
-        }
-
-        @Override
-        public InputStream getInputStream()
-        {
-            return mHttpRequest.stream();
-        }
-
-        @Override
-        public synchronized String getAsString() throws IOException
-        {
-            if (TextUtils.isEmpty(mBody))
-            {
-                try
-                {
-                    mBody = HttpIOUtil.readString(getInputStream(), getCharset());
-                } finally
-                {
-                    HttpIOUtil.closeQuietly(getInputStream());
+        @get:Throws(IOException::class)
+        val codeOrThrow: Int
+            get() {
+                try {
+                    return code
+                } catch (e: HttpRequestException) {
+                    throw (e.cause)!!
                 }
             }
-            return mBody;
+
+        override val contentLength: Int
+            get() = mHttpRequest.contentLength()
+
+        override val headers: Map<String, List<String>>
+            get() = mHttpRequest.headers()
+
+        override val charset: String
+            get() = mHttpRequest.charset()
+
+        override val inputStream: InputStream
+            get() = mHttpRequest.stream()
+
+        @get:Throws(IOException::class)
+        override val asString: String?
+            get() {
+                synchronized(this@Response) {
+                    if (TextUtils.isEmpty(mBody)) {
+                        try {
+                            mBody = HttpIOUtil.readString(inputStream, charset)
+                        } finally {
+                            HttpIOUtil.closeQuietly(inputStream)
+                        }
+                    }
+                    return mBody
+                }
+            }
+    }
+
+    companion object {
+        private val trustedFactory: SSLSocketFactory by lazy {
+            SSLSocketFactoryProvider.getTrustedFactory()
         }
     }
 }

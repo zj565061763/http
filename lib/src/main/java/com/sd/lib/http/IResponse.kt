@@ -7,7 +7,6 @@ interface IResponse {
     /**
      * http返回码
      */
-    @get:Throws(IOException::class)
     val code: Int
 
     /**
