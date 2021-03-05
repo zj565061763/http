@@ -1,176 +1,127 @@
-package com.sd.lib.http.impl;
+package com.sd.lib.http.impl
 
-import android.text.TextUtils;
+import android.text.TextUtils
+import com.sd.lib.http.ContentType
+import com.sd.lib.http.IPostRequest
+import com.sd.lib.http.IPostRequest.ParamsType
+import com.sd.lib.http.IResponse
+import com.sd.lib.http.body.*
+import com.sd.lib.http.exception.HttpException
+import org.json.JSONObject
+import java.io.File
+import java.net.HttpURLConnection
 
-import com.sd.lib.http.ContentType;
-import com.sd.lib.http.IPostRequest;
-import com.sd.lib.http.IResponse;
-import com.sd.lib.http.body.BytesBody;
-import com.sd.lib.http.body.FileBody;
-import com.sd.lib.http.body.IRequestBody;
-import com.sd.lib.http.body.JsonBody;
-import com.sd.lib.http.body.StringBody;
+class PostRequest : BaseRequestImpl(), IPostRequest {
+    private var mBody: IRequestBody<*>? = null
+    private var mListFile: MutableList<FilePart>? = null
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-public class PostRequest extends BaseRequestImpl implements IPostRequest
-{
-    private List<FilePart> mListFile;
-    private IRequestBody mBody;
-
-    private ParamsType mParamsType = ParamsType.Default;
-
-    private List<FilePart> getListFile()
-    {
-        if (mListFile == null)
-            mListFile = new ArrayList<>();
-        return mListFile;
+    private val listFile: MutableList<FilePart> by lazy {
+        val list: MutableList<FilePart> = ArrayList()
+        mListFile = list
+        list
     }
 
-    @Override
-    public void addPart(@NotNull String name, @NotNull File file)
-    {
-        addPart(name, file, null, null);
+    override var paramsType: ParamsType = ParamsType.Default
+        set(value) {
+            requireNotNull(value)
+            field = value
+        }
+
+    override fun addPart(name: String, file: File) {
+        addPart(name, file, null, null)
     }
 
-    @Override
-    public void addPart(@NotNull String name, @NotNull File file, @Nullable String filename, @Nullable String contentType)
-    {
-        final FilePart filePart = new FilePart(name, file, filename, contentType);
-        getListFile().add(filePart);
+    override fun addPart(name: String, file: File, filename: String?, contentType: String?) {
+        val filePart = FilePart(name, file, filename, contentType)
+        listFile.add(filePart)
     }
 
-    @Override
-    public void setBody(IRequestBody body)
-    {
-        mBody = body;
+    override fun setBody(body: IRequestBody<*>?) {
+        mBody = body
     }
 
-    @Override
-    public void setParamsType(ParamsType type)
-    {
-        if (type == null)
-            throw new NullPointerException("type is null");
+    @Throws(HttpException::class)
+    override fun doExecute(): IResponse {
+        val httpRequest = newHttpRequest(url, HttpRequest.METHOD_POST)
 
-        mParamsType = type;
-    }
-
-    @Override
-    protected IResponse doExecute() throws Exception
-    {
-        final HttpRequest request = newHttpRequest(getUrl(), HttpRequest.METHOD_POST);
-
-        if (mBody != null)
-        {
-            executeBody(request);
-        } else
-        {
-            if (mParamsType == ParamsType.Default)
-            {
-                executeDefault(request);
-            } else if (mParamsType == ParamsType.Json)
-            {
-                executeJson(request);
+        val requestBody = mBody
+        if (requestBody != null) {
+            executeBody(httpRequest, requestBody)
+        } else {
+            when (paramsType) {
+                ParamsType.Default -> executeDefault(httpRequest)
+                ParamsType.Json -> executeJson(httpRequest)
             }
         }
 
-        final Response response = new Response(request);
-        response.getCodeOrThrow();
-
-        return response;
+        val response = Response(httpRequest)
+        response.codeOrThrow
+        return response
     }
 
-    private void executeBody(HttpRequest request)
-    {
-        request.contentType(mBody.getContentType());
-        if (mBody instanceof StringBody)
-        {
-            final String body = ((StringBody) mBody).getBody();
-            request.send(body);
-        } else if (mBody instanceof FileBody)
-        {
-            final File body = ((FileBody) mBody).getBody();
-            request.send(body);
-        } else if (mBody instanceof BytesBody)
-        {
-            final byte[] body = ((BytesBody) mBody).getBody();
-            request.send(body);
+    private fun executeBody(httpRequest: HttpRequest, requestBody: IRequestBody<*>) {
+        httpRequest.contentType(requestBody.contentType)
+        when (requestBody) {
+            is StringBody -> {
+                httpRequest.send(requestBody.body)
+            }
+            is FileBody -> {
+                httpRequest.send(requestBody.body)
+            }
+            is BytesBody -> {
+                httpRequest.send(requestBody.body)
+            }
         }
     }
 
-    private void executeDefault(HttpRequest request)
-    {
-        final Map<String, Object> params = getParams().toMap();
-        if (mListFile != null && !mListFile.isEmpty())
-        {
-            for (Map.Entry<String, Object> item : params.entrySet())
-            {
-                request.part(item.getKey(), String.valueOf(item.getValue()));
+    private fun executeDefault(httpRequest: HttpRequest) {
+        val map = params.toMap()
+        val list = mListFile
+        if (list == null || list.isEmpty()) {
+            httpRequest.form(map)
+        } else {
+            for ((key, value) in map) {
+                httpRequest.part(key, value.toString())
             }
-
-            for (FilePart item : mListFile)
-            {
-                request.part(item.name, item.filename, item.contentType, item.file);
+            for (item in list) {
+                httpRequest.part(item.name, item.filename, item.contentType, item.file)
             }
-        } else
-        {
-            request.form(params);
         }
     }
 
-    private void executeJson(HttpRequest request) throws JSONException
-    {
-        final JSONObject jsonObject = new JSONObject();
-        final Map<String, Object> params = getParams().toMap();
-        for (Map.Entry<String, Object> item : params.entrySet())
-        {
-            jsonObject.put(item.getKey(), item.getValue());
+    private fun executeJson(httpRequest: HttpRequest) {
+        val jsonObject = JSONObject()
+
+        val map = params.toMap()
+        for ((key, value) in map) {
+            jsonObject.put(key, value)
         }
 
-        final String json = jsonObject.toString();
-        setBody(new JsonBody(json));
-        executeBody(request);
+        val json = jsonObject.toString()
+        val requestBody = JsonBody(json)
+        executeBody(httpRequest, requestBody)
     }
 
+    private class FilePart(name: String, file: File?, filename: String?, contentType: String?) {
+        val name: String
+        val filename: String?
+        val contentType: String?
+        val file: File
 
-    private static final class FilePart
-    {
-        public final String name;
-        public final String filename;
-        public final String contentType;
-        public final File file;
-
-        public FilePart(String name, File file, String filename, String contentType)
-        {
-            if (TextUtils.isEmpty(name))
-                throw new IllegalArgumentException("name is empty");
-
-            if (file == null)
-                throw new IllegalArgumentException("file is null");
-
-            if (TextUtils.isEmpty(contentType))
-            {
-                contentType = HttpURLConnection.guessContentTypeFromName(file.getName());
-                if (TextUtils.isEmpty(contentType))
-                    contentType = ContentType.STREAM;
+        init {
+            var filename = filename
+            var contentType = contentType
+            require(!TextUtils.isEmpty(name)) { "name is empty" }
+            requireNotNull(file) { "file is null" }
+            if (TextUtils.isEmpty(contentType)) {
+                contentType = HttpURLConnection.guessContentTypeFromName(file.name)
+                if (TextUtils.isEmpty(contentType)) contentType = ContentType.STREAM
             }
-
-            if (TextUtils.isEmpty(filename))
-                filename = file.getName();
-
-            this.name = name;
-            this.filename = filename;
-            this.contentType = contentType;
-            this.file = file;
+            if (TextUtils.isEmpty(filename)) filename = file.name
+            this.name = name
+            this.filename = filename
+            this.contentType = contentType
+            this.file = file
         }
     }
 }
