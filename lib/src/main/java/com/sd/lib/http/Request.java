@@ -32,65 +32,56 @@ public abstract class Request implements IRequest
     //---------- IRequest implements start ----------
 
     @Override
-    public final IRequest setBaseUrl(String baseUrl)
+    public final void setBaseUrl(String baseUrl)
     {
         mBaseUrl = baseUrl;
-        return this;
     }
 
     @Override
-    public final IRequest setUrlSuffix(String urlSuffix)
+    public final void setUrlSuffix(String urlSuffix)
     {
         mUrlSuffix = urlSuffix;
-        return this;
     }
 
     @Override
-    public final IRequest setTag(String tag)
+    public final void setTag(String tag)
     {
         mTag = tag;
-        return this;
     }
 
     @Override
-    public final IRequest setConnectTimeout(int connectTimeout)
+    public final void setConnectTimeout(int connectTimeout)
     {
         mConnectTimeout = connectTimeout;
-        return this;
     }
 
     @Override
-    public final IRequest setReadTimeout(int readTimeout)
+    public final void setReadTimeout(int readTimeout)
     {
         mReadTimeout = readTimeout;
-        return this;
     }
 
     @Override
-    public final IRequest setUploadProgressCallback(IUploadProgressCallback callback)
+    public final void setUploadProgressCallback(IUploadProgressCallback callback)
     {
         mUploadProgressCallback = callback;
-        return this;
     }
 
     @Override
-    public final IRequest setSSLSocketFactory(SSLSocketFactory sslSocketFactory)
+    public final void setSSLSocketFactory(SSLSocketFactory sslSocketFactory)
     {
         mSSLSocketFactory = sslSocketFactory;
-        return this;
     }
 
-    public final IRequest setHostnameVerifier(HostnameVerifier hostnameVerifier)
+    public final void setHostnameVerifier(HostnameVerifier hostnameVerifier)
     {
         mHostnameVerifier = hostnameVerifier;
-        return this;
     }
 
     @Override
-    public final IRequest setInterceptExecute(boolean interceptExecute)
+    public final void setInterceptExecute(boolean interceptExecute)
     {
         mInterceptExecute = interceptExecute;
-        return this;
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.sd.www.http.ui;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.sd.lib.http.Request;
 import com.sd.lib.http.RequestManager;
 import com.sd.lib.http.callback.FileRequestCallback;
 import com.sd.lib.http.impl.GetRequest;
@@ -35,8 +37,12 @@ public class DownloadActivity extends AppCompatActivity
 
     public void onClickRequest(View view)
     {
-        File file = new File(getExternalCacheDir(), "download.apk");
-        new GetRequest().setBaseUrl(URL_FILE).setTag(TAG).execute(new FileRequestCallback(file)
+        final File file = new File(getExternalCacheDir(), "download.apk");
+
+        final Request request = new GetRequest();
+        request.setBaseUrl(URL_FILE);
+        request.setTag(TAG);
+        request.execute(new FileRequestCallback(file)
         {
             @Override
             protected void onProgressDownload(TransmitParam param)
