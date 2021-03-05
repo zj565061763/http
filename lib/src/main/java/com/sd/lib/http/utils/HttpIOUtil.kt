@@ -6,6 +6,7 @@ import java.io.*
 internal class HttpIOUtil private constructor() {
 
     companion object {
+
         @Throws(IOException::class)
         fun readString(inputStream: InputStream?, charset: String?): String {
             val tInputStream = if (inputStream is BufferedInputStream) inputStream else BufferedInputStream(inputStream)
@@ -48,9 +49,11 @@ internal class HttpIOUtil private constructor() {
 
         @JvmStatic
         fun closeQuietly(closeable: Closeable?) {
-            try {
-                closeable?.close()
-            } catch (ignored: Throwable) {
+            closeable?.let {
+                try {
+                    it.close()
+                } catch (ignored: Throwable) {
+                }
             }
         }
     }
