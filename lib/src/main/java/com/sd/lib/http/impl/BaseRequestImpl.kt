@@ -4,12 +4,13 @@ import android.text.TextUtils
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.Request
 import com.sd.lib.http.exception.HttpException
-import com.sd.lib.http.impl.HttpRequest
 import com.sd.lib.http.impl.HttpRequest.HttpRequestException
 import com.sd.lib.http.security.SSLSocketFactoryProvider
 import com.sd.lib.http.utils.HttpIOUtil
 import java.io.IOException
 import java.io.InputStream
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLSocketFactory
 
@@ -24,12 +25,19 @@ abstract class BaseRequestImpl() : Request() {
 
         val connection = request.connection
         if (connection is HttpsURLConnection) {
-            var sslSocketFactory = sSLSocketFactory ?: trustedFactory
-            connection.sslSocketFactory = sslSocketFactory
+            var factory = sSLSocketFactory
+            if (factory == null) {
+                try {
+                    factory = trustedFactory
+                } catch (e: Exception) {
+                    throw HttpException(cause = e)
+                }
+            }
+            connection.sslSocketFactory = factory
 
-            val hostnameVerifier = hostnameVerifier
-            if (hostnameVerifier != null) {
-                connection.hostnameVerifier = hostnameVerifier
+            val verifier = hostnameVerifier
+            if (verifier != null) {
+                connection.hostnameVerifier = verifier
             }
         }
         return request
@@ -92,6 +100,8 @@ abstract class BaseRequestImpl() : Request() {
     }
 
     companion object {
+
+        @get:Throws(NoSuchAlgorithmException::class, KeyManagementException::class)
         private val trustedFactory: SSLSocketFactory by lazy {
             SSLSocketFactoryProvider.getTrustedFactory()
         }
