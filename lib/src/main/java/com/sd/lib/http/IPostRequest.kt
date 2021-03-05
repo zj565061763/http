@@ -1,18 +1,16 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
-import java.io.File;
+import java.io.File
 
-public interface IPostRequest extends IRequest, IBodyRequest
-{
-    void addPart(String name, File file);
+interface IPostRequest : IRequest, IBodyRequest {
 
-    void addPart(String name, String filename, String contentType, File file);
+    fun addPart(name: String, file: File)
 
-    void setParamsType(ParamsType type);
+    fun addPart(name: String, file: File, filename: String? = null, contentType: String? = null)
 
-    enum ParamsType
-    {
-        Default,
-        Json
+    fun setParamsType(type: ParamsType)
+
+    enum class ParamsType {
+        Default, Json
     }
 }

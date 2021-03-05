@@ -11,6 +11,8 @@ import com.sd.lib.http.body.IRequestBody;
 import com.sd.lib.http.body.JsonBody;
 import com.sd.lib.http.body.StringBody;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,15 +37,15 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
     }
 
     @Override
-    public void addPart(String name, File file)
+    public void addPart(@NotNull String name, @NotNull File file)
     {
-        addPart(name, null, null, file);
+        addPart(name, file, null, null);
     }
 
     @Override
-    public void addPart(String name, String filename, String contentType, File file)
+    public void addPart(@NotNull String name, @NotNull File file, @Nullable String filename, @Nullable String contentType)
     {
-        final FilePart filePart = new FilePart(name, filename, contentType, file);
+        final FilePart filePart = new FilePart(name, file, filename, contentType);
         getListFile().add(filePart);
     }
 
@@ -139,6 +141,7 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
         executeBody(request);
     }
 
+
     private static final class FilePart
     {
         public final String name;
@@ -146,8 +149,14 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
         public final String contentType;
         public final File file;
 
-        public FilePart(String name, String filename, String contentType, File file)
+        public FilePart(String name, File file, String filename, String contentType)
         {
+            if (TextUtils.isEmpty(name))
+                throw new IllegalArgumentException("name is empty");
+
+            if (file == null)
+                throw new IllegalArgumentException("file is null");
+
             if (TextUtils.isEmpty(contentType))
             {
                 contentType = HttpURLConnection.guessContentTypeFromName(file.getName());
