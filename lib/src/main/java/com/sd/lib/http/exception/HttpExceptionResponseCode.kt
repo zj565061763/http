@@ -1,35 +1,22 @@
-package com.sd.lib.http.exception;
+package com.sd.lib.http.exception
 
 /**
  * Http返回码异常
  */
-public class HttpExceptionResponseCode extends HttpException
-{
-    private final int mCode;
-    private final String mDetails;
+class HttpExceptionResponseCode @JvmOverloads constructor(val code: Int, message: String? = null, cause: Throwable? = null) : HttpException(message, cause) {
 
-    public HttpExceptionResponseCode(int code, String details)
-    {
-        mCode = code;
-        mDetails = details;
+    override fun toString(): String {
+        return "${super.toString()} code:${this.code}"
     }
 
-    public static HttpExceptionResponseCode from(int code)
-    {
-        if (code >= 400)
-        {
-            return new HttpExceptionResponseCode(code, null);
+    companion object {
+        @JvmStatic
+        fun from(code: Int): HttpExceptionResponseCode? {
+            return if (code >= 400) {
+                HttpExceptionResponseCode(code)
+            } else {
+                null
+            }
         }
-        return null;
-    }
-
-    public int getCode()
-    {
-        return mCode;
-    }
-
-    public String getDetails()
-    {
-        return mDetails;
     }
 }
