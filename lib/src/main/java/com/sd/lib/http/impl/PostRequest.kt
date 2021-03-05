@@ -102,26 +102,26 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
         executeBody(httpRequest, requestBody)
     }
 
-    private class FilePart(name: String, file: File?, filename: String?, contentType: String?) {
+    private class FilePart {
         val name: String
         val filename: String?
         val contentType: String?
         val file: File
 
-        init {
-            var filename = filename
-            var contentType = contentType
+        constructor(name: String, file: File, filename: String?, contentType: String?) {
             require(!TextUtils.isEmpty(name)) { "name is empty" }
             requireNotNull(file) { "file is null" }
-            if (TextUtils.isEmpty(contentType)) {
-                contentType = HttpURLConnection.guessContentTypeFromName(file.name)
-                if (TextUtils.isEmpty(contentType)) contentType = ContentType.STREAM
-            }
-            if (TextUtils.isEmpty(filename)) filename = file.name
+
             this.name = name
-            this.filename = filename
-            this.contentType = contentType
             this.file = file
+            this.filename = if (TextUtils.isEmpty(filename)) file.name else filename
+
+            var cType = contentType
+            if (TextUtils.isEmpty(cType)) {
+                cType = HttpURLConnection.guessContentTypeFromName(file.name)
+                if (TextUtils.isEmpty(cType)) cType = ContentType.STREAM
+            }
+            this.contentType = cType
         }
     }
 }
