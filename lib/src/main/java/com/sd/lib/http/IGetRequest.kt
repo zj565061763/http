@@ -1,5 +1,3 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
-public interface IGetRequest extends IRequest
-{
-}
+interface IGetRequest : IRequest
