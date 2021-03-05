@@ -2,10 +2,12 @@ package com.sd.lib.http.body;
 
 import android.text.TextUtils;
 
+import com.sd.lib.http.ContentType;
+
 import java.io.File;
 import java.net.HttpURLConnection;
 
-public class FileBody extends BaseBody<File>
+public class FileBody implements IRequestBody<File>
 {
     private final File mFile;
 
@@ -19,11 +21,11 @@ public class FileBody extends BaseBody<File>
     @Override
     public final String getContentType()
     {
-        final String contentType = HttpURLConnection.guessContentTypeFromName(mFile.getName());
-        if (!TextUtils.isEmpty(contentType))
-            return contentType;
+        String contentType = HttpURLConnection.guessContentTypeFromName(mFile.getName());
+        if (TextUtils.isEmpty(contentType))
+            contentType = ContentType.STREAM;
 
-        return super.getContentType();
+        return contentType;
     }
 
     @Override
