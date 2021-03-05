@@ -1,25 +1,14 @@
-package com.sd.lib.http.body;
+package com.sd.lib.http.body
 
-import com.sd.lib.http.ContentType;
+import com.sd.lib.http.ContentType
 
-public class BytesBody implements IRequestBody<byte[]>
-{
-    private final byte[] mBody;
+class BytesBody : IRequestBody<ByteArray> {
 
-    public BytesBody(byte[] body)
-    {
-        mBody = body;
+    constructor(body: ByteArray) {
+        this.body = body
     }
 
-    @Override
-    public String getContentType()
-    {
-        return ContentType.STREAM;
-    }
+    override val contentType: String = ContentType.STREAM
 
-    @Override
-    public final byte[] getBody()
-    {
-        return mBody;
-    }
+    override val body: ByteArray
 }
