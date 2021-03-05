@@ -54,28 +54,40 @@ class TransmitParam {
      *
      * @param total 总量
      * @param current 当前传输量
-     * @return true-进度增加了
+     * @return true-进度发生了变化
      */
     @Synchronized
     fun transmit(total: Long, current: Long): Boolean {
         val oldProgress = progress
+        if (total <= 0 || current <= 0) {
+            reset()
+            return oldProgress != progress
+        }
+
         this.total = total
         this.current = current
 
-        if (this.total <= 0) {
-            progress = 0
-        } else {
-            val currentTime = System.currentTimeMillis()
-            val timeInterval = currentTime - mLastTime
-            if (timeInterval >= mCalculateSpeedInterval) {
-                val count = current - mLastCount
-                speedBps = (count * (1000f / timeInterval)).toInt()
-                mLastTime = currentTime
-                mLastCount = current
-            }
+        val currentTime = System.currentTimeMillis()
+        val interval = currentTime - mLastTime
+        if (interval >= mCalculateSpeedInterval) {
+            val count = current - mLastCount
+            speedBps = (count * (1000f / interval)).toInt()
+            mLastTime = currentTime
+            mLastCount = current
         }
+
         progress = (current * 100 / total).toInt()
         return progress > oldProgress
+    }
+
+    @Synchronized
+    fun reset() {
+        current = 0
+        total = 0
+        progress = 0
+        speedBps = 0
+        mLastTime = 0
+        mLastCount = 0
     }
 
     override fun toString(): String {
