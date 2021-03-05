@@ -77,24 +77,26 @@ abstract class BaseRequestImpl() : Request() {
         override val headers: Map<String, List<String>>
             get() = mHttpRequest.headers()
 
-        override val charset: String
+        override val charset: String?
             get() = mHttpRequest.charset()
 
         override val inputStream: InputStream
             get() = mHttpRequest.stream()
 
-        @get:Throws(IOException::class)
-        override val asString: String?
+        @get:Throws(HttpException::class)
+        override val asString: String
             get() {
                 synchronized(this@Response) {
                     if (TextUtils.isEmpty(mBody)) {
                         try {
                             mBody = HttpIOUtil.readString(inputStream, charset)
+                        } catch (e: IOException) {
+                            throw HttpException(cause = e)
                         } finally {
                             HttpIOUtil.closeQuietly(inputStream)
                         }
                     }
-                    return mBody
+                    return mBody!!
                 }
             }
     }

@@ -1,6 +1,6 @@
 package com.sd.lib.http
 
-import java.io.IOException
+import com.sd.lib.http.exception.HttpException
 import java.io.InputStream
 
 interface IResponse {
@@ -32,6 +32,6 @@ interface IResponse {
     /**
      * 读取输入流的内容，并以字符串返回（必须在非UI线程调用）
      */
-    @get:Throws(IOException::class)
+    @get:Throws(HttpException::class)
     val asString: String?
 }
