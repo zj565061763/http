@@ -11,6 +11,8 @@ class FileBody : IRequestBody<File> {
         this.body = file
     }
 
+    override val body: File
+
     override val contentType: String
         get() {
             var contentType = HttpURLConnection.guessContentTypeFromName(body.name)
@@ -19,6 +21,4 @@ class FileBody : IRequestBody<File> {
             }
             return contentType
         }
-
-    override val body: File
 }

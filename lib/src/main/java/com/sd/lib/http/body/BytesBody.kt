@@ -8,7 +8,7 @@ class BytesBody : IRequestBody<ByteArray> {
         this.body = bytes
     }
 
-    override val contentType: String = ContentType.STREAM
-
     override val body: ByteArray
+
+    override val contentType: String = ContentType.STREAM
 }
