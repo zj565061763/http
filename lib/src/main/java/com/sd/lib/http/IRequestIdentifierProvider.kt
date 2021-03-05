@@ -1,15 +1,8 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
-/**
- * 用来给Request生成标识
- */
-public interface IRequestIdentifierProvider
-{
+interface IRequestIdentifierProvider {
     /**
-     * 根据Request生成它的唯一标识
-     *
-     * @param request
-     * @return
+     * 根据请求对象生成它的唯一标识
      */
-    String provideRequestIdentifier(IRequest request);
+    fun provideRequestIdentifier(request: IRequest): String?
 }
