@@ -1,12 +1,20 @@
 package com.sd.lib.http.body;
 
-public class BytesBody extends BaseBody<byte[]>
+import com.sd.lib.http.ContentType;
+
+public class BytesBody implements IRequestBody<byte[]>
 {
     private final byte[] mBody;
 
     public BytesBody(byte[] body)
     {
         mBody = body;
+    }
+
+    @Override
+    public String getContentType()
+    {
+        return ContentType.STREAM;
     }
 
     @Override
