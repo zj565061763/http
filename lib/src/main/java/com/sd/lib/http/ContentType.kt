@@ -1,9 +1,10 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
-public class ContentType
-{
-    public static final String STREAM = "application/octet-stream";
-    public static final String JSON = "application/json";
-    public static final String FORM = "application/x-www-form-urlencoded";
-    public static final String FORM_MULTIPART = "multipart/form-data";
+class ContentType private constructor() {
+    companion object {
+        const val STREAM = "application/octet-stream"
+        const val JSON = "application/json"
+        const val FORM = "application/x-www-form-urlencoded"
+        const val FORM_MULTIPART = "multipart/form-data"
+    }
 }
