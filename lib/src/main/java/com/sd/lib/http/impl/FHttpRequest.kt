@@ -12,16 +12,15 @@ internal class FHttpRequest : HttpRequest {
     }
 
     private var mCode: Int? = null
+
     private val responseCookie: List<HttpCookie>?
         private get() {
             val headers = headers()
             if (headers == null || headers.isEmpty()) return null
+
             val listCookie = headers[HEADER_SET_COOKIE]
             if (listCookie == null || listCookie.isEmpty()) return null
-            HttpLog.i("""
-    cookie ---------->saveCookieFromResponse ${url()}
-    ${TextUtils.join("\r\n", listCookie)}
-    """.trimIndent())
+
             val listResult: MutableList<HttpCookie> = ArrayList()
             for (item in listCookie) {
                 listResult.addAll(HttpCookie.parse(item))
@@ -56,6 +55,11 @@ internal class FHttpRequest : HttpRequest {
             val uri = url().toURI()
             val listCookie = responseCookie
             RequestManager.getInstance().cookieStore.add(uri, listCookie)
+
+            HttpLog.i("""cookie saveCookieFromResponse $uri
+                |${TextUtils.join("\r\n", listCookie)}
+            """.trimMargin())
+
         } catch (e: Exception) {
             HttpLog.e("cookie saveCookieFromResponse error:$e")
         }

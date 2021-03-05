@@ -1,33 +1,25 @@
-package com.sd.lib.http.utils;
+package com.sd.lib.http.utils
 
-import android.util.Log;
+import android.util.Log
+import com.sd.lib.http.RequestManager
 
-import com.sd.lib.http.RequestManager;
+internal class HttpLog private constructor() {
 
-public class HttpLog
-{
-    public static final String TAG = "FHttp";
+    companion object {
+        private const val TAG = "FHttp"
 
-    public static boolean isDebug()
-    {
-        return RequestManager.getInstance().isDebug();
-    }
-
-    public static void i(String msg)
-    {
-        if (!isDebug())
-        {
-            return;
+        @JvmStatic
+        fun i(msg: String?) {
+            if (RequestManager.getInstance().isDebug) {
+                Log.i(TAG, msg)
+            }
         }
-        Log.i(TAG, msg);
-    }
 
-    public static void e(String msg)
-    {
-        if (!isDebug())
-        {
-            return;
+        @JvmStatic
+        fun e(msg: String?) {
+            if (RequestManager.getInstance().isDebug) {
+                Log.e(TAG, msg)
+            }
         }
-        Log.e(TAG, msg);
     }
 }
