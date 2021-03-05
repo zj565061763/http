@@ -9,15 +9,21 @@ import javax.net.ssl.SSLSocketFactory
 
 abstract class Request : IRequest {
 
-    private val uploadTransmitParam: TransmitParam by lazy {
-        TransmitParam()
-    }
+    private val uploadTransmitParam: TransmitParam by lazy { TransmitParam() }
 
     //---------- IRequest implements start ----------
 
     override var baseUrl: String = ""
+        get() {
+            if (field == null) field = ""
+            return field
+        }
 
     override var urlSuffix: String = ""
+        get() {
+            if (field == null) field = ""
+            return field
+        }
 
     override val url: String
         get() = baseUrl + urlSuffix
@@ -28,9 +34,9 @@ abstract class Request : IRequest {
 
     override var readTimeout = IRequest.DEFAULT_READ_TIMEOUT
 
-    override val params = HttpDataHolder<String, Any>()
+    override val params by lazy { HttpDataHolder<String, Any>() }
 
-    override val headers = HttpDataHolder<String, String>()
+    override val headers by lazy { HttpDataHolder<String, String>() }
 
     override var interceptExecute: Boolean = false
 
