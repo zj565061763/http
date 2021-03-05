@@ -77,7 +77,9 @@ abstract class Request : IRequest {
         }
         return realResponse
     }
+
     //---------- IRequest implements end ----------
+
     /**
      * 发起请求
      *
