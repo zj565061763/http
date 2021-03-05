@@ -9,7 +9,8 @@ class GetRequest : BaseRequestImpl(), IGetRequest {
 
     @Throws(HttpException::class)
     override fun doExecute(): IResponse {
-        val request = newHttpRequest(HttpRequest.append(url, params.toMap()), HttpRequest.METHOD_GET)
+        val getUrl = HttpRequest.append(url, params.toMap())
+        val request = newHttpRequest(getUrl, HttpRequest.METHOD_GET)
         val response = Response(request)
         response.codeOrThrow
         return response
