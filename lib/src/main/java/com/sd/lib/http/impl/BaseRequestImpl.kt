@@ -3,6 +3,7 @@ package com.sd.lib.http.impl
 import android.text.TextUtils
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.Request
+import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.impl.HttpRequest
 import com.sd.lib.http.impl.HttpRequest.HttpRequestException
 import com.sd.lib.http.security.SSLSocketFactoryProvider
@@ -52,13 +53,13 @@ abstract class BaseRequestImpl() : Request() {
         override val code: Int
             get() = mHttpRequest.code()
 
-        @get:Throws(IOException::class)
+        @get:Throws(HttpException::class)
         val codeOrThrow: Int
             get() {
                 try {
                     return code
                 } catch (e: HttpRequestException) {
-                    throw (e.cause)!!
+                    throw HttpException(cause = e.cause)
                 }
             }
 

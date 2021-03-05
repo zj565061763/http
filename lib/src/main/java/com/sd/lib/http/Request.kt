@@ -2,6 +2,7 @@ package com.sd.lib.http
 
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
+import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.http.utils.TransmitParam
 import javax.net.ssl.HostnameVerifier
@@ -86,7 +87,7 @@ abstract class Request : IRequest {
      * @return
      * @throws Exception
      */
-    @Throws(Exception::class)
+    @Throws(HttpException::class)
     protected abstract fun doExecute(): IResponse
 
     protected fun notifyProgressUpload(uploaded: Long, total: Long) {

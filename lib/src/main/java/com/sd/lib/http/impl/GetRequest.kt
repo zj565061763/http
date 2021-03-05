@@ -1,18 +1,17 @@
-package com.sd.lib.http.impl;
+package com.sd.lib.http.impl
 
-import com.sd.lib.http.IGetRequest;
-import com.sd.lib.http.IResponse;
+import com.sd.lib.http.IGetRequest
+import com.sd.lib.http.IResponse
+import com.sd.lib.http.exception.HttpException
+import com.sd.lib.http.impl.HttpRequest
 
-public class GetRequest extends BaseRequestImpl implements IGetRequest
-{
-    @Override
-    protected IResponse doExecute() throws Exception
-    {
-        final HttpRequest request = newHttpRequest(HttpRequest.append(getUrl(), getParams().toMap()), HttpRequest.METHOD_GET);
+class GetRequest : BaseRequestImpl(), IGetRequest {
 
-        final Response response = new Response(request);
-        response.getCodeOrThrow();
-
-        return response;
+    @Throws(HttpException::class)
+    override fun doExecute(): IResponse {
+        val request = newHttpRequest(HttpRequest.append(url, params.toMap()), HttpRequest.METHOD_GET)
+        val response = Response(request)
+        response.codeOrThrow
+        return response
     }
 }
