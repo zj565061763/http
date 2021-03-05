@@ -1,24 +1,19 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
 /**
  * 执行异步请求后返回的对象，提供一些方法暴露给外部
  */
-public class RequestHandler
-{
-    private final RequestTask mRequestTask;
+class RequestHandler {
+    private val requestTask: RequestTask
 
-    RequestHandler(RequestTask requestTask)
-    {
-        if (requestTask == null)
-            throw new NullPointerException();
-        mRequestTask = requestTask;
+    internal constructor(task: RequestTask) {
+        this.requestTask = task
     }
 
     /**
      * 取消请求
      */
-    public void cancel()
-    {
-        mRequestTask.cancel(true);
+    fun cancel() {
+        requestTask.cancel(true)
     }
 }
