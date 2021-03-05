@@ -5,8 +5,8 @@ import com.sd.lib.http.ContentType
 
 open class StringBody : IRequestBody<String> {
 
-    constructor(body: String?, contentType: String?) {
-        this.body = if (TextUtils.isEmpty(body)) "" else body!!
+    constructor(content: String?, contentType: String?) {
+        this.body = if (TextUtils.isEmpty(content)) "" else content!!
         this.contentType = if (TextUtils.isEmpty(contentType)) ContentType.STREAM else contentType!!
     }
 
