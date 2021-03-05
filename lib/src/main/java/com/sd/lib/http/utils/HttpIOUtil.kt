@@ -1,90 +1,61 @@
-package com.sd.lib.http.utils;
+package com.sd.lib.http.utils
 
-import android.text.TextUtils;
+import android.text.TextUtils
+import java.io.*
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+internal class HttpIOUtil private constructor() {
 
-public class HttpIOUtil
-{
-    private HttpIOUtil()
-    {
-    }
+    companion object {
+        @Throws(IOException::class)
+        fun readString(inputStream: InputStream?, charset: String?): String {
+            val tInputStream = if (inputStream is BufferedInputStream) inputStream else BufferedInputStream(inputStream)
+            val tCharset = if (!TextUtils.isEmpty(charset)) charset else "UTF-8"
 
-    public static String readString(InputStream inputStream, String charset) throws IOException
-    {
-        if (TextUtils.isEmpty(charset))
-            charset = "UTF-8";
-
-        if (!(inputStream instanceof BufferedInputStream))
-            inputStream = new BufferedInputStream(inputStream);
-
-        final Reader reader = new InputStreamReader(inputStream, charset);
-        final StringBuilder sb = new StringBuilder();
-        final char[] buffer = new char[1024];
-        int len;
-        while ((len = reader.read(buffer)) >= 0)
-        {
-            sb.append(buffer, 0, len);
+            val reader = InputStreamReader(tInputStream, tCharset)
+            val sb = StringBuilder()
+            val buffer = CharArray(1024)
+            var len: Int
+            while (reader.read(buffer).also { len = it } != -1) {
+                sb.append(buffer, 0, len)
+            }
+            return sb.toString()
         }
-        return sb.toString();
-    }
 
-    public static void writeString(OutputStream outputStream, String content, String charset) throws IOException
-    {
-        if (TextUtils.isEmpty(charset))
-            charset = "UTF-8";
-
-        final Writer writer = new OutputStreamWriter(outputStream, charset);
-        writer.write(content);
-        writer.flush();
-    }
-
-    public static void copy(InputStream inputStream, OutputStream outputStream, ProgressCallback callback) throws IOException
-    {
-        if (!(inputStream instanceof BufferedInputStream))
-            inputStream = new BufferedInputStream(inputStream);
-
-        if (!(outputStream instanceof BufferedOutputStream))
-            outputStream = new BufferedOutputStream(outputStream);
-
-        long count = 0;
-        int len = 0;
-        final byte[] buffer = new byte[1024];
-        while ((len = inputStream.read(buffer)) != -1)
-        {
-            outputStream.write(buffer, 0, len);
-            count += len;
-
-            if (callback != null)
-                callback.onProgress(count);
+        @Throws(IOException::class)
+        fun writeString(outputStream: OutputStream?, content: String?, charset: String?) {
+            val tCharset = if (!TextUtils.isEmpty(charset)) charset else "UTF-8"
+            val writer = OutputStreamWriter(outputStream, tCharset)
+            writer.write(content)
+            writer.flush()
         }
-        outputStream.flush();
-    }
 
-    public static void closeQuietly(Closeable closeable)
-    {
-        if (closeable != null)
-        {
-            try
-            {
-                closeable.close();
-            } catch (Throwable ignored)
-            {
+        @JvmStatic
+        @Throws(IOException::class)
+        fun copy(inputStream: InputStream, outputStream: OutputStream, callback: ProgressCallback?) {
+            val tInputStream = if (inputStream is BufferedInputStream) inputStream else BufferedInputStream(inputStream)
+            val tOutputStream = if (outputStream is BufferedOutputStream) outputStream else BufferedOutputStream(outputStream)
+
+            var count: Long = 0
+            var len = 0
+            val buffer = ByteArray(1024)
+            while (tInputStream.read(buffer).also { len = it } != -1) {
+                tOutputStream.write(buffer, 0, len)
+                count += len.toLong()
+                callback?.onProgress(count)
+            }
+            tOutputStream.flush()
+        }
+
+        @JvmStatic
+        fun closeQuietly(closeable: Closeable?) {
+            try {
+                closeable?.close()
+            } catch (ignored: Throwable) {
             }
         }
     }
 
-    public interface ProgressCallback
-    {
-        void onProgress(long count);
+    interface ProgressCallback {
+        fun onProgress(count: Long)
     }
 }
