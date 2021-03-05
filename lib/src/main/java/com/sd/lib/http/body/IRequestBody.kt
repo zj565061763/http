@@ -1,8 +1,6 @@
-package com.sd.lib.http.body;
+package com.sd.lib.http.body
 
-public interface IRequestBody<T>
-{
-    String getContentType();
-
-    T getBody();
+interface IRequestBody<T> {
+    val contentType: String
+    val body: T
 }
