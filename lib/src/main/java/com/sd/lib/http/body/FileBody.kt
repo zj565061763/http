@@ -5,7 +5,11 @@ import com.sd.lib.http.ContentType
 import java.io.File
 import java.net.HttpURLConnection
 
-class FileBody(file: File) : IRequestBody<File> {
+class FileBody : IRequestBody<File> {
+
+    constructor(file: File) {
+        this.body = file
+    }
 
     override val contentType: String
         get() {
@@ -16,5 +20,5 @@ class FileBody(file: File) : IRequestBody<File> {
             return contentType
         }
 
-    override val body: File = file
+    override val body: File
 }
