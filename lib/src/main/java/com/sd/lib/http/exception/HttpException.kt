@@ -1,13 +1,6 @@
-package com.sd.lib.http.exception;
+package com.sd.lib.http.exception
 
-public class HttpException extends Exception
-{
-    public HttpException()
-    {
-    }
-
-    public HttpException(Throwable cause)
-    {
-        super(cause);
-    }
+open class HttpException : Exception {
+    constructor() {}
+    constructor(cause: Throwable?) : super(cause) {}
 }
