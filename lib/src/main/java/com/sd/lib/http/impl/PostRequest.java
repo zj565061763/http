@@ -35,18 +35,16 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
     }
 
     @Override
-    public PostRequest addPart(String name, File file)
+    public void addPart(String name, File file)
     {
         addPart(name, null, null, file);
-        return this;
     }
 
     @Override
-    public PostRequest addPart(String name, String filename, String contentType, File file)
+    public void addPart(String name, String filename, String contentType, File file)
     {
         final FilePart filePart = new FilePart(name, filename, contentType, file);
         getListFile().add(filePart);
-        return this;
     }
 
     @Override
@@ -56,13 +54,12 @@ public class PostRequest extends BaseRequestImpl implements IPostRequest
     }
 
     @Override
-    public IPostRequest setParamsType(ParamsType type)
+    public void setParamsType(ParamsType type)
     {
         if (type == null)
             throw new NullPointerException("type is null");
 
         mParamsType = type;
-        return this;
     }
 
     @Override

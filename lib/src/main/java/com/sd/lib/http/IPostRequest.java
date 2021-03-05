@@ -4,11 +4,11 @@ import java.io.File;
 
 public interface IPostRequest extends IRequest, IBodyRequest
 {
-    IPostRequest addPart(String name, File file);
+    void addPart(String name, File file);
 
-    IPostRequest addPart(String name, String filename, String contentType, File file);
+    void addPart(String name, String filename, String contentType, File file);
 
-    IPostRequest setParamsType(ParamsType type);
+    void setParamsType(ParamsType type);
 
     enum ParamsType
     {
