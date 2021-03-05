@@ -1,61 +1,49 @@
-package com.sd.lib.http.utils;
+package com.sd.lib.http.utils
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*
 
-public class HttpDataHolder<K, V>
-{
-    private final Map<K, V> mMap = new LinkedHashMap<>();
+class HttpDataHolder<K, V> {
+    private val mMap: MutableMap<K, V> = LinkedHashMap()
 
-    public HttpDataHolder<K, V> put(K key, V value)
-    {
-        if (value == null)
-        {
-            mMap.remove(key);
-        } else
-        {
-            mMap.put(key, value);
+    fun put(key: K, value: V?): HttpDataHolder<K, V> {
+        if (value == null) {
+            mMap.remove(key)
+        } else {
+            mMap[key] = value
         }
-        return this;
+        return this
     }
 
-    public HttpDataHolder<K, V> put(Map<K, V> map)
-    {
-        if (map != null)
-        {
-            for (Map.Entry<K, V> item : map.entrySet())
-            {
-                put(item.getKey(), item.getValue());
+    fun put(map: Map<K, V>?): HttpDataHolder<K, V> {
+        map?.let {
+            for ((key, value) in it) {
+                put(key, value)
             }
         }
-        return this;
+        return this
     }
 
-    public HttpDataHolder<K, V> put(HttpDataHolder<K, V> data)
-    {
-        if (data != null)
-            put(data.toMap());
-        return this;
+    fun put(data: HttpDataHolder<K, V>?): HttpDataHolder<K, V> {
+        data?.let {
+            put(it.toMap())
+        }
+        return this
     }
 
-    public V get(Object key)
-    {
-        return mMap.get(key);
+    operator fun get(key: Any): V? {
+        return mMap[key]
     }
 
-    public int size()
-    {
-        return mMap.size();
+    fun size(): Int {
+        return mMap.size
     }
 
-    public HttpDataHolder<K, V> clear()
-    {
-        mMap.clear();
-        return this;
+    fun clear(): HttpDataHolder<K, V> {
+        mMap.clear()
+        return this
     }
 
-    public Map<K, V> toMap()
-    {
-        return new LinkedHashMap<>(mMap);
+    fun toMap(): Map<K, V> {
+        return LinkedHashMap(mMap)
     }
 }
