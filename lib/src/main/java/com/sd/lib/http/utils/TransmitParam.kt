@@ -1,144 +1,84 @@
-package com.sd.lib.http.utils;
+package com.sd.lib.http.utils
 
-public class TransmitParam
-{
-    private final long mCalculateSpeedInterval;
+class TransmitParam {
+    private val mCalculateSpeedInterval: Long
+    private var mLastTime: Long = 0
+    private var mLastCount: Long = 0
 
-    private long mCurrent;
-    private long mTotal;
-    private int mProgress;
-    private int mSpeedBps;
-
-    private long mLastTime;
-    private long mLastCount;
-
-    public TransmitParam()
-    {
-        this(0);
+    @JvmOverloads
+    constructor(calculateSpeedInterval: Long = 0) {
+        val interval = if (calculateSpeedInterval > 0) calculateSpeedInterval else 100
+        mCalculateSpeedInterval = interval
     }
 
-    public TransmitParam(long calculateSpeedInterval)
-    {
-        if (calculateSpeedInterval <= 0)
-            calculateSpeedInterval = 100;
-        mCalculateSpeedInterval = calculateSpeedInterval;
-    }
+    /** 当前传输量 */
+    var current: Long = 0
+        private set
 
-    public TransmitParam copy()
-    {
-        final TransmitParam copy = new TransmitParam(this.mCalculateSpeedInterval);
-        copy.mCurrent = this.mCurrent;
-        copy.mTotal = this.mTotal;
-        copy.mProgress = this.mProgress;
-        copy.mSpeedBps = this.mSpeedBps;
+    /** 总量 */
+    var total: Long = 0
+        private set
 
-        copy.mLastTime = this.mLastTime;
-        copy.mLastCount = this.mLastCount;
-        return copy;
+    /** 传输进度 */
+    var progress = 0
+        private set
+
+    /** 传输速率(Bps) */
+    var speedBps = 0
+        private set
+
+    /** 传输速率(KBps) */
+    val speedKBps: Int
+        get() = speedBps / 1024
+
+    /** 传输是否完成 */
+    val isComplete: Boolean
+        get() = current > 0 && current == total
+
+    /**
+     * 拷贝对象
+     */
+    fun copy(): TransmitParam {
+        val copy = TransmitParam(mCalculateSpeedInterval)
+        copy.current = current
+        copy.total = total
+        copy.progress = progress
+        copy.speedBps = speedBps
+        copy.mLastTime = mLastTime
+        copy.mLastCount = mLastCount
+        return copy
     }
 
     /**
      * 传输
      *
-     * @param total
-     * @param current
+     * @param total 总量
+     * @param current 当前传输量
      * @return true-进度增加了
      */
-    public synchronized boolean transmit(long total, long current)
-    {
-        final int oldProgress = mProgress;
+    @Synchronized
+    fun transmit(total: Long, current: Long): Boolean {
+        val oldProgress = progress
+        this.total = total
+        this.current = current
 
-        mTotal = total;
-        mCurrent = current;
-
-        if (mTotal <= 0)
-        {
-            mProgress = 0;
-        } else
-        {
-            final long currentTime = System.currentTimeMillis();
-            final long timeInterval = currentTime - mLastTime;
-            if (timeInterval >= mCalculateSpeedInterval)
-            {
-                final long count = current - mLastCount;
-                mSpeedBps = (int) (count * (1000f / timeInterval));
-
-                mLastTime = currentTime;
-                mLastCount = current;
+        if (this.total <= 0) {
+            progress = 0
+        } else {
+            val currentTime = System.currentTimeMillis()
+            val timeInterval = currentTime - mLastTime
+            if (timeInterval >= mCalculateSpeedInterval) {
+                val count = current - mLastCount
+                speedBps = (count * (1000f / timeInterval)).toInt()
+                mLastTime = currentTime
+                mLastCount = current
             }
         }
-
-        mProgress = (int) (current * 100 / total);
-        return mProgress > oldProgress;
+        progress = (current * 100 / total).toInt()
+        return progress > oldProgress
     }
 
-    /**
-     * 传输是否完成
-     *
-     * @return
-     */
-    public boolean isComplete()
-    {
-        return mCurrent == mTotal && mCurrent > 0;
-    }
-
-    /**
-     * 当前传输量
-     *
-     * @return
-     */
-    public long getCurrent()
-    {
-        return mCurrent;
-    }
-
-    /**
-     * 总量
-     *
-     * @return
-     */
-    public long getTotal()
-    {
-        return mTotal;
-    }
-
-    /**
-     * 传输进度
-     *
-     * @return [0-100]
-     */
-    public int getProgress()
-    {
-        return mProgress;
-    }
-
-    /**
-     * 传输速率(Bps)
-     *
-     * @return
-     */
-    public int getSpeedBps()
-    {
-        return mSpeedBps;
-    }
-
-    /**
-     * 传输速率(KBps)
-     *
-     * @return
-     */
-    public int getSpeedKBps()
-    {
-        return getSpeedBps() / 1024;
-    }
-
-    @Override
-    public String toString()
-    {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(getCurrent()).append("/").append(getTotal()).append("\r\n")
-                .append(getProgress()).append("%").append("\r\n")
-                .append(getSpeedKBps()).append("KBps");
-        return sb.toString();
+    override fun toString(): String {
+        return "${current}/${total} ${progress}% ${speedKBps}KBps ${super.toString()}"
     }
 }
