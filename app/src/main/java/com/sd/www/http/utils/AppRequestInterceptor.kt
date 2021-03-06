@@ -1,44 +1,33 @@
-package com.sd.www.http.utils;
+package com.sd.www.http.utils
 
-import android.util.Log;
-
-import com.sd.lib.http.IRequest;
-import com.sd.lib.http.IResponse;
-import com.sd.lib.http.interceptor.IRequestInterceptor;
-
-import java.util.Map;
-import java.util.WeakHashMap;
+import android.util.Log
+import com.sd.lib.http.IRequest
+import com.sd.lib.http.IResponse
+import com.sd.lib.http.interceptor.IRequestInterceptor
+import java.util.*
 
 /**
  * http请求拦截
  */
-public class AppRequestInterceptor implements IRequestInterceptor
-{
-    public static final String TAG = "AppRequestInterceptor";
+class AppRequestInterceptor : IRequestInterceptor {
+    private val TAG = AppRequestInterceptor::class.java.simpleName
+    private val mMapTime: MutableMap<IRequest, Long> = WeakHashMap()
 
-    private final Map<IRequest, Long> mMapTime = new WeakHashMap<>();
-
-    @Override
-    public IResponse beforeExecute(IRequest request) throws Exception
-    {
+    @Throws(Exception::class)
+    override fun beforeExecute(request: IRequest): IResponse? {
         //请求发起之前回调
-        mMapTime.put(request, System.currentTimeMillis());
-        Log.i(TAG, "beforeExecute:" + request);
-        return null;
+        mMapTime[request] = System.currentTimeMillis()
+        Log.i(TAG, "beforeExecute:$request")
+        return null
     }
 
-    @Override
-    public IResponse afterExecute(IRequest request, IResponse response) throws Exception
-    {
+    @Throws(Exception::class)
+    override fun afterExecute(request: IRequest, response: IResponse): IResponse? {
         //请求发起之后回调
-        long time = System.currentTimeMillis() - mMapTime.get(request);
-        Log.i(TAG, "afterExecute:" + request + " " + time);
-        return null;
+        val time = System.currentTimeMillis() - mMapTime.remove(request)!!
+        Log.i(TAG, "afterExecute:$request $time")
+        return null
     }
 
-    @Override
-    public void onError(Exception e)
-    {
-
-    }
+    override fun onError(e: Exception) {}
 }
