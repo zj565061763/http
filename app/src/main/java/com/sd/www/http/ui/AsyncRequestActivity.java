@@ -53,7 +53,7 @@ public class AsyncRequestActivity extends AppCompatActivity
             {
                 super.onPrepare(request);
                 // 请求在被执行之前的准备回调(发起请求被调用的线程)
-                Log.i(TAG, "onPrepare");
+                Log.i(TAG, "onPrepare----->");
             }
 
             @Override
