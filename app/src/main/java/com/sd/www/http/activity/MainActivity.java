@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.sd.lib.http.RequestManager;
 import com.sd.lib.http.cookie.SerializableCookieStore;
-import com.sd.www.http.AppRequestInterceptor;
+import com.sd.www.http.utils.AppRequestInterceptor;
 import com.sd.www.http.R;
 
 public class MainActivity extends AppCompatActivity
