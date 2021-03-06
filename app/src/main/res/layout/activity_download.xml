@@ -8,7 +8,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClickRequest"
+        android:onClick="requestData"
         android:text="下载文件"/>
 
     <Button

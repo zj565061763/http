@@ -1,60 +1,45 @@
-package com.sd.www.http.activity;
+package com.sd.www.http.activity
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import android.widget.TextView;
-
-import com.sd.lib.http.IRequest;
-import com.sd.lib.http.IResponse;
-import com.sd.lib.http.impl.GetRequest;
-import com.sd.www.http.R;
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.sd.lib.http.IRequest
+import com.sd.lib.http.impl.GetRequest
+import com.sd.www.http.databinding.ActivitySyncRequestBinding
 
 /**
  * 同步请求demo
  */
-public class SyncRequestActivity extends AppCompatActivity
-{
-    private TextView mTextView;
+class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
+    private lateinit var mBinding: ActivitySyncRequestBinding
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sync_request);
-        mTextView = findViewById(R.id.tv_result);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mBinding = ActivitySyncRequestBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
     }
 
-    public void onClickRequest(View view)
-    {
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    IRequest request = new GetRequest();
-                    //设置请求地址
-                    request.setBaseUrl("https://www.baidu.com/");
-                    //发起请求，得到Response对象
-                    IResponse response = request.execute();
-                    //请求结果以字符串返回
-                    final String result = response.getAsString();
+    override fun onClick(v: View?) {
+        if (v == mBinding.btnStart) {
+            requestData()
+        }
+    }
 
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            mTextView.setText(result);
-                        }
-                    });
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+    private fun requestData() {
+        Thread {
+            try {
+                val request: IRequest = GetRequest()
+                //设置请求地址
+                request.baseUrl = "https://www.baidu.com/"
+                //发起请求，得到Response对象
+                val response = request.execute()
+                //请求结果以字符串返回
+                val result = response.asString
+
+                runOnUiThread { mBinding.tvResult.text = result }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        }).start();
+        }.start()
     }
 }
