@@ -84,9 +84,6 @@ abstract class Request : IRequest {
 
     /**
      * 发起请求
-     *
-     * @return
-     * @throws Exception
      */
     @Throws(HttpException::class)
     protected abstract fun doExecute(): IResponse
