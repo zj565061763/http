@@ -2,11 +2,7 @@ package com.sd.www.http;
 
 import android.app.Application;
 
-import com.squareup.leakcanary.LeakCanary;
-
-/**
- * Created by Administrator on 2017/10/27.
- */
+import com.sd.lib.http.RequestManager;
 
 public class App extends Application
 {
@@ -14,10 +10,6 @@ public class App extends Application
     public void onCreate()
     {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this))
-        {
-            return;
-        }
-        LeakCanary.install(this);
+        RequestManager.getInstance().setDebug(true);
     }
 }

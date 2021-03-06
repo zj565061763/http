@@ -1,4 +1,4 @@
-package com.sd.www.http.ui;
+package com.sd.www.http.activity;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

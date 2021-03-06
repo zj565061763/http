@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.sd.www.http.ui.MainActivity">
+        <activity android:name="com.sd.www.http.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -21,9 +21,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.sd.www.http.ui.DownloadActivity"/>
-        <activity android:name="com.sd.www.http.ui.AsyncRequestActivity"/>
-        <activity android:name="com.sd.www.http.ui.SyncRequestActivity"/>
+        <activity android:name="com.sd.www.http.activity.DownloadActivity"/>
+        <activity android:name="com.sd.www.http.activity.AsyncRequestActivity"/>
+        <activity android:name="com.sd.www.http.activity.SyncRequestActivity"/>
 
     </application>
 
