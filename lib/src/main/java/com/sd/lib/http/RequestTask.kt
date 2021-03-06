@@ -57,10 +57,10 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
             try {
                 withContext(dispatcher) {
-                    HttpLog.i("$logPrefix execute ${Thread.currentThread().name}")
+                    HttpLog.i("$logPrefix execute ${Thread.currentThread()}")
                     val response = mRequest.execute()
 
-                    HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread().name}")
+                    HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread()}")
                     mRequestCallback.response = response
                     mRequestCallback.onSuccessBackground()
                 }
@@ -75,7 +75,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
                 throw RuntimeException("unreachable code")
             }
 
-            HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread().name}")
+            HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread()}")
             mRequestCallback.onSuccessBefore()
 
             if (!isActive) {
@@ -107,30 +107,30 @@ internal abstract class RequestTask : IUploadProgressCallback {
     }
 
     private fun notifyStart() {
-        HttpLog.i("$logPrefix onStart ${Thread.currentThread().name}")
+        HttpLog.i("$logPrefix onStart ${Thread.currentThread()}")
         mRequestCallback.onStart()
     }
 
     private fun notifyError(e: Exception) {
-        HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread().name}")
+        HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread()}")
         mRequestCallback.onError(e)
         notifyFinish()
     }
 
     private fun notifyCancel() {
-        HttpLog.i("$logPrefix onCancel  ${Thread.currentThread().name}")
+        HttpLog.i("$logPrefix onCancel  ${Thread.currentThread()}")
         mRequestCallback.onCancel()
         notifyFinish()
     }
 
     private fun notifySuccess() {
-        HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread().name}")
+        HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread()}")
         mRequestCallback.onSuccess()
         notifyFinish()
     }
 
     private fun notifyFinish() {
-        HttpLog.i("$logPrefix onFinish ${Thread.currentThread().name}")
+        HttpLog.i("$logPrefix onFinish ${Thread.currentThread()}")
         mRequestCallback.onFinish()
         this@RequestTask.onFinish()
     }
