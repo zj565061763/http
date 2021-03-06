@@ -14,6 +14,6 @@ class RequestHandler {
      * 取消请求
      */
     fun cancel() {
-        requestTask.cancel(true)
+        requestTask.cancel()
     }
 }

@@ -186,14 +186,14 @@ public class RequestManager
         callback.setRequest(request);
         callback.onPrepare(request);
 
-        final RequestTask task = new RequestTask(request, callback, new RequestTask.Callback()
+        final RequestTask task = new RequestTask(request, callback)
         {
             @Override
-            public void onFinish(RequestTask task)
+            public void onFinish()
             {
-                removeTask(task);
+                removeTask(this);
             }
-        });
+        };
 
         final String tag = request.getTag();
         final String requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
@@ -263,7 +263,7 @@ public class RequestManager
             final RequestTask task = item.getKey();
             final RequestInfo info = item.getValue();
 
-            if (tag.equals(info.tag) && task.cancel(true))
+            if (tag.equals(info.tag) && task.cancel())
                 count++;
         }
 
@@ -297,7 +297,7 @@ public class RequestManager
             final RequestTask task = item.getKey();
             final RequestInfo info = item.getValue();
 
-            if (identifier.equals(info.requestIdentifier) && task.cancel(true))
+            if (identifier.equals(info.requestIdentifier) && task.cancel())
                 count++;
         }
 
