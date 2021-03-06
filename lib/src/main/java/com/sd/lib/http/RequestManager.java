@@ -6,6 +6,7 @@ import android.util.Log;
 import com.sd.lib.http.callback.RequestCallback;
 import com.sd.lib.http.cookie.ICookieStore;
 import com.sd.lib.http.interceptor.IRequestInterceptor;
+import com.sd.lib.http.utils.HttpUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,6 @@ public class RequestManager
     public void setDebug(boolean debug)
     {
         isDebug = debug;
-        FTaskManager.getInstance().setDebug(debug);
     }
 
     public boolean isDebug()
@@ -134,7 +134,7 @@ public class RequestManager
                 mRequestInterceptor.onError(e);
             } else
             {
-                FTask.runOnUiThread(new Runnable()
+                HttpUtils.runOnUiThread(new Runnable()
                 {
                     @Override
                     public void run()

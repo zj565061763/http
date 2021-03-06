@@ -4,6 +4,7 @@ import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.utils.HttpDataHolder
+import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
@@ -95,7 +96,7 @@ abstract class Request : IRequest {
 
         if (uploadTransmitParam.transmit(total, uploaded)) {
             val param = uploadTransmitParam.copy()
-            FTask.runOnUiThread {
+            HttpUtils.runOnUiThread {
                 callback.onProgressUpload(param)
             }
         }
