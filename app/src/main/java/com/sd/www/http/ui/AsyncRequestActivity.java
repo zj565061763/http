@@ -1,9 +1,10 @@
 package com.sd.www.http.ui;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.sd.lib.http.IRequest;
@@ -76,6 +77,13 @@ public class AsyncRequestActivity extends AppCompatActivity
             {
                 // 把返回的内容转实体(非UI线程)
                 return new Gson().fromJson(content, type);
+            }
+
+            @Override
+            public void onSuccessBefore()
+            {
+                // 成功回调(UI线程)
+                Log.i(TAG, "onSuccessBefore");
             }
 
             @Override
