@@ -7,7 +7,7 @@ import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
 
 /** 单线程调度器 */
-private val singleThreadContext: ExecutorCoroutineDispatcher by lazy {
+internal val singleThreadContext: ExecutorCoroutineDispatcher by lazy {
     newSingleThreadContext("FHttp single thread")
 }
 
