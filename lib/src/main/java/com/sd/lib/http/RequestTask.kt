@@ -98,13 +98,11 @@ internal abstract class RequestTask : IUploadProgressCallback {
             return false
         }
 
-        HttpLog.e("$logPrefix cancel start")
-
         job.cancel()
         val isActive = job.isActive
         val isCancelled = !isActive
 
-        HttpLog.e("$logPrefix cancel finish isActive:${isActive}")
+        HttpLog.e("$logPrefix cancel isActive:${isActive}")
         return isCancelled
     }
 
