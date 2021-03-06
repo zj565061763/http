@@ -14,8 +14,9 @@ private val singleThreadContext: ExecutorCoroutineDispatcher by lazy {
 internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequest: IRequest
     private val mRequestCallback: RequestCallback
+
     private val mMainScope = MainScope()
-    private var mIsSubmitted = false
+    private var mIsSubmitted: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         mRequest = request
@@ -45,48 +46,46 @@ internal abstract class RequestTask : IUploadProgressCallback {
         if (mIsSubmitted) return
         mIsSubmitted = true
 
+        val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
         mMainScope.launch {
             try {
-                val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
-                withContext(dispatcher) {
-                    withContext(Dispatchers.Main) {
-                        // 通知开始
-                        HttpLog.i("$logPrefix onStart")
-                        mRequestCallback.onStart()
-                    }
-
-                    try {
-                        val response = mRequest.execute()
-                        HttpLog.i("$logPrefix execute")
-
-                        if (!isActive) return@withContext
-                        mRequestCallback.response = response
-                        mRequestCallback.onSuccessBackground()
-                        HttpLog.i("$logPrefix onSuccessBackground")
-                    } catch (e: Exception) {
-                        if (e !is CancellationException) {
-                            mRequestCallback.onError(e)
-                            HttpLog.i("$logPrefix onError:$e")
-                        }
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        if (!isActive) return@withContext
-                        mRequestCallback.onSuccessBefore()
-                        HttpLog.i("$logPrefix onSuccessBefore")
-
-                        if (!isActive) return@withContext
-                        mRequestCallback.onSuccess()
-                        HttpLog.i("$logPrefix onSuccess")
-                    }
+                withContext(Dispatchers.Main) {
+                    mRequestCallback.onStart()
+                    HttpLog.i("$logPrefix onStart ${Thread.currentThread().name}")
                 }
-            } catch (e: CancellationException) {
-                mRequestCallback.onCancel()
-                HttpLog.i("$logPrefix onCancel")
+
+                withContext(dispatcher) {
+                    val response = mRequest.execute()
+                    HttpLog.i("$logPrefix execute ${Thread.currentThread().name}")
+
+                    mRequestCallback.response = response
+                    mRequestCallback.onSuccessBackground()
+                    HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread().name}")
+                }
+
+                withContext(Dispatchers.Main) {
+                    mRequestCallback.onSuccessBefore()
+                    HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread().name}")
+                }
+
+                withContext(Dispatchers.Main) {
+                    mRequestCallback.onSuccess()
+                    HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread().name}")
+                }
+            } catch (e: Exception) {
+                if (e is CancellationException) {
+                    mRequestCallback.onCancel()
+                    HttpLog.i("$logPrefix onCancel  ${Thread.currentThread().name}")
+                    // 如果是取消异常，让其继续传播
+                    throw e
+                } else {
+                    mRequestCallback.onError(e)
+                    HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread().name}")
+                }
             } finally {
                 mRequestCallback.onFinish()
                 this@RequestTask.onFinish()
-                HttpLog.i("$logPrefix onFinish")
+                HttpLog.i("$logPrefix onFinish ${Thread.currentThread().name}")
             }
         }
     }
@@ -97,14 +96,19 @@ internal abstract class RequestTask : IUploadProgressCallback {
      */
     @Synchronized
     fun cancel(): Boolean {
-        var isActive = mMainScope.isActive
-        HttpLog.e("$logPrefix cancel start isActive:${isActive}")
-        if (isActive) {
-            mMainScope.cancel()
-            isActive = mMainScope.isActive
+        val job = mMainScope
+        if (!job.isActive) {
+            return false
         }
+
+        HttpLog.e("$logPrefix cancel start")
+
+        job.cancel()
+        val isActive = job.isActive
+        val isCancelled = !isActive
+
         HttpLog.e("$logPrefix cancel finish isActive:${isActive}")
-        return !isActive
+        return isCancelled
     }
 
     abstract fun onFinish()
