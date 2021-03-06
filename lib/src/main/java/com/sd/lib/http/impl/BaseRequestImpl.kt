@@ -6,7 +6,7 @@ import com.sd.lib.http.Request
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.impl.HttpRequest.HttpRequestException
 import com.sd.lib.http.security.SSLSocketFactoryProvider
-import com.sd.lib.http.utils.HttpIOUtil
+import com.sd.lib.http.utils.HttpIOUtils
 import java.io.IOException
 import java.io.InputStream
 import java.security.KeyManagementException
@@ -89,11 +89,11 @@ abstract class BaseRequestImpl() : Request() {
                 synchronized(this@Response) {
                     if (TextUtils.isEmpty(mBody)) {
                         try {
-                            mBody = HttpIOUtil.readString(inputStream, charset)
+                            mBody = HttpIOUtils.readString(inputStream, charset)
                         } catch (e: IOException) {
                             throw HttpException(cause = e)
                         } finally {
-                            HttpIOUtil.closeQuietly(inputStream)
+                            HttpIOUtils.closeQuietly(inputStream)
                         }
                     }
                     return mBody!!

@@ -3,7 +3,7 @@ package com.sd.lib.http.callback;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.sd.lib.http.utils.HttpIOUtil;
+import com.sd.lib.http.utils.HttpIOUtils;
 import com.sd.lib.http.utils.TransmitParam;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public abstract class FileRequestCallback extends RequestCallback
 
         try
         {
-            HttpIOUtil.copy(input, output, new HttpIOUtil.ProgressCallback()
+            HttpIOUtils.copy(input, output, new HttpIOUtils.ProgressCallback()
             {
                 @Override
                 public void onProgress(long count)
@@ -75,8 +75,8 @@ public abstract class FileRequestCallback extends RequestCallback
         } finally
         {
             runOnUiThread(mUpdateProgressRunnable);
-            HttpIOUtil.closeQuietly(input);
-            HttpIOUtil.closeQuietly(output);
+            HttpIOUtils.closeQuietly(input);
+            HttpIOUtils.closeQuietly(output);
         }
     }
 

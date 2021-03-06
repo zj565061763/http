@@ -2,7 +2,7 @@ package com.sd.lib.http.cookie;
 
 import android.content.Context;
 
-import com.sd.lib.http.utils.HttpIOUtil;
+import com.sd.lib.http.utils.HttpIOUtils;
 import com.sd.lib.http.utils.HttpLog;
 
 import java.io.File;
@@ -93,7 +93,7 @@ public class SerializableCookieStore extends PersistentCookieStore
             oos.flush();
         } finally
         {
-            HttpIOUtil.closeQuietly(oos);
+            HttpIOUtils.closeQuietly(oos);
         }
     }
 
@@ -107,7 +107,7 @@ public class SerializableCookieStore extends PersistentCookieStore
             return (T) object;
         } finally
         {
-            HttpIOUtil.closeQuietly(ois);
+            HttpIOUtils.closeQuietly(ois);
         }
     }
 }

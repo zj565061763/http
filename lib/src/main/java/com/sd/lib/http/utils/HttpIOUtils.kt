@@ -3,7 +3,7 @@ package com.sd.lib.http.utils
 import android.text.TextUtils
 import java.io.*
 
-internal class HttpIOUtil private constructor() {
+internal class HttpIOUtils private constructor() {
 
     companion object {
 
