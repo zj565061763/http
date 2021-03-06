@@ -48,12 +48,14 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
         val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
         mMainScope.launch {
-            try {
-                withContext(Dispatchers.Main) {
-                    HttpLog.i("$logPrefix onStart ${Thread.currentThread().name}")
-                    mRequestCallback.onStart()
-                }
+            notifyStart()
 
+            if (!isActive) {
+                notifyCancel()
+                return@launch
+            }
+
+            try {
                 withContext(dispatcher) {
                     HttpLog.i("$logPrefix execute ${Thread.currentThread().name}")
                     val response = mRequest.execute()
@@ -62,31 +64,26 @@ internal abstract class RequestTask : IUploadProgressCallback {
                     mRequestCallback.response = response
                     mRequestCallback.onSuccessBackground()
                 }
-
-                withContext(Dispatchers.Main) {
-                    HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread().name}")
-                    mRequestCallback.onSuccessBefore()
-                }
-
-                withContext(Dispatchers.Main) {
-                    HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread().name}")
-                    mRequestCallback.onSuccess()
-                }
             } catch (e: Exception) {
                 if (e is CancellationException) {
-                    HttpLog.i("$logPrefix onCancel  ${Thread.currentThread().name}")
-                    mRequestCallback.onCancel()
-                    // 如果是取消异常，让其继续传播
+                    notifyCancel()
                     throw e
                 } else {
-                    HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread().name}")
-                    mRequestCallback.onError(e)
+                    notifyError(e)
+                    return@launch
                 }
-            } finally {
-                HttpLog.i("$logPrefix onFinish ${Thread.currentThread().name}")
-                mRequestCallback.onFinish()
-                this@RequestTask.onFinish()
+                throw RuntimeException("unreachable code")
             }
+
+            HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread().name}")
+            mRequestCallback.onSuccessBefore()
+
+            if (!isActive) {
+                notifyCancel()
+                return@launch
+            }
+
+            notifySuccess()
         }
     }
 
@@ -109,6 +106,35 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
         HttpLog.e("$logPrefix cancel finish isActive:${isActive}")
         return isCancelled
+    }
+
+    private fun notifyStart() {
+        HttpLog.i("$logPrefix onStart ${Thread.currentThread().name}")
+        mRequestCallback.onStart()
+    }
+
+    private fun notifyError(e: Exception) {
+        HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread().name}")
+        mRequestCallback.onError(e)
+        notifyFinish()
+    }
+
+    private fun notifyCancel() {
+        HttpLog.i("$logPrefix onCancel  ${Thread.currentThread().name}")
+        mRequestCallback.onCancel()
+        notifyFinish()
+    }
+
+    private fun notifySuccess() {
+        HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread().name}")
+        mRequestCallback.onSuccess()
+        notifyFinish()
+    }
+
+    private fun notifyFinish() {
+        HttpLog.i("$logPrefix onFinish ${Thread.currentThread().name}")
+        mRequestCallback.onFinish()
+        this@RequestTask.onFinish()
     }
 
     abstract fun onFinish()
