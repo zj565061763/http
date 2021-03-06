@@ -50,42 +50,42 @@ internal abstract class RequestTask : IUploadProgressCallback {
         mMainScope.launch {
             try {
                 withContext(Dispatchers.Main) {
-                    mRequestCallback.onStart()
                     HttpLog.i("$logPrefix onStart ${Thread.currentThread().name}")
+                    mRequestCallback.onStart()
                 }
 
                 withContext(dispatcher) {
-                    val response = mRequest.execute()
                     HttpLog.i("$logPrefix execute ${Thread.currentThread().name}")
+                    val response = mRequest.execute()
 
+                    HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread().name}")
                     mRequestCallback.response = response
                     mRequestCallback.onSuccessBackground()
-                    HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread().name}")
                 }
 
                 withContext(Dispatchers.Main) {
-                    mRequestCallback.onSuccessBefore()
                     HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread().name}")
+                    mRequestCallback.onSuccessBefore()
                 }
 
                 withContext(Dispatchers.Main) {
-                    mRequestCallback.onSuccess()
                     HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread().name}")
+                    mRequestCallback.onSuccess()
                 }
             } catch (e: Exception) {
                 if (e is CancellationException) {
-                    mRequestCallback.onCancel()
                     HttpLog.i("$logPrefix onCancel  ${Thread.currentThread().name}")
+                    mRequestCallback.onCancel()
                     // 如果是取消异常，让其继续传播
                     throw e
                 } else {
-                    mRequestCallback.onError(e)
                     HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread().name}")
+                    mRequestCallback.onError(e)
                 }
             } finally {
+                HttpLog.i("$logPrefix onFinish ${Thread.currentThread().name}")
                 mRequestCallback.onFinish()
                 this@RequestTask.onFinish()
-                HttpLog.i("$logPrefix onFinish ${Thread.currentThread().name}")
             }
         }
     }
