@@ -1,53 +1,39 @@
-package com.sd.www.http.activity;
+package com.sd.www.http.activity
 
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.sd.lib.http.RequestManager
+import com.sd.lib.http.cookie.SerializableCookieStore
+import com.sd.www.http.databinding.ActivityMainBinding
+import com.sd.www.http.utils.AppRequestInterceptor
 
-import com.sd.lib.http.RequestManager;
-import com.sd.lib.http.cookie.SerializableCookieStore;
-import com.sd.www.http.utils.AppRequestInterceptor;
-import com.sd.www.http.R;
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private lateinit var mBinding: ActivityMainBinding
 
-public class MainActivity extends AppCompatActivity
-{
-    public static final String TAG = "MainActivity";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
         //设置调试模式，输出log
-        RequestManager.getInstance().setDebug(true);
+        RequestManager.getInstance().isDebug = true
 
         //设置cookie管理对象
-        RequestManager.getInstance().setCookieStore(new SerializableCookieStore(this));
+        RequestManager.getInstance().cookieStore = SerializableCookieStore(this)
 
         //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边传入的对象如果是和资源相关的对象，需要在资源销毁的时候remove
-        RequestManager.getInstance().setRequestInterceptor(new AppRequestInterceptor());
+        RequestManager.getInstance().setRequestInterceptor(AppRequestInterceptor())
     }
 
-    public void onClickAsyncRequestActivity(View view)
-    {
-        startActivity(new Intent(this, AsyncRequestActivity.class));
-    }
-
-    public void onClickSyncRequestActivity(View view)
-    {
-        startActivity(new Intent(this, SyncRequestActivity.class));
-    }
-
-    public void onClickDownloadActivity(View view)
-    {
-        startActivity(new Intent(this, DownloadActivity.class));
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
+    override fun onClick(v: View) {
+        if (v == mBinding.btnAsyncRequestActivity) {
+            startActivity(Intent(this, AsyncRequestActivity::class.java))
+        } else if (v == mBinding.btnSyncRequestActivity) {
+            startActivity(Intent(this, SyncRequestActivity::class.java))
+        } else if (v == mBinding.btnDownloadActivity) {
+            startActivity(Intent(this, DownloadActivity::class.java))
+        }
     }
 }
