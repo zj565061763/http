@@ -74,7 +74,7 @@ class RequestManager private constructor() {
             }
         }
 
-        callback.request = request
+        callback.saveRequest(request)
         callback.onPrepare(request)
 
         val task = object : RequestTask(request, callback) {

@@ -7,8 +7,30 @@ import com.sd.lib.http.utils.TransmitParam
 
 abstract class RequestCallback : IUploadProgressCallback {
 
-    open var request: IRequest? = null
-    open var response: IResponse? = null
+    private var mRequest: IRequest? = null
+    private var mResponse: IResponse? = null
+
+    /** 请求对象 */
+    val request: IRequest?
+        get() = mRequest
+
+    /** 返回对象 */
+    val response: IResponse?
+        get() = mResponse
+
+    /**
+     * 保存请求对象
+     */
+    internal open fun saveRequest(request: IRequest) {
+        mRequest = request
+    }
+
+    /**
+     * 保存返回对象
+     */
+    internal open fun saveResponse(response: IResponse) {
+        mResponse = response
+    }
 
     //---------- notify method start ----------
 

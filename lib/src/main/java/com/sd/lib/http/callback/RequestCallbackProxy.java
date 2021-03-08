@@ -4,6 +4,8 @@ import com.sd.lib.http.IRequest;
 import com.sd.lib.http.IResponse;
 import com.sd.lib.http.utils.TransmitParam;
 
+import org.jetbrains.annotations.NotNull;
+
 public class RequestCallbackProxy extends RequestCallback
 {
     private RequestCallback[] mArrCallback;
@@ -32,43 +34,25 @@ public class RequestCallbackProxy extends RequestCallback
     }
 
     @Override
-    public void setRequest(IRequest request)
+    public void saveRequest$lib_debug(@NotNull IRequest request)
     {
+        super.saveRequest$lib_debug(request);
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-                item.setRequest(request);
+                item.saveRequest$lib_debug(request);
         }
     }
 
     @Override
-    public IRequest getRequest()
+    public void saveResponse$lib_debug(@NotNull IResponse response)
     {
-        final int length = getArrCallback().length;
-        if (length > 0)
-            return getArrCallback()[length - 1].getRequest();
-
-        return null;
-    }
-
-    @Override
-    public void setResponse(IResponse response)
-    {
+        super.saveResponse$lib_debug(response);
         for (RequestCallback item : getArrCallback())
         {
             if (item != null)
-                item.setResponse(response);
+                item.saveResponse$lib_debug(response);
         }
-    }
-
-    @Override
-    public IResponse getResponse()
-    {
-        final int length = getArrCallback().length;
-        if (length > 0)
-            return getArrCallback()[length - 1].getResponse();
-
-        return null;
     }
 
     @Override

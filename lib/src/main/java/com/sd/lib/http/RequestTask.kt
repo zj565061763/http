@@ -62,7 +62,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
                     val response = mRequest.execute()
 
                     HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread()}")
-                    mRequestCallback.response = response
+                    mRequestCallback.saveResponse(response)
                     mRequestCallback.onSuccessBackground()
                 }
             } catch (e: Exception) {
