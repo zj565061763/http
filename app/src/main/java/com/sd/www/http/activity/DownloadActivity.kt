@@ -39,6 +39,12 @@ class DownloadActivity : AppCompatActivity(), View.OnClickListener {
         request.baseUrl = URL_FILE
         request.tag = TAG
         request.execute(object : FileRequestCallback(file) {
+
+            override fun onStart() {
+                super.onStart()
+                Log.i(TAG, "download start")
+            }
+
             override fun onProgressDownload(param: TransmitParam) {
                 mBinding.progressBar.progress = param.progress
                 mBinding.tvProgress.text = "${param.progress}%"
