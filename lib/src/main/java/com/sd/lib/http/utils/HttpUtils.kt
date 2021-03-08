@@ -17,6 +17,12 @@ internal class HttpUtils private constructor() {
         }
 
         @JvmStatic
+        fun removeCallbacks(runnable: Runnable?) {
+            if (runnable == null) return
+            mainHandler.removeCallbacks(runnable)
+        }
+
+        @JvmStatic
         fun checkBackgroundThread() {
             require(Looper.myLooper() != Looper.getMainLooper())
         }
