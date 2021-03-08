@@ -15,5 +15,10 @@ internal class HttpUtils private constructor() {
             if (runnable == null) return
             if (Looper.myLooper() == Looper.getMainLooper()) runnable.run() else mainHandler.post(runnable)
         }
+
+        @JvmStatic
+        fun checkBackgroundThread() {
+            require(Looper.myLooper() != Looper.getMainLooper())
+        }
     }
 }

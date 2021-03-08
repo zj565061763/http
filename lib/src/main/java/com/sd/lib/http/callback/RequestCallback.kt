@@ -1,8 +1,10 @@
 package com.sd.lib.http.callback
 
+import androidx.annotation.CallSuper
 import com.sd.lib.http.IRequest
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.exception.HttpExceptionResponseCode.Companion.from
+import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 
 abstract class RequestCallback : IUploadProgressCallback {
@@ -21,14 +23,17 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 保存请求对象
      */
+    @CallSuper
     internal open fun saveRequest(request: IRequest) {
         mRequest = request
     }
 
     /**
-     * 保存返回对象
+     * 保存返回对象（后台线程）
      */
+    @CallSuper
     internal open fun saveResponse(response: IResponse) {
+        HttpUtils.checkBackgroundThread()
         mResponse = response
     }
 
@@ -49,6 +54,7 @@ abstract class RequestCallback : IUploadProgressCallback {
      */
     @Throws(Exception::class)
     open fun onSuccessBackground() {
+        HttpUtils.checkBackgroundThread()
         processResponseCode(response!!.code)
     }
 
