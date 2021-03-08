@@ -56,7 +56,7 @@ abstract class BaseRequestImpl() : Request() {
             mHttpRequest = httpRequest
         }
 
-        private var mBody: String? = null
+        private var mContent: String? = null
 
         override val code: Int
             get() = mHttpRequest.code()
@@ -87,16 +87,16 @@ abstract class BaseRequestImpl() : Request() {
         override val asString: String
             get() {
                 synchronized(this@Response) {
-                    if (TextUtils.isEmpty(mBody)) {
+                    if (TextUtils.isEmpty(mContent)) {
                         try {
-                            mBody = HttpIOUtils.readString(inputStream, charset)
+                            mContent = HttpIOUtils.readString(inputStream, charset)
                         } catch (e: IOException) {
                             throw HttpException(cause = e)
                         } finally {
                             HttpIOUtils.closeQuietly(inputStream)
                         }
                     }
-                    return mBody!!
+                    return mContent!!
                 }
             }
     }

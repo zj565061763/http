@@ -33,5 +33,5 @@ interface IResponse {
      * 读取输入流的内容，并以字符串返回（必须在非UI线程调用）
      */
     @get:Throws(HttpException::class)
-    val asString: String?
+    val asString: String
 }
