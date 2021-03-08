@@ -3,7 +3,7 @@ package com.sd.lib.http.callback
 import androidx.annotation.CallSuper
 import com.sd.lib.http.IRequest
 import com.sd.lib.http.IResponse
-import com.sd.lib.http.exception.HttpExceptionResponseCode.Companion.from
+import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 
@@ -52,6 +52,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 成功回调，常用来处理解析数据（后台线程）
      */
+    @CallSuper
     @Throws(Exception::class)
     open fun onSuccessBackground() {
         HttpUtils.checkBackgroundThread()
@@ -63,7 +64,7 @@ abstract class RequestCallback : IUploadProgressCallback {
      */
     @Throws(Exception::class)
     protected fun processResponseCode(code: Int) {
-        val codeException = from(code)
+        val codeException = HttpExceptionResponseCode.from(code)
         if (codeException != null) throw codeException
     }
 
