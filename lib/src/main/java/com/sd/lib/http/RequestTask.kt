@@ -2,6 +2,7 @@ package com.sd.lib.http
 
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
+import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.utils.HttpLog
 import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
@@ -110,8 +111,11 @@ internal abstract class RequestTask : IUploadProgressCallback {
     }
 
     private fun notifyError(e: Exception) {
+        require(e !is CancellationException)
         HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread()}")
-        mRequestCallback.onError(e)
+
+        var exception = if (e is HttpException) e else HttpException(cause = e)
+        mRequestCallback.onError(exception)
         notifyFinish()
     }
 
