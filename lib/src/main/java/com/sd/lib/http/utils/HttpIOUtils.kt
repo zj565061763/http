@@ -44,7 +44,7 @@ internal class HttpIOUtils private constructor() {
                 count += len.toLong()
 
                 if (callback != null && callback.onProgress(count))
-                    break
+                    return
             }
             tOutputStream.flush()
         }
