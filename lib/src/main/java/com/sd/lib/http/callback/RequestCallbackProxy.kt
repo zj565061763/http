@@ -1,147 +1,90 @@
-package com.sd.lib.http.callback;
+package com.sd.lib.http.callback
 
-import com.sd.lib.http.IRequest;
-import com.sd.lib.http.IResponse;
-import com.sd.lib.http.utils.TransmitParam;
+import com.sd.lib.http.IRequest
+import com.sd.lib.http.IResponse
+import com.sd.lib.http.utils.TransmitParam
 
-import org.jetbrains.annotations.NotNull;
+class RequestCallbackProxy : RequestCallback {
+    private val callbacks: Array<out RequestCallback>
 
-public class RequestCallbackProxy extends RequestCallback
-{
-    private RequestCallback[] mArrCallback;
-
-    protected RequestCallbackProxy(RequestCallback... callbacks)
-    {
-        mArrCallback = callbacks;
+    internal constructor(vararg callbacks: RequestCallback) {
+        this.callbacks = callbacks
     }
 
-    /**
-     * 返回回调代理对象
-     *
-     * @param callbacks
-     * @return
-     */
-    public static RequestCallback get(RequestCallback... callbacks)
-    {
-        return new RequestCallbackProxy(callbacks);
-    }
-
-    public RequestCallback[] getArrCallback()
-    {
-        if (mArrCallback == null)
-            mArrCallback = new RequestCallback[0];
-        return mArrCallback;
-    }
-
-    @Override
-    public void saveRequest$lib_debug(@NotNull IRequest request)
-    {
-        super.saveRequest$lib_debug(request);
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.saveRequest$lib_debug(request);
+    override fun saveRequest(request: IRequest) {
+        super.saveRequest(request)
+        for (item in callbacks) {
+            item?.saveRequest(request)
         }
     }
 
-    @Override
-    public void saveResponse$lib_debug(@NotNull IResponse response)
-    {
-        super.saveResponse$lib_debug(response);
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.saveResponse$lib_debug(response);
+    override fun saveResponse(response: IResponse) {
+        super.saveResponse(response)
+        for (item in callbacks) {
+            item?.saveResponse(response)
         }
     }
 
-    @Override
-    public void onPrepare(IRequest request)
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onPrepare(request);
+    override fun onPrepare(request: IRequest) {
+        for (item in callbacks) {
+            item?.onPrepare(request)
         }
     }
 
-    @Override
-    public void onStart()
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onStart();
+    override fun onStart() {
+        for (item in callbacks) {
+            item?.onStart()
         }
     }
 
-    @Override
-    public void onSuccessBackground() throws Exception
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onSuccessBackground();
+    @Throws(Exception::class)
+    override fun onSuccessBackground() {
+        super.onSuccessBackground()
+        for (item in callbacks) {
+            item?.onSuccessBackground()
         }
     }
 
-    @Override
-    public void onSuccessBefore()
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onSuccessBefore();
+    override fun onSuccessBefore() {
+        for (item in callbacks) {
+            item?.onSuccessBefore()
         }
     }
 
-    @Override
-    public void onSuccess()
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onSuccess();
+    override fun onSuccess() {
+        for (item in callbacks) {
+            item?.onSuccess()
         }
     }
 
-    @Override
-    public void onError(Exception e)
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onError(e);
+    override fun onError(e: Exception) {
+        for (item in callbacks) {
+            item?.onError(e)
         }
     }
 
-    @Override
-    public void onCancel()
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onCancel();
+    override fun onCancel() {
+        for (item in callbacks) {
+            item?.onCancel()
         }
     }
 
-    @Override
-    public void onFinish()
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onFinish();
+    override fun onFinish() {
+        for (item in callbacks) {
+            item?.onFinish()
         }
     }
 
-    @Override
-    public void onProgressUpload(TransmitParam param)
-    {
-        for (RequestCallback item : getArrCallback())
-        {
-            if (item != null)
-                item.onProgressUpload(param);
+    override fun onProgressUpload(param: TransmitParam) {
+        for (item in callbacks) {
+            item?.onProgressUpload(param)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun get(vararg callbacks: RequestCallback): RequestCallback {
+            return RequestCallbackProxy(*callbacks)
         }
     }
 }
