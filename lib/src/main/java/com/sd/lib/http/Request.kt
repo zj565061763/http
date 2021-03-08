@@ -40,7 +40,7 @@ abstract class Request : IRequest {
 
     override val headers by lazy { HttpDataHolder<String, String>() }
 
-    override var interceptExecute: Boolean = false
+    override var interceptExecute: Boolean = true
 
     override var uploadProgressCallback: IUploadProgressCallback? = null
 
