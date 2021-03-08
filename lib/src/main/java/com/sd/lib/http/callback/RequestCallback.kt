@@ -6,6 +6,7 @@ import com.sd.lib.http.exception.HttpExceptionResponseCode.Companion.from
 import com.sd.lib.http.utils.TransmitParam
 
 abstract class RequestCallback : IUploadProgressCallback {
+
     open var request: IRequest? = null
     open var response: IResponse? = null
 
