@@ -82,6 +82,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             Log.i(TAG, "onSuccessBackground")
         }
 
+        @Throws(Exception::class)
         override fun parseToModel(content: String, type: Type): WeatherModel {
             // 把返回的内容转实体（非UI线程）
             return Gson().fromJson(content, type)
