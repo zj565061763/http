@@ -4,13 +4,10 @@ import android.text.TextUtils
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.Request
 import com.sd.lib.http.exception.HttpException
-import com.sd.lib.http.impl.HttpRequest.HttpRequestException
 import com.sd.lib.http.security.SSLSocketFactoryProvider
 import com.sd.lib.http.utils.HttpIOUtils
 import java.io.IOException
 import java.io.InputStream
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLSocketFactory
 
@@ -25,14 +22,7 @@ abstract class BaseRequestImpl() : Request() {
 
         val connection = request.connection
         if (connection is HttpsURLConnection) {
-            var factory = sSLSocketFactory
-            if (factory == null) {
-                try {
-                    factory = trustedFactory
-                } catch (e: Exception) {
-                    throw HttpException(cause = e)
-                }
-            }
+            val factory = sSLSocketFactory ?: trustedFactory
             connection.sslSocketFactory = factory
 
             val verifier = hostnameVerifier
@@ -60,16 +50,6 @@ abstract class BaseRequestImpl() : Request() {
 
         override val code: Int
             get() = mHttpRequest.code()
-
-        @get:Throws(HttpException::class)
-        val codeOrThrow: Int
-            get() {
-                try {
-                    return code
-                } catch (e: HttpRequestException) {
-                    throw HttpException(cause = e.cause)
-                }
-            }
 
         override val contentLength: Int
             get() = mHttpRequest.contentLength()
@@ -102,8 +82,6 @@ abstract class BaseRequestImpl() : Request() {
     }
 
     companion object {
-
-        @get:Throws(NoSuchAlgorithmException::class, KeyManagementException::class)
         private val trustedFactory: SSLSocketFactory by lazy {
             SSLSocketFactoryProvider.getTrustedFactory()
         }

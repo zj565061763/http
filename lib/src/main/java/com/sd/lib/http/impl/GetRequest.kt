@@ -12,7 +12,7 @@ class GetRequest : BaseRequestImpl(), IGetRequest {
         val getUrl = HttpRequest.append(url, params.toMap())
         val request = newHttpRequest(getUrl, HttpRequest.METHOD_GET)
         val response = Response(request)
-        response.codeOrThrow
+        response.code
         return response
     }
 }

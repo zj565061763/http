@@ -56,7 +56,7 @@ abstract class Request : IRequest {
         return RequestManager.instance.execute(this, true, callback)
     }
 
-    @Throws(Exception::class)
+    @Throws(HttpException::class)
     override fun execute(): IResponse {
         val intercept = interceptExecute
         if (intercept) {
@@ -68,7 +68,15 @@ abstract class Request : IRequest {
             }
         }
 
-        val realResponse = doExecute()
+        val realResponse = try {
+            doExecute()
+        } catch (e: Exception) {
+            if (e is HttpException) {
+                throw e
+            } else {
+                throw HttpException(cause = e)
+            }
+        }
 
         if (intercept) {
             try {

@@ -2,6 +2,7 @@ package com.sd.lib.http
 
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
+import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.utils.HttpDataHolder
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
@@ -75,7 +76,7 @@ interface IRequest {
     /**
      * 同步请求
      */
-    @Throws(Exception::class)
+    @Throws(HttpException::class)
     fun execute(): IResponse
 
     companion object {

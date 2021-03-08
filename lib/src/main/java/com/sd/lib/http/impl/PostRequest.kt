@@ -55,7 +55,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
         }
 
         val response = Response(httpRequest)
-        response.codeOrThrow
+        response.code
         return response
     }
 
