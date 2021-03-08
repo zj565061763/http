@@ -15,7 +15,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequest: IRequest
     private val mRequestCallback: RequestCallback
 
-    private val mMainScope = MainScope()
+    private var mJob: Job? = null
     private var mIsSubmitted: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
@@ -46,8 +46,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
         if (mIsSubmitted) return
         mIsSubmitted = true
 
-        val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
-        mMainScope.launch {
+        mJob = GlobalScope.launch(Dispatchers.Main) {
             notifyStart()
 
             if (!isActive) {
@@ -55,6 +54,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
                 return@launch
             }
 
+            val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
             try {
                 withContext(dispatcher) {
                     HttpLog.i("$logPrefix execute ${Thread.currentThread()}")
@@ -93,7 +93,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
      */
     @Synchronized
     fun cancel(): Boolean {
-        val job = mMainScope
+        val job = mJob ?: return false
         if (!job.isActive) {
             return false
         }
