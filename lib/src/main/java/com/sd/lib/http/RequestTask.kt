@@ -7,11 +7,6 @@ import com.sd.lib.http.utils.HttpLog
 import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
 
-/** 单线程调度器 */
-internal val singleThreadContext: ExecutorCoroutineDispatcher by lazy {
-    newSingleThreadContext("FHttp single thread")
-}
-
 internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequest: IRequest
     private val mRequestCallback: RequestCallback
@@ -138,5 +133,13 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
     override fun onProgressUpload(param: TransmitParam) {
         mRequestCallback.onProgressUpload(param)
+    }
+
+    companion object {
+        /** 单线程调度器 */
+        @JvmStatic
+        internal val singleThreadContext: ExecutorCoroutineDispatcher by lazy {
+            newSingleThreadContext("FHttp single thread")
+        }
     }
 }
