@@ -52,7 +52,6 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 成功回调，常用来处理解析数据（后台线程）
      */
-    @CallSuper
     @Throws(Exception::class)
     open fun onSuccessBackground() {
         HttpUtils.checkBackgroundThread()
