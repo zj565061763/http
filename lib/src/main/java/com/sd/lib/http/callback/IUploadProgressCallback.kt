@@ -1,8 +1,7 @@
-package com.sd.lib.http.callback;
+package com.sd.lib.http.callback
 
-import com.sd.lib.http.utils.TransmitParam;
+import com.sd.lib.http.utils.TransmitParam
 
-public interface IUploadProgressCallback
-{
-    void onProgressUpload(TransmitParam param);
+interface IUploadProgressCallback {
+    fun onProgressUpload(param: TransmitParam)
 }
