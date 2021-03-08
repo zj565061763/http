@@ -128,6 +128,6 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         super.onDestroy()
         Log.i(TAG, "onDestroy")
         // 根据tag取消请求
-        RequestManager.getInstance().cancelTag(TAG)
+        RequestManager.instance.cancelTag(TAG)
     }
 }

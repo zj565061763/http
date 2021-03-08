@@ -33,8 +33,10 @@ internal class FHttpRequest : HttpRequest {
      */
     private fun loadCookieForRequest() {
         try {
+            val cookieStore = RequestManager.instance.cookieStore
             val uri = url().toURI()
-            val listCookie = RequestManager.getInstance().cookieStore[uri]
+            val listCookie = cookieStore[uri]
+
             if (listCookie != null && !listCookie.isEmpty()) {
                 val cookie = TextUtils.join(";", listCookie)
                 header(HEADER_COOKIE, cookie)
@@ -52,11 +54,12 @@ internal class FHttpRequest : HttpRequest {
      */
     private fun saveCookieFromResponse() {
         try {
+            val cookieStore = RequestManager.instance.cookieStore
             val uri = url().toURI()
             val listCookie = responseCookie
 
             if (listCookie != null) {
-                RequestManager.getInstance().cookieStore.add(uri, listCookie)
+                cookieStore.add(uri, listCookie)
 
                 HttpLog.i("""cookie saveCookieFromResponse $uri
                 |${TextUtils.join("\r\n", listCookie)}

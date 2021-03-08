@@ -10,14 +10,14 @@ internal class HttpLog private constructor() {
 
         @JvmStatic
         fun i(msg: String?) {
-            if (RequestManager.getInstance().isDebug) {
+            if (RequestManager.instance.isDebug) {
                 Log.i(TAG, msg)
             }
         }
 
         @JvmStatic
         fun e(msg: String?) {
-            if (RequestManager.getInstance().isDebug) {
+            if (RequestManager.instance.isDebug) {
                 Log.e(TAG, msg)
             }
         }

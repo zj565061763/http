@@ -18,13 +18,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(mBinding.root)
 
         //设置调试模式，输出log
-        RequestManager.getInstance().isDebug = true
+        RequestManager.instance.isDebug = true
 
         //设置cookie管理对象
-        RequestManager.getInstance().cookieStore = SerializableCookieStore(this)
+        RequestManager.instance.cookieStore = SerializableCookieStore(this)
 
         //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边传入的对象如果是和资源相关的对象，需要在资源销毁的时候remove
-        RequestManager.getInstance().setRequestInterceptor(AppRequestInterceptor())
+        RequestManager.instance.requestInterceptor = AppRequestInterceptor()
     }
 
     override fun onClick(v: View) {

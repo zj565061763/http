@@ -1,246 +1,116 @@
-package com.sd.lib.http;
+package com.sd.lib.http
 
-import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextUtils
+import android.util.Log
+import com.sd.lib.http.callback.RequestCallback
+import com.sd.lib.http.cookie.ICookieStore
+import com.sd.lib.http.cookie.ModifyMemoryCookieStore
+import com.sd.lib.http.interceptor.IRequestInterceptor
+import com.sd.lib.http.utils.HttpUtils.Companion.runOnUiThread
+import java.util.concurrent.ConcurrentHashMap
 
-import com.sd.lib.http.callback.RequestCallback;
-import com.sd.lib.http.cookie.ICookieStore;
-import com.sd.lib.http.interceptor.IRequestInterceptor;
-import com.sd.lib.http.utils.HttpUtils;
+class RequestManager private constructor() {
+    private val mMapRequest: MutableMap<RequestTask, RequestInfo> = ConcurrentHashMap()
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+    /** 调试模式 */
+    var isDebug = false
 
-public class RequestManager
-{
-    private static RequestManager sInstance;
-
-    private final Map<RequestTask, RequestInfo> mMapRequest = new ConcurrentHashMap<>();
-
-    private ICookieStore mCookieStore;
-
-    private IRequestInterceptor mRequestInterceptor;
-    private IRequestIdentifierProvider mRequestIdentifierProvider;
-
-    private boolean isDebug = false;
-
-    private RequestManager()
-    {
-    }
-
-    public static RequestManager getInstance()
-    {
-        if (sInstance == null)
-        {
-            synchronized (RequestManager.class)
-            {
-                if (sInstance == null)
-                    sInstance = new RequestManager();
-            }
+    /** cookie管理对象 */
+    var cookieStore: ICookieStore = ModifyMemoryCookieStore()
+        set(value) {
+            requireNotNull(value)
+            field = value
         }
-        return sInstance;
-    }
 
-    public void setDebug(boolean debug)
-    {
-        isDebug = debug;
-    }
+    /** 请求拦截 */
+    var requestInterceptor: IRequestInterceptor? = null
 
-    public boolean isDebug()
-    {
-        return isDebug;
-    }
-
-    /**
-     * 设置cookie管理对象
-     *
-     * @param cookieStore
-     */
-    public void setCookieStore(ICookieStore cookieStore)
-    {
-        mCookieStore = cookieStore;
-    }
-
-    /**
-     * 返回cookie管理对象
-     *
-     * @return
-     */
-    public ICookieStore getCookieStore()
-    {
-        if (mCookieStore == null)
-            mCookieStore = ICookieStore.DEFAULT;
-        return mCookieStore;
-    }
-
-    /**
-     * 设置Request标识生成对象
-     *
-     * @param requestIdentifierProvider
-     */
-    public void setRequestIdentifierProvider(IRequestIdentifierProvider requestIdentifierProvider)
-    {
-        mRequestIdentifierProvider = requestIdentifierProvider;
-    }
-
-    private IRequestIdentifierProvider getRequestIdentifierProvider()
-    {
-        if (mRequestIdentifierProvider == null)
-        {
-            mRequestIdentifierProvider = new IRequestIdentifierProvider()
-            {
-                @Override
-                public String provideRequestIdentifier(IRequest request)
-                {
-                    return null;
-                }
-            };
-        }
-        return mRequestIdentifierProvider;
-    }
+    /** Request对象标识生成器 */
+    private var requestIdentifierProvider: IRequestIdentifierProvider? = null
 
     //---------- IRequestInterceptor start ----------
 
-    public void setRequestInterceptor(IRequestInterceptor requestInterceptor)
-    {
-        mRequestInterceptor = requestInterceptor;
-    }
-
-    final IRequestInterceptor mInternalRequestInterceptor = new IRequestInterceptor()
-    {
-        @Override
-        public IResponse beforeExecute(IRequest request) throws Exception
-        {
-            if (mRequestInterceptor != null)
-                return mRequestInterceptor.beforeExecute(request);
-
-            return null;
+    internal val mInternalRequestInterceptor = object : IRequestInterceptor {
+        @Throws(Exception::class)
+        override fun beforeExecute(request: IRequest): IResponse? {
+            val interceptor = requestInterceptor ?: return null
+            return interceptor.beforeExecute(request)
         }
 
-        @Override
-        public IResponse afterExecute(IRequest request, IResponse response) throws Exception
-        {
-            if (mRequestInterceptor != null)
-                return mRequestInterceptor.afterExecute(request, response);
-
-            return response;
+        @Throws(Exception::class)
+        override fun afterExecute(request: IRequest, response: IResponse): IResponse? {
+            val interceptor = requestInterceptor ?: return response
+            return interceptor.afterExecute(request, response)
         }
 
-        @Override
-        public void onError(final Exception e)
-        {
-            if (mRequestInterceptor != null)
-            {
-                mRequestInterceptor.onError(e);
-            } else
-            {
-                HttpUtils.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        throw new RuntimeException(e);
-                    }
-                });
+        override fun onError(e: Exception) {
+            val interceptor = requestInterceptor
+            if (interceptor != null) {
+                interceptor.onError(e)
+            } else {
+                runOnUiThread { throw RuntimeException(e) }
             }
         }
-    };
+    }
 
     //---------- IRequestInterceptor end ----------
 
     /**
      * 异步执行请求
      *
-     * @param request  请求对象
-     * @param callback
+     * @param sequence 是否按顺序执行
      */
-    public RequestHandler execute(IRequest request, RequestCallback callback)
-    {
-        return execute(request, false, callback);
-    }
-
-    /**
-     * 异步执行请求
-     *
-     * @param request  请求对象
-     * @param sequence 是否按顺序一个个执行，true-是
-     * @param callback
-     * @return
-     */
-    public synchronized RequestHandler execute(final IRequest request, final boolean sequence, RequestCallback callback)
-    {
-        if (request == null)
-            return null;
-
-        if (callback == null)
-        {
-            callback = new RequestCallback()
-            {
-                @Override
-                public void onSuccess()
-                {
-                }
-            };
-        }
-
-        callback.setRequest(request);
-        callback.onPrepare(request);
-
-        final RequestTask task = new RequestTask(request, callback)
-        {
-            @Override
-            public void onFinish()
-            {
-                removeTask(this);
+    @JvmOverloads
+    @Synchronized
+    fun execute(request: IRequest, sequence: Boolean = false, callback: RequestCallback?): RequestHandler {
+        var callback = callback
+        if (callback == null) {
+            callback = object : RequestCallback() {
+                override fun onSuccess() {}
             }
-        };
-
-        final String tag = request.getTag();
-        final String requestIdentifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
-
-        final RequestInfo info = new RequestInfo();
-        info.tag = tag;
-        info.requestIdentifier = requestIdentifier;
-        mMapRequest.put(task, info);
-
-        if (isDebug())
-        {
-            Log.i(RequestManager.class.getName(), "execute"
-                    + " task:" + task
-                    + " callback:" + callback
-                    + " requestIdentifier:" + requestIdentifier
-                    + " tag:" + tag
-                    + " size:" + mMapRequest.size());
         }
 
-        if (sequence)
-        {
-            task.submitSequence();
-        } else
-        {
-            task.submit();
+        callback.request = request
+        callback.onPrepare(request)
+
+        val task = object : RequestTask(request, callback) {
+            override fun onFinish() {
+                removeTask(this)
+            }
         }
 
-        return new RequestHandler(task);
+        val info = RequestInfo().apply {
+            this.tag = request.tag
+            this.requestIdentifier = requestIdentifierProvider?.provideRequestIdentifier(request)
+        }
+
+        mMapRequest[task] = info
+        if (isDebug) {
+            Log.i(RequestManager::class.java.name, "execute"
+                    + " task:${task}"
+                    + " callback:${callback}"
+                    + " requestIdentifier:${info.requestIdentifier}"
+                    + " tag:${info.tag}"
+                    + " size:${mMapRequest.size}")
+        }
+
+        if (sequence) {
+            task.submitSequence()
+        } else {
+            task.submit()
+        }
+        return RequestHandler(task)
     }
 
-    private synchronized boolean removeTask(RequestTask task)
-    {
-        if (task == null)
-            throw new IllegalArgumentException("task is null");
-
-        final RequestInfo info = mMapRequest.remove(task);
-        if (info == null)
-            return false;
-
-        if (isDebug())
-        {
-            Log.i(RequestManager.class.getName(), "removeTask"
+    @Synchronized
+    private fun removeTask(task: RequestTask): Boolean {
+        val info = mMapRequest.remove(task) ?: return false
+        if (isDebug) {
+            Log.i(RequestManager::class.java.name, "removeTask"
                     + " task:" + task
-                    + " size:" + mMapRequest.size());
+                    + " size:" + mMapRequest.size)
         }
-
-        return true;
+        return true
     }
 
     /**
@@ -249,68 +119,64 @@ public class RequestManager
      * @param tag
      * @return 申请取消成功的数量
      */
-    public synchronized int cancelTag(final String tag)
-    {
-        if (tag == null || mMapRequest.isEmpty())
-            return 0;
+    @Synchronized
+    fun cancelTag(tag: String?): Int {
+        if (tag == null || mMapRequest.isEmpty()) return 0
 
-        if (isDebug())
-            Log.i(RequestManager.class.getName(), "try cancelTag tag:" + tag);
-
-        int count = 0;
-        for (Map.Entry<RequestTask, RequestInfo> item : mMapRequest.entrySet())
-        {
-            final RequestTask task = item.getKey();
-            final RequestInfo info = item.getValue();
-
-            if (tag.equals(info.tag) && task.cancel())
-                count++;
+        if (isDebug) {
+            Log.i(RequestManager::class.java.name, "try cancelTag tag:$tag")
         }
 
-        if (isDebug())
-            Log.i(RequestManager.class.getName(), "try cancelTag tag:" + tag + " count:" + count);
+        var count = 0
+        for ((task, info) in mMapRequest) {
+            if (tag == info.tag && task.cancel()) {
+                count++
+            }
+        }
 
-        return count;
+        if (isDebug) {
+            Log.i(RequestManager::class.java.name, "try cancelTag tag:$tag count:$count")
+        }
+        return count
     }
 
     /**
-     * 根据Request的唯一标识取消请求{@link IRequestIdentifierProvider}
+     * 根据Request的唯一标识取消请求[IRequestIdentifierProvider]
      *
      * @param request
      * @return
      */
-    public synchronized int cancelRequestIdentifier(final IRequest request)
-    {
-        if (request == null || mMapRequest.isEmpty())
-            return 0;
-
-        final String identifier = getRequestIdentifierProvider().provideRequestIdentifier(request);
-        if (TextUtils.isEmpty(identifier))
-            return 0;
-
-        if (isDebug())
-            Log.i(RequestManager.class.getName(), "try cancelRequestIdentifier requestIdentifier:" + identifier);
-
-        int count = 0;
-        for (Map.Entry<RequestTask, RequestInfo> item : mMapRequest.entrySet())
-        {
-            final RequestTask task = item.getKey();
-            final RequestInfo info = item.getValue();
-
-            if (identifier.equals(info.requestIdentifier) && task.cancel())
-                count++;
+    @Synchronized
+    fun cancelRequestIdentifier(request: IRequest?): Int {
+        if (request == null || mMapRequest.isEmpty()) return 0
+        val identifier = requestIdentifierProvider?.provideRequestIdentifier(request)
+        if (TextUtils.isEmpty(identifier)) {
+            return 0
         }
 
-        if (isDebug())
-            Log.i(RequestManager.class.getName(), "try cancelRequestIdentifier requestIdentifier:" + identifier + " count:" + count);
+        if (isDebug) {
+            Log.i(RequestManager::class.java.name, "try cancelRequestIdentifier requestIdentifier:$identifier")
+        }
 
-        return count;
+        var count = 0
+        for ((task, info) in mMapRequest) {
+            if (identifier == info.requestIdentifier && task.cancel()) {
+                count++
+            }
+        }
+
+        if (isDebug) {
+            Log.i(RequestManager::class.java.name, "try cancelRequestIdentifier requestIdentifier:$identifier count:$count")
+        }
+        return count
     }
 
+    private class RequestInfo {
+        var tag: String? = null
+        var requestIdentifier: String? = null
+    }
 
-    private static final class RequestInfo
-    {
-        public String tag;
-        public String requestIdentifier;
+    companion object {
+        val instance: RequestManager by lazy { RequestManager() }
     }
 }

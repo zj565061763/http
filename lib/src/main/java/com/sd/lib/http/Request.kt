@@ -49,11 +49,11 @@ abstract class Request : IRequest {
     override var hostnameVerifier: HostnameVerifier? = null
 
     override fun execute(callback: RequestCallback?): RequestHandler {
-        return RequestManager.getInstance().execute(this, callback)
+        return RequestManager.instance.execute(this, false, callback)
     }
 
     override fun executeSequence(callback: RequestCallback?): RequestHandler {
-        return RequestManager.getInstance().execute(this, true, callback)
+        return RequestManager.instance.execute(this, true, callback)
     }
 
     @Throws(Exception::class)
@@ -61,20 +61,20 @@ abstract class Request : IRequest {
         val intercept = interceptExecute
         if (intercept) {
             try {
-                val beforeResponse = RequestManager.getInstance().mInternalRequestInterceptor.beforeExecute(this)
+                val beforeResponse = RequestManager.instance.mInternalRequestInterceptor.beforeExecute(this)
                 if (beforeResponse != null) return beforeResponse
             } catch (e: Exception) {
-                RequestManager.getInstance().mInternalRequestInterceptor.onError(e)
+                RequestManager.instance.mInternalRequestInterceptor.onError(e)
             }
         }
 
         val realResponse = doExecute()
         if (intercept) {
             try {
-                val afterResponse = RequestManager.getInstance().mInternalRequestInterceptor.afterExecute(this, realResponse)
+                val afterResponse = RequestManager.instance.mInternalRequestInterceptor.afterExecute(this, realResponse)
                 if (afterResponse != null) return afterResponse
             } catch (e: Exception) {
-                RequestManager.getInstance().mInternalRequestInterceptor.onError(e)
+                RequestManager.instance.mInternalRequestInterceptor.onError(e)
             }
         }
         return realResponse

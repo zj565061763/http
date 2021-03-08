@@ -63,7 +63,7 @@ class DownloadActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun stopDownload() {
-        RequestManager.getInstance().cancelTag(TAG)
+        RequestManager.instance.cancelTag(TAG)
     }
 
     override fun onDestroy() {
