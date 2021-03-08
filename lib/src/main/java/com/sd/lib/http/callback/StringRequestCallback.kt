@@ -1,23 +1,14 @@
-package com.sd.lib.http.callback;
+package com.sd.lib.http.callback
 
-public abstract class StringRequestCallback extends RequestCallback
-{
-    private String mResult;
+abstract class StringRequestCallback : RequestCallback() {
 
-    @Override
-    public void onSuccessBackground() throws Exception
-    {
-        super.onSuccessBackground();
-        mResult = getResponse().getAsString();
-    }
+    /** 返回请求的字符串内容，onSuccessXXXX方法中才可以访问 */
+    lateinit var result: String
+        private set
 
-    /**
-     * 返回请求的字符串
-     *
-     * @return
-     */
-    public final String getResult()
-    {
-        return mResult;
+    @Throws(Exception::class)
+    override fun onSuccessBackground() {
+        super.onSuccessBackground()
+        result = response!!.asString
     }
 }
