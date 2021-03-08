@@ -13,7 +13,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     private var mResponse: IResponse? = null
     private var mRequestTaskApi: IRequestTaskApi? = null
 
-    /** 请求对象，任务被提交之后才可以访问 */
+    /** 请求对象，任务被提交之后不为null */
     val request: IRequest?
         get() = mRequest
 
@@ -21,7 +21,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     val response: IResponse?
         get() = mResponse
 
-    /** 请求任务api接口，任务被提交之后才可以访问 */
+    /** 请求任务api接口，任务被提交之后不为null */
     val requestTaskApi: IRequestTaskApi?
         get() = mRequestTaskApi
 
