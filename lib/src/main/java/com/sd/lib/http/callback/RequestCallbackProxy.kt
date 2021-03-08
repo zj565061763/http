@@ -7,19 +7,17 @@ import com.sd.lib.http.utils.TransmitParam
 class RequestCallbackProxy : RequestCallback {
     private val callbacks: Array<out RequestCallback>
 
-    internal constructor(vararg callbacks: RequestCallback) {
+    private constructor(vararg callbacks: RequestCallback) {
         this.callbacks = callbacks
     }
 
     override fun saveRequest(request: IRequest) {
-        super.saveRequest(request)
         for (item in callbacks) {
             item?.saveRequest(request)
         }
     }
 
     override fun saveResponse(response: IResponse) {
-        super.saveResponse(response)
         for (item in callbacks) {
             item?.saveResponse(response)
         }
@@ -39,7 +37,6 @@ class RequestCallbackProxy : RequestCallback {
 
     @Throws(Exception::class)
     override fun onSuccessBackground() {
-        super.onSuccessBackground()
         for (item in callbacks) {
             item?.onSuccessBackground()
         }
