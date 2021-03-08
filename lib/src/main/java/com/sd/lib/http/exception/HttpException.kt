@@ -4,7 +4,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 open class HttpException : Exception {
-    @JvmOverloads
+
     constructor(message: String?, cause: Throwable?) : super(message, cause)
 
     /**

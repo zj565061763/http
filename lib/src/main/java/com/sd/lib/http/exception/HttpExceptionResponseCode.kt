@@ -3,7 +3,14 @@ package com.sd.lib.http.exception
 /**
  * Http返回码异常
  */
-class HttpExceptionResponseCode @JvmOverloads constructor(val code: Int, message: String? = null, cause: Throwable? = null) : HttpException(message, cause) {
+class HttpExceptionResponseCode : HttpException {
+
+    val code: Int
+
+    @JvmOverloads
+    constructor(code: Int, message: String? = null, cause: Throwable? = null) : super(message, cause) {
+        this.code = code
+    }
 
     override fun toString(): String {
         return "${super.toString()} code:${this.code}"

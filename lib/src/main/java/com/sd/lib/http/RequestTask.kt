@@ -26,7 +26,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     }
 
     private val logPrefix: String
-        private get() = this.toString()
+        get() = this.toString()
 
     /**
      * 提交任务，任务按顺序一个个执行
@@ -73,7 +73,6 @@ internal abstract class RequestTask : IUploadProgressCallback {
                     notifyError(e)
                     return@launch
                 }
-                throw RuntimeException("unreachable code")
             }
 
             HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread()}")
