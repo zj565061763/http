@@ -6,7 +6,7 @@ import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.cookie.ICookieStore
 import com.sd.lib.http.cookie.ModifyMemoryCookieStore
 import com.sd.lib.http.interceptor.IRequestInterceptor
-import com.sd.lib.http.utils.HttpUtils.Companion.runOnUiThread
+import com.sd.lib.http.utils.HttpUtils
 import java.util.concurrent.ConcurrentHashMap
 
 class RequestManager private constructor() {
@@ -46,9 +46,13 @@ class RequestManager private constructor() {
         override fun onError(e: Exception) {
             val interceptor = requestInterceptor
             if (interceptor != null) {
-                interceptor.onError(e)
+                try {
+                    interceptor.onError(e)
+                } catch (newE: Exception) {
+                    HttpUtils.runOnUiThread { throw RuntimeException(newE) }
+                }
             } else {
-                runOnUiThread { throw RuntimeException(e) }
+                HttpUtils.runOnUiThread { throw RuntimeException(e) }
             }
         }
     }

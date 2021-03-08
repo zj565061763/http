@@ -69,6 +69,7 @@ abstract class Request : IRequest {
         }
 
         val realResponse = doExecute()
+
         if (intercept) {
             try {
                 val afterResponse = RequestManager.instance.mInternalRequestInterceptor.afterExecute(this, realResponse)
