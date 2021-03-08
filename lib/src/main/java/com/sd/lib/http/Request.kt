@@ -94,7 +94,7 @@ abstract class Request : IRequest {
     /**
      * 发起请求
      */
-    @Throws(HttpException::class)
+    @Throws(Exception::class)
     protected abstract fun doExecute(): IResponse
 
     protected fun notifyProgressUpload(uploaded: Long, total: Long) {

@@ -6,7 +6,6 @@ import com.sd.lib.http.IPostRequest
 import com.sd.lib.http.IPostRequest.ParamsType
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.body.*
-import com.sd.lib.http.exception.HttpException
 import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
@@ -40,7 +39,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
         mBody = body
     }
 
-    @Throws(HttpException::class)
+    @Throws(Exception::class)
     override fun doExecute(): IResponse {
         val httpRequest = newHttpRequest(url, HttpRequest.METHOD_POST)
 
