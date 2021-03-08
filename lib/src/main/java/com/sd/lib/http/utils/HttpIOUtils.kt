@@ -42,7 +42,9 @@ internal class HttpIOUtils private constructor() {
             while (tInputStream.read(buffer).also { len = it } != -1) {
                 tOutputStream.write(buffer, 0, len)
                 count += len.toLong()
-                callback?.onProgress(count)
+
+                if (callback != null && callback.onProgress(count))
+                    break
             }
             tOutputStream.flush()
         }
@@ -58,7 +60,10 @@ internal class HttpIOUtils private constructor() {
         }
     }
 
-    interface ProgressCallback {
-        fun onProgress(count: Long)
+    fun interface ProgressCallback {
+        /**
+         * 进度回调，如果返回true-停止任务
+         */
+        fun onProgress(count: Long): Boolean
     }
 }

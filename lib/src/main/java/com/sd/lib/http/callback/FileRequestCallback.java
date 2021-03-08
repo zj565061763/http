@@ -46,10 +46,17 @@ public abstract class FileRequestCallback extends RequestCallback
             HttpIOUtils.copy(input, output, new HttpIOUtils.ProgressCallback()
             {
                 @Override
-                public void onProgress(long count)
+                public boolean onProgress(long count)
                 {
+                    if (!getRequestTaskApi().isActive())
+                    {
+                        // 任务已经死亡，停止下载
+                        return true;
+                    }
+
                     if (getTransmitParam().transmit(total, count))
                         HttpUtils.runOnUiThread(mUpdateProgressRunnable);
+                    return false;
                 }
             });
         } finally

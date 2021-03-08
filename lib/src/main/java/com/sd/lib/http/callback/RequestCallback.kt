@@ -1,6 +1,7 @@
 package com.sd.lib.http.callback
 
 import com.sd.lib.http.IRequest
+import com.sd.lib.http.IRequestTaskApi
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.utils.HttpUtils
@@ -10,14 +11,19 @@ abstract class RequestCallback : IUploadProgressCallback {
 
     private var mRequest: IRequest? = null
     private var mResponse: IResponse? = null
+    private var mRequestTaskApi: IRequestTaskApi? = null
 
-    /** 请求对象 */
+    /** 请求对象，任务被提交之后才可以访问 */
     val request: IRequest?
         get() = mRequest
 
-    /** 返回对象 */
+    /** 请求返回对象，onSuccessXXXX方法中以及之后不为null */
     val response: IResponse?
         get() = mResponse
+
+    /** 请求任务api接口，任务被提交之后才可以访问 */
+    val requestTaskApi: IRequestTaskApi?
+        get() = mRequestTaskApi
 
     /**
      * 保存请求对象
@@ -32,6 +38,10 @@ abstract class RequestCallback : IUploadProgressCallback {
     internal open fun saveResponse(response: IResponse) {
         HttpUtils.checkBackgroundThread()
         mResponse = response
+    }
+
+    internal open fun saveRequestTaskApi(requestTaskApi: IRequestTaskApi) {
+        mRequestTaskApi = requestTaskApi
     }
 
     //---------- notify method start ----------

@@ -82,6 +82,7 @@ class RequestManager private constructor() {
                 removeTask(this)
             }
         }
+        callback.saveRequestTaskApi(task)
 
         val info = RequestInfo().apply {
             this.tag = request.tag
