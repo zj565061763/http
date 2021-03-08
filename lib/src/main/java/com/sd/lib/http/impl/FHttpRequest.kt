@@ -54,12 +54,14 @@ internal class FHttpRequest : HttpRequest {
         try {
             val uri = url().toURI()
             val listCookie = responseCookie
-            RequestManager.getInstance().cookieStore.add(uri, listCookie)
 
-            HttpLog.i("""cookie saveCookieFromResponse $uri
+            if (listCookie != null) {
+                RequestManager.getInstance().cookieStore.add(uri, listCookie)
+
+                HttpLog.i("""cookie saveCookieFromResponse $uri
                 |${TextUtils.join("\r\n", listCookie)}
             """.trimMargin())
-
+            }
         } catch (e: Exception) {
             HttpLog.e("cookie saveCookieFromResponse error:$e")
         }
