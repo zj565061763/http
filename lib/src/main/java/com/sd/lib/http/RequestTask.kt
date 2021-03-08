@@ -94,9 +94,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     @Synchronized
     fun cancel(): Boolean {
         val job = mJob ?: return false
-        if (!job.isActive) {
-            return false
-        }
+        if (!job.isActive) return false
 
         job.cancel()
         val isActive = job.isActive
