@@ -71,11 +71,7 @@ abstract class Request : IRequest {
         val realResponse = try {
             doExecute()
         } catch (e: Exception) {
-            if (e is HttpException) {
-                throw e
-            } else {
-                throw HttpException(null, e)
-            }
+            throw HttpException.wrap(e)
         }
 
         if (intercept) {

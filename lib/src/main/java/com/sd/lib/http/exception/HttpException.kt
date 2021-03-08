@@ -32,4 +32,11 @@ open class HttpException : Exception {
         }
         return superContent
     }
+
+    companion object {
+        @JvmStatic
+        fun wrap(e: Exception): HttpException {
+            return if (e is HttpException) e else HttpException(null, e)
+        }
+    }
 }
