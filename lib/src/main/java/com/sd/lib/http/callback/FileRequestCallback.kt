@@ -22,14 +22,14 @@ abstract class FileRequestCallback : RequestCallback {
         val output = FileOutputStream(file)
         try {
             HttpIOUtils.copy(input, output) { count ->
-                if (!requestTaskApi!!.isActive) {
-                    // 任务已经死亡，停止下载
+                if (requestTaskApi!!.isActive) {
+                    if (transmitParam.transmit(total, count)) {
+                        HttpUtils.runOnUiThread(mUpdateProgressRunnable)
+                    }
+                    false
+                } else {
                     true
                 }
-                if (transmitParam.transmit(total, count)) {
-                    HttpUtils.runOnUiThread(mUpdateProgressRunnable)
-                }
-                false
             }
         } finally {
             HttpUtils.runOnUiThread(mUpdateProgressRunnable)
