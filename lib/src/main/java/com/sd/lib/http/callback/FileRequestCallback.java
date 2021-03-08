@@ -1,9 +1,8 @@
 package com.sd.lib.http.callback;
 
-import android.os.Handler;
-import android.os.Looper;
-
+import com.sd.lib.http.IResponse;
 import com.sd.lib.http.utils.HttpIOUtils;
+import com.sd.lib.http.utils.HttpUtils;
 import com.sd.lib.http.utils.TransmitParam;
 
 import java.io.File;
@@ -16,12 +15,11 @@ public abstract class FileRequestCallback extends RequestCallback
     private final File mFile;
     private final TransmitParam mTransmitParam = new TransmitParam();
 
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
-
     public FileRequestCallback(File file)
     {
+        if (file == null)
+            throw new IllegalArgumentException("file is null");
         mFile = file;
-        checkFile();
     }
 
     public final File getFile()
@@ -34,33 +32,15 @@ public abstract class FileRequestCallback extends RequestCallback
         return mTransmitParam;
     }
 
-    private void checkFile()
-    {
-        final File file = getFile();
-        if (file == null)
-            throw new NullPointerException("file is null");
-
-        if (!file.exists())
-        {
-            try
-            {
-                file.createNewFile();
-            } catch (Exception e)
-            {
-                onError(e);
-            }
-        }
-    }
-
     @Override
     public void onSuccessBackground() throws Exception
     {
         super.onSuccessBackground();
 
-        final long total = getResponse().getContentLength();
-        final InputStream input = getResponse().getInputStream();
+        final IResponse response = getResponse();
+        final long total = response.getContentLength();
+        final InputStream input = response.getInputStream();
         final OutputStream output = new FileOutputStream(getFile());
-
         try
         {
             HttpIOUtils.copy(input, output, new HttpIOUtils.ProgressCallback()
@@ -69,12 +49,12 @@ public abstract class FileRequestCallback extends RequestCallback
                 public void onProgress(long count)
                 {
                     if (getTransmitParam().transmit(total, count))
-                        runOnUiThread(mUpdateProgressRunnable);
+                        HttpUtils.runOnUiThread(mUpdateProgressRunnable);
                 }
             });
         } finally
         {
-            runOnUiThread(mUpdateProgressRunnable);
+            HttpUtils.runOnUiThread(mUpdateProgressRunnable);
             HttpIOUtils.closeQuietly(input);
             HttpIOUtils.closeQuietly(output);
         }
@@ -95,18 +75,6 @@ public abstract class FileRequestCallback extends RequestCallback
     public void onCancel()
     {
         super.onCancel();
-        mHandler.removeCallbacks(mUpdateProgressRunnable);
-    }
-
-
-    private void runOnUiThread(Runnable runnable)
-    {
-        if (runnable == null)
-            return;
-
-        if (Looper.myLooper() == Looper.getMainLooper())
-            runnable.run();
-        else
-            mHandler.post(runnable);
+        HttpUtils.removeCallbacks(mUpdateProgressRunnable);
     }
 }
