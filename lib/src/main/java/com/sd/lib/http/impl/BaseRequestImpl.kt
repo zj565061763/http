@@ -71,7 +71,7 @@ abstract class BaseRequestImpl() : Request() {
                         try {
                             mContent = HttpIOUtils.readString(inputStream, charset)
                         } catch (e: IOException) {
-                            throw HttpException(cause = e)
+                            throw HttpException(null, e)
                         } finally {
                             HttpIOUtils.closeQuietly(inputStream)
                         }

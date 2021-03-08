@@ -114,7 +114,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
         require(e !is CancellationException)
         HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread()}")
 
-        var exception = if (e is HttpException) e else HttpException(cause = e)
+        var exception = if (e is HttpException) e else HttpException(null, e)
         mRequestCallback.onError(exception)
         notifyFinish()
     }

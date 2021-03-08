@@ -74,7 +74,7 @@ abstract class Request : IRequest {
             if (e is HttpException) {
                 throw e
             } else {
-                throw HttpException(cause = e)
+                throw HttpException(null, e)
             }
         }
 
