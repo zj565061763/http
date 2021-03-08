@@ -1,45 +1,35 @@
-package com.sd.lib.http.callback;
+package com.sd.lib.http.callback
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import androidx.annotation.CallSuper
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
-public abstract class ModelRequestCallback<T> extends StringRequestCallback
-{
-    private T mActModel;
+abstract class ModelRequestCallback<T> : StringRequestCallback() {
+    var actModel: T? = null
+        private set
 
-    @Override
-    public void onSuccessBackground() throws Exception
-    {
-        super.onSuccessBackground();
-
-        final Type type = getModelType();
-        mActModel = parseToModel(getResult(), type);
+    @CallSuper
+    @Throws(Exception::class)
+    override fun onSuccessBackground() {
+        super.onSuccessBackground()
+        val type = modelType
+        actModel = parseToModel(result, type)
     }
 
-    protected Type getModelType()
-    {
-        final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-        final Type[] types = parameterizedType.getActualTypeArguments();
-        if (types != null && types.length > 0)
-        {
-            return types[0];
-        } else
-        {
-            throw new RuntimeException("generic type not found");
+    protected val modelType: Type
+        protected get() {
+            val parameterizedType = javaClass.genericSuperclass as ParameterizedType
+            val types = parameterizedType.actualTypeArguments
+            return if (types != null && types.isNotEmpty()) {
+                types[0]
+            } else {
+                throw RuntimeException("generic type not found")
+            }
         }
-    }
-
-    public final T getActModel()
-    {
-        return mActModel;
-    }
 
     /**
-     * 将字符串解析为实体
-     *
-     * @param content
-     * @param type
-     * @return
+     * 将字符串[content]解析为实体
      */
-    protected abstract T parseToModel(String content, Type type);
+    @Throws(Exception::class)
+    protected abstract fun parseToModel(content: String, type: Type): T
 }
