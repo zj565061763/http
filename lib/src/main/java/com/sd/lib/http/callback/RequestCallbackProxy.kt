@@ -5,12 +5,8 @@ import com.sd.lib.http.IRequestTaskApi
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.utils.TransmitParam
 
-class RequestCallbackProxy : RequestCallback {
-    private val callbacks: Array<out RequestCallback>
-
-    private constructor(vararg callbacks: RequestCallback) {
-        this.callbacks = callbacks
-    }
+class RequestCallbackProxy private constructor(vararg callbacks: RequestCallback) : RequestCallback() {
+    private val callbacks: Array<out RequestCallback> = callbacks
 
     override fun saveRequest(request: IRequest) {
         for (item in callbacks) {
