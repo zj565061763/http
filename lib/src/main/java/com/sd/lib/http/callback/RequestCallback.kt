@@ -25,16 +25,10 @@ abstract class RequestCallback : IUploadProgressCallback {
     val requestTaskApi: IRequestTaskApi?
         get() = mRequestTaskApi
 
-    /**
-     * 保存请求对象
-     */
     internal open fun saveRequest(request: IRequest) {
         mRequest = request
     }
 
-    /**
-     * 保存返回对象（后台线程）
-     */
     internal open fun saveResponse(response: IResponse) {
         HttpUtils.checkBackgroundThread()
         mResponse = response
@@ -57,7 +51,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     open fun onStart() {}
 
     /**
-     * 成功回调，常用来处理解析数据（后台线程）
+     * 成功回调，常用来解析数据（后台线程）
      */
     @Throws(Exception::class)
     open fun onSuccessBackground() {
