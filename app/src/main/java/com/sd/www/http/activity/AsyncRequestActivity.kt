@@ -68,8 +68,8 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         override fun onStart() {
             super.onStart()
             // 开始回调（UI线程）
-            mRequestHandlers.add(requestHandler)
             Log.i(TAG, "onStart")
+            mRequestHandlers.add(requestHandler)
         }
 
         @Throws(Exception::class)
