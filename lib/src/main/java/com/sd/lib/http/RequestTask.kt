@@ -4,6 +4,7 @@ import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.utils.HttpLog
+import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
 
@@ -12,6 +13,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequestCallback: RequestCallback
 
     private var mJob: Job? = null
+    private var mIsStartNotified: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         mRequest = request
@@ -98,17 +100,26 @@ internal abstract class RequestTask : IUploadProgressCallback {
         val job = mJob ?: return false
         if (!job.isActive) return false
 
+        HttpLog.e("$logPrefix cancel start mIsStartNotified:${mIsStartNotified}")
+
         job.cancel()
         val isActive = job.isActive
         val isCancelled = !isActive
 
-        HttpLog.e("$logPrefix cancel isActive:${isActive}")
+        if (isCancelled && !mIsStartNotified) {
+            HttpUtils.runOnUiThread {
+                notifyFinish()
+            }
+        }
+
+        HttpLog.e("$logPrefix cancel finish isActive:${isActive}")
         return isCancelled
     }
 
     private fun notifyStart() {
         HttpLog.i("$logPrefix onStart ${Thread.currentThread()}")
         mRequestCallback.onStart()
+        mIsStartNotified = true
     }
 
     private fun notifyError(e: Exception) {
