@@ -13,7 +13,6 @@ import com.sd.lib.http.impl.GetRequest
 import com.sd.www.http.databinding.ActivityAsyncRequestBinding
 import com.sd.www.http.model.WeatherModel
 import java.lang.reflect.Type
-import java.util.*
 
 /**
  * 异步请求demo
@@ -23,7 +22,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
     private val URL = "http://www.weather.com.cn/data/cityinfo/101010100.html"
 
     private lateinit var mBinding: ActivityAsyncRequestBinding
-    private val mRequestHandlers: MutableMap<RequestHandler, String> = WeakHashMap()
+    private val mRequestHandlers: MutableList<RequestHandler> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +51,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         request.tag = TAG
 
         // 发起异步请求
-        val requestHandler = request.execute(mModelRequestCallback)
-
-        // 保存请求处理对象，用于取消
-        mRequestHandlers[requestHandler] = ""
+        request.execute(mModelRequestCallback)
     }
 
     /**
@@ -72,6 +68,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         override fun onStart() {
             super.onStart()
             // 开始回调（UI线程）
+            mRequestHandlers.add(requestHandler)
             Log.i(TAG, "onStart")
         }
 
@@ -117,6 +114,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             super.onFinish()
             // 结束回调（UI线程）
             Log.i(TAG, "onFinish")
+            mRequestHandlers.remove(requestHandler)
         }
     }
 
@@ -125,7 +123,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun cancelRequest() {
         mRequestHandlers.forEach {
-            it.key.cancel()
+            it.cancel()
         }
     }
 
