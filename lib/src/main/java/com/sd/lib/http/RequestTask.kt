@@ -108,7 +108,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
         if (isCancelled && !mIsStartNotified) {
             HttpUtils.runOnUiThread {
-                notifyFinish()
+                notifyCancel()
             }
         }
 
