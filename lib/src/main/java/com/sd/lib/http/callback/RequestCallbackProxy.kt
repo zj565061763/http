@@ -1,8 +1,8 @@
 package com.sd.lib.http.callback
 
 import com.sd.lib.http.IRequest
-import com.sd.lib.http.IRequestTaskApi
 import com.sd.lib.http.IResponse
+import com.sd.lib.http.RequestHandler
 import com.sd.lib.http.utils.TransmitParam
 
 class RequestCallbackProxy private constructor(vararg callbacks: RequestCallback) : RequestCallback() {
@@ -20,9 +20,9 @@ class RequestCallbackProxy private constructor(vararg callbacks: RequestCallback
         }
     }
 
-    override fun saveRequestTaskApi(requestTaskApi: IRequestTaskApi) {
+    override fun saveRequestHandler(requestHandler: RequestHandler) {
         for (item in callbacks) {
-            item?.saveRequestTaskApi(requestTaskApi)
+            item?.saveRequestHandler(requestHandler)
         }
     }
 

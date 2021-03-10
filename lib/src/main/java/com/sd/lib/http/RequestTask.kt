@@ -7,7 +7,7 @@ import com.sd.lib.http.utils.HttpLog
 import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
 
-internal abstract class RequestTask : IRequestTaskApi, IUploadProgressCallback {
+internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequest: IRequest
     private val mRequestCallback: RequestCallback
 
@@ -23,7 +23,10 @@ internal abstract class RequestTask : IRequestTaskApi, IUploadProgressCallback {
     private val logPrefix: String
         get() = this.toString()
 
-    override val isActive: Boolean
+    /**
+     * 任务是否处于活动状态
+     */
+    val isActive: Boolean
         get() {
             val job = mJob ?: return false
             return job.isActive

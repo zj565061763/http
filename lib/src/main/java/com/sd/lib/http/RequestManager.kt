@@ -80,9 +80,10 @@ class RequestManager private constructor() {
                 removeTask(this)
             }
         }
+        val requestHandler = RequestHandler(task)
 
         callback.saveRequest(request)
-        callback.saveRequestTaskApi(task)
+        callback.saveRequestHandler(requestHandler)
         callback.onPrepare(request)
 
         val info = RequestInfo().apply {
@@ -100,12 +101,8 @@ class RequestManager private constructor() {
                     + " size:${mMapRequest.size}")
         }
 
-        if (sequence) {
-            task.submitSequence()
-        } else {
-            task.submit()
-        }
-        return RequestHandler(task)
+        if (sequence) task.submitSequence() else task.submit()
+        return requestHandler
     }
 
     @Synchronized

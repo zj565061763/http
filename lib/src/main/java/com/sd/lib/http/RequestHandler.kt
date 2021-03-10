@@ -7,6 +7,12 @@ class RequestHandler internal constructor(task: RequestTask) {
     private val requestTask: RequestTask = task
 
     /**
+     * 任务是否处于活动状态
+     */
+    val isActive: Boolean
+        get() = requestTask.isActive
+
+    /**
      * 取消请求
      */
     fun cancel() {

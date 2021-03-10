@@ -1,8 +1,8 @@
 package com.sd.lib.http.callback
 
 import com.sd.lib.http.IRequest
-import com.sd.lib.http.IRequestTaskApi
 import com.sd.lib.http.IResponse
+import com.sd.lib.http.RequestHandler
 import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
@@ -11,19 +11,25 @@ abstract class RequestCallback : IUploadProgressCallback {
 
     private var mRequest: IRequest? = null
     private var mResponse: IResponse? = null
-    private var mRequestTaskApi: IRequestTaskApi? = null
+    private var mRequestHandler: RequestHandler? = null
 
-    /** 请求对象，任务被提交之后不为null */
+    /**
+     * 请求对象，[onPrepare]以及之后不为null
+     */
     val request: IRequest?
         get() = mRequest
 
-    /** 请求返回对象，onSuccessXXXX方法中以及之后不为null */
+    /**
+     * 请求响应对象，onSuccessXXXX方法以及之后不为null
+     */
     val response: IResponse?
         get() = mResponse
 
-    /** 请求任务api接口，任务被提交之后不为null */
-    val requestTaskApi: IRequestTaskApi?
-        get() = mRequestTaskApi
+    /**
+     *  [onPrepare]以及之后不为null，但是在[onPrepare]中由于请求还未被提交，所以对象的方法调用无效
+     */
+    val requestHandler: RequestHandler?
+        get() = mRequestHandler
 
     internal open fun saveRequest(request: IRequest) {
         mRequest = request
@@ -34,8 +40,8 @@ abstract class RequestCallback : IUploadProgressCallback {
         mResponse = response
     }
 
-    internal open fun saveRequestTaskApi(requestTaskApi: IRequestTaskApi) {
-        mRequestTaskApi = requestTaskApi
+    internal open fun saveRequestHandler(requestHandler: RequestHandler) {
+        mRequestHandler = requestHandler
     }
 
     //---------- notify method start ----------
