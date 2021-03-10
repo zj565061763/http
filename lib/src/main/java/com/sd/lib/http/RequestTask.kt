@@ -12,7 +12,6 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequestCallback: RequestCallback
 
     private var mJob: Job? = null
-    private var mIsSubmitted: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         mRequest = request
@@ -48,8 +47,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
     @Synchronized
     private fun submitInternal(sequence: Boolean) {
-        if (mIsSubmitted) return
-        mIsSubmitted = true
+        if (mJob != null) return
 
         mJob = GlobalScope.launch(Dispatchers.Main) {
             notifyStart()
