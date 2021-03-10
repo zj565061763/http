@@ -96,11 +96,9 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         override fun onSuccess() {
             // 成功回调（UI线程）
 
-            // 获得返回结果对象
-            val response = response!!
             // 获得接口对应的实体
             val model = actModel!!
-            Log.i(TAG, "onSuccess:" + model.weatherinfo!!.city)
+            Log.i(TAG, "onSuccess code:${response.code} city:${model.weatherinfo!!.city}")
         }
 
         override fun onError(e: Exception) {

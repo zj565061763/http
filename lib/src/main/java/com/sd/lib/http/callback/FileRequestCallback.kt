@@ -17,12 +17,12 @@ abstract class FileRequestCallback : RequestCallback {
     @Throws(Exception::class)
     override fun onSuccessBackground() {
         super.onSuccessBackground()
-        val total = response!!.contentLength.toLong()
-        val input = response!!.inputStream
+        val total = response.contentLength.toLong()
+        val input = response.inputStream
         val output = FileOutputStream(file)
         try {
             HttpIOUtils.copy(input, output) { count ->
-                if (requestHandler!!.isActive) {
+                if (requestHandler.isActive) {
                     if (transmitParam.transmit(total, count)) {
                         HttpUtils.runOnUiThread(mUpdateProgressRunnable)
                     }

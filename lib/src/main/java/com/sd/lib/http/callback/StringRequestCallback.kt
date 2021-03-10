@@ -12,6 +12,6 @@ abstract class StringRequestCallback : RequestCallback() {
     @Throws(Exception::class)
     override fun onSuccessBackground() {
         super.onSuccessBackground()
-        result = response!!.asString
+        result = response.asString
     }
 }
