@@ -5,7 +5,7 @@ package com.sd.lib.http
  */
 interface IRequestTaskApi {
     /**
-     * 任务是否还存活
+     * 任务是否处于活动状态
      */
     val isActive: Boolean
 }

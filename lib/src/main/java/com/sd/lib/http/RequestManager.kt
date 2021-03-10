@@ -74,22 +74,23 @@ class RequestManager private constructor() {
             }
         }
 
-        callback.saveRequest(request)
-        callback.onPrepare(request)
-
+        // 创建请求任务
         val task = object : RequestTask(request, callback) {
             override fun onFinish() {
                 removeTask(this)
             }
         }
+
+        callback.saveRequest(request)
         callback.saveRequestTaskApi(task)
+        callback.onPrepare(request)
 
         val info = RequestInfo().apply {
             this.tag = request.tag
             this.requestIdentifier = requestIdentifierProvider?.provideRequestIdentifier(request)
         }
-
         mMapRequest[task] = info
+
         if (isDebug) {
             Log.i(RequestManager::class.java.name, "execute"
                     + " task:${task}"
