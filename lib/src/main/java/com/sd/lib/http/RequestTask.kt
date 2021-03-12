@@ -13,7 +13,12 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private val mRequestCallback: RequestCallback
 
     private var mJob: Job? = null
+
+    @Volatile
     private var mIsStartNotified: Boolean = false
+
+    @Volatile
+    private var mIsResultNotified: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         mRequest = request
@@ -52,42 +57,43 @@ internal abstract class RequestTask : IUploadProgressCallback {
         if (mJob != null) return
 
         mJob = GlobalScope.launch(Dispatchers.Main) {
-            notifyStart()
-
-            if (!isActive) {
-                notifyCancel()
-                return@launch
-            }
-
-            val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
             try {
-                withContext(dispatcher) {
-                    HttpLog.i("$logPrefix execute ${Thread.currentThread()}")
-                    val response = mRequest.execute()
-
-                    HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread()}")
-                    mRequestCallback.saveResponse(response)
-                    mRequestCallback.onSuccessBackground()
+                // 用withContext包裹代码块，如果代码块中调用了取消，则代码不会继续往下执行，否者需要手动判断是否被取消
+                withContext(Dispatchers.Main) {
+                    notifyStart()
                 }
-            } catch (e: Exception) {
-                if (e is CancellationException) {
-                    notifyCancel()
-                    throw e
-                } else {
-                    notifyError(e)
-                    return@launch
+
+                try {
+                    val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
+                    withContext(dispatcher) {
+                        HttpLog.i("$logPrefix execute ${Thread.currentThread()}")
+                        val response = mRequest.execute()
+
+                        HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread()}")
+                        mRequestCallback.saveResponse(response)
+                        mRequestCallback.onSuccessBackground()
+                    }
+                } catch (e: Exception) {
+                    if (e is CancellationException) {
+                        // 让取消异常继续传播
+                        throw e
+                    } else {
+                        notifyError(e)
+                        return@launch
+                    }
                 }
-            }
 
-            HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread()}")
-            mRequestCallback.onSuccessBefore()
+                withContext(Dispatchers.Main) {
+                    HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread()}")
+                    mRequestCallback.onSuccessBefore()
+                }
 
-            if (!isActive) {
+                notifySuccess()
+            } catch (e: CancellationException) {
                 notifyCancel()
-                return@launch
+            } finally {
+                notifyFinish()
             }
-
-            notifySuccess()
         }
     }
 
@@ -100,7 +106,8 @@ internal abstract class RequestTask : IUploadProgressCallback {
         val job = mJob ?: return false
         if (!job.isActive) return false
 
-        HttpLog.e("$logPrefix cancel start mIsStartNotified:${mIsStartNotified}")
+        HttpLog.e("$logPrefix cancel start mIsStartNotified:${mIsStartNotified} mIsSuccessNotified:${mIsResultNotified}")
+        if (mIsResultNotified) return false
 
         job.cancel()
         val isActive = job.isActive
@@ -109,6 +116,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
         if (isCancelled && !mIsStartNotified) {
             HttpUtils.runOnUiThread {
                 notifyCancel()
+                notifyFinish()
             }
         }
 
@@ -125,20 +133,19 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private fun notifyError(e: Exception) {
         require(e !is CancellationException)
         HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread()}")
+        mIsResultNotified = true
         mRequestCallback.onError(HttpException.wrap(e))
-        notifyFinish()
+    }
+
+    private fun notifySuccess() {
+        HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread()}")
+        mIsResultNotified = true
+        mRequestCallback.onSuccess()
     }
 
     private fun notifyCancel() {
         HttpLog.i("$logPrefix onCancel  ${Thread.currentThread()}")
         mRequestCallback.onCancel()
-        notifyFinish()
-    }
-
-    private fun notifySuccess() {
-        HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread()}")
-        mRequestCallback.onSuccess()
-        notifyFinish()
     }
 
     private fun notifyFinish() {
