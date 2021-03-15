@@ -41,7 +41,8 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             // 转换
             val future = request.future(WeatherModel::class.java)
             // 发起请求，返回请求结果
-            when (future.execute()) {
+            val result = future.execute()
+            when (result) {
                 IHttpFuture.Result.Success -> {
                     future.target!!.let {
                         mBinding.tvResult.text = "请求成功：${it.weatherinfo!!.city}"
