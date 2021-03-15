@@ -3,6 +3,8 @@ package com.sd.lib.http
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
+import com.sd.lib.http.target.DefaultHttpFuture
+import com.sd.lib.http.target.IHttpFuture
 import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
@@ -85,6 +87,10 @@ abstract class Request : IRequest {
         return realResponse
     }
 
+    override fun <T> future(clazz: Class<T>): IHttpFuture<T> {
+        return DefaultHttpFuture(clazz, this)
+    }
+
     //---------- IRequest implements end ----------
 
     /**
@@ -103,4 +109,5 @@ abstract class Request : IRequest {
             }
         }
     }
+
 }
