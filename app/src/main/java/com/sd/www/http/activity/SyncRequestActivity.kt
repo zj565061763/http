@@ -4,8 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.impl.GetRequest
+import com.sd.lib.http.target.IHttpFuture
 import com.sd.www.http.databinding.ActivitySyncRequestBinding
-import kotlinx.coroutines.*
+import com.sd.www.http.model.WeatherModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * 同步请求demo
@@ -29,21 +34,23 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun requestData() {
         mMainScope.launch {
-            val content = getContent()
-            mBinding.tvResult.text = content
-        }
-    }
-
-    private suspend fun getContent(): String {
-        return withContext(Dispatchers.IO) {
             // 创建请求对象
             val request = GetRequest()
             // 设置请求地址
-            request.baseUrl = "https://www.baidu.com/"
-            // 发起请求，得到Response对象
-            val response = request.execute()
-            // 请求结果以字符串返回
-            response.asString
+            request.baseUrl = "http://www.weather.com.cn/data/cityinfo/101010100.html"
+            // 转换
+            val future = request.future(WeatherModel::class.java)
+            // 发起请求，返回请求结果
+            when (future.execute()) {
+                IHttpFuture.Result.Success -> {
+                    future.target!!.let {
+                        mBinding.tvResult.text = "请求成功：${it.weatherinfo!!.city}"
+                    }
+                }
+                IHttpFuture.Result.Error -> future.exception!!.let {
+                    mBinding.tvResult.text = "请求异常：${it}"
+                }
+            }
         }
     }
 
