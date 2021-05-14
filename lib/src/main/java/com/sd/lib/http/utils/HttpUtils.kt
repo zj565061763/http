@@ -3,28 +3,22 @@ package com.sd.lib.http.utils
 import android.os.Handler
 import android.os.Looper
 
-internal class HttpUtils private constructor() {
+internal object HttpUtils {
+    private val _mainHandler by lazy { Handler(Looper.getMainLooper()) }
 
-    companion object {
-        private val mainHandler by lazy {
-            Handler(Looper.getMainLooper())
+    fun runOnUiThread(runnable: Runnable) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run()
+        } else {
+            _mainHandler.post(runnable)
         }
+    }
 
-        @JvmStatic
-        fun runOnUiThread(runnable: Runnable?) {
-            if (runnable == null) return
-            if (Looper.myLooper() == Looper.getMainLooper()) runnable.run() else mainHandler.post(runnable)
-        }
+    fun removeCallbacks(runnable: Runnable) {
+        _mainHandler.removeCallbacks(runnable)
+    }
 
-        @JvmStatic
-        fun removeCallbacks(runnable: Runnable?) {
-            if (runnable == null) return
-            mainHandler.removeCallbacks(runnable)
-        }
-
-        @JvmStatic
-        fun checkBackgroundThread() {
-            require(Looper.myLooper() != Looper.getMainLooper())
-        }
+    fun checkBackgroundThread() {
+        require(Looper.myLooper() != Looper.getMainLooper())
     }
 }
