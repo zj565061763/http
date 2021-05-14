@@ -27,13 +27,11 @@ class RequestManager private constructor() {
     //---------- IRequestInterceptor start ----------
 
     internal val internalRequestInterceptor = object : IRequestInterceptor {
-        @Throws(Exception::class)
         override fun beforeExecute(request: IRequest): IResponse? {
             val interceptor = requestInterceptor ?: return null
             return interceptor.beforeExecute(request)
         }
 
-        @Throws(Exception::class)
         override fun afterExecute(request: IRequest, response: IResponse): IResponse? {
             val interceptor = requestInterceptor ?: return response
             return interceptor.afterExecute(request, response)
