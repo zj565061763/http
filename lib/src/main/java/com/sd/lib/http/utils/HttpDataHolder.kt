@@ -1,7 +1,5 @@
 package com.sd.lib.http.utils
 
-import java.util.*
-
 class HttpDataHolder<K, V> {
     private val _map = mutableMapOf<K, V>()
 
@@ -44,6 +42,6 @@ class HttpDataHolder<K, V> {
     }
 
     fun toMap(): Map<K, V> {
-        return LinkedHashMap(_map)
+        return _map.toMutableMap()
     }
 }
