@@ -24,13 +24,13 @@ class HttpDataHolder<K, V> {
     }
 
     fun put(data: HttpDataHolder<K, V>?): HttpDataHolder<K, V> {
-        data?.let {
-            put(it.toMap())
+        if (data != null) {
+            put(data.toMap())
         }
         return this
     }
 
-    operator fun get(key: Any): V? {
+    fun get(key: Any): V? {
         return _map[key]
     }
 
