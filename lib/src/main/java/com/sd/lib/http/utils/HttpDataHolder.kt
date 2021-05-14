@@ -3,20 +3,20 @@ package com.sd.lib.http.utils
 import java.util.*
 
 class HttpDataHolder<K, V> {
-    private val mMap: MutableMap<K, V> = LinkedHashMap()
+    private val _map = mutableMapOf<K, V>()
 
     fun put(key: K, value: V?): HttpDataHolder<K, V> {
         if (value == null) {
-            mMap.remove(key)
+            _map.remove(key)
         } else {
-            mMap[key] = value
+            _map[key] = value
         }
         return this
     }
 
     fun put(map: Map<K, V>?): HttpDataHolder<K, V> {
-        map?.let {
-            for ((key, value) in it) {
+        if (map != null) {
+            for ((key, value) in map) {
                 put(key, value)
             }
         }
@@ -31,19 +31,19 @@ class HttpDataHolder<K, V> {
     }
 
     operator fun get(key: Any): V? {
-        return mMap[key]
+        return _map[key]
     }
 
     fun size(): Int {
-        return mMap.size
+        return _map.size
     }
 
     fun clear(): HttpDataHolder<K, V> {
-        mMap.clear()
+        _map.clear()
         return this
     }
 
     fun toMap(): Map<K, V> {
-        return LinkedHashMap(mMap)
+        return LinkedHashMap(_map)
     }
 }
