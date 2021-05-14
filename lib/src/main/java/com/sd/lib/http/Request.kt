@@ -27,9 +27,6 @@ abstract class Request : IRequest {
             return field
         }
 
-    override val url: String
-        get() = baseUrl + urlSuffix
-
     override var tag: String? = null
 
     override var connectTimeout = IRequest.DEFAULT_CONNECT_TIMEOUT
