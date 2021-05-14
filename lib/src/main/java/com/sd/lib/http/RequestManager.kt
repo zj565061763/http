@@ -10,27 +10,23 @@ import com.sd.lib.http.utils.HttpUtils
 import java.util.concurrent.ConcurrentHashMap
 
 class RequestManager private constructor() {
-    private val mMapRequest: MutableMap<RequestTask, RequestInfo> = ConcurrentHashMap()
+    private val _mapRequest: MutableMap<RequestTask, RequestInfo> = ConcurrentHashMap()
 
     /** 调试模式 */
     var isDebug = false
 
     /** cookie管理对象 */
     var cookieStore: ICookieStore = ModifyMemoryCookieStore()
-        set(value) {
-            requireNotNull(value)
-            field = value
-        }
 
     /** 请求拦截 */
     var requestInterceptor: IRequestInterceptor? = null
 
     /** Request对象标识生成器 */
-    private var requestIdentifierProvider: IRequestIdentifierProvider? = null
+    var requestIdentifierProvider: IRequestIdentifierProvider? = null
 
     //---------- IRequestInterceptor start ----------
 
-    internal val mInternalRequestInterceptor = object : IRequestInterceptor {
+    internal val internalRequestInterceptor = object : IRequestInterceptor {
         @Throws(Exception::class)
         override fun beforeExecute(request: IRequest): IResponse? {
             val interceptor = requestInterceptor ?: return null
@@ -90,15 +86,17 @@ class RequestManager private constructor() {
             this.tag = request.tag
             this.requestIdentifier = requestIdentifierProvider?.provideRequestIdentifier(request)
         }
-        mMapRequest[task] = info
+        _mapRequest[task] = info
 
         if (isDebug) {
-            Log.i(RequestManager::class.java.name, "execute"
-                    + " task:${task}"
-                    + " callback:${callback}"
-                    + " requestIdentifier:${info.requestIdentifier}"
-                    + " tag:${info.tag}"
-                    + " size:${mMapRequest.size}")
+            Log.i(
+                RequestManager::class.java.name, "execute"
+                        + " task:${task}"
+                        + " callback:${callback}"
+                        + " requestIdentifier:${info.requestIdentifier}"
+                        + " tag:${info.tag}"
+                        + " size:${_mapRequest.size}"
+            )
         }
 
         if (sequence) task.submitSequence() else task.submit()
@@ -107,11 +105,13 @@ class RequestManager private constructor() {
 
     @Synchronized
     private fun removeTask(task: RequestTask): Boolean {
-        val info = mMapRequest.remove(task) ?: return false
+        val info = _mapRequest.remove(task) ?: return false
         if (isDebug) {
-            Log.i(RequestManager::class.java.name, "removeTask"
-                    + " task:" + task
-                    + " size:" + mMapRequest.size)
+            Log.i(
+                RequestManager::class.java.name, "removeTask"
+                        + " task:" + task
+                        + " size:" + _mapRequest.size
+            )
         }
         return true
     }
@@ -124,14 +124,14 @@ class RequestManager private constructor() {
      */
     @Synchronized
     fun cancelTag(tag: String?): Int {
-        if (tag == null || mMapRequest.isEmpty()) return 0
+        if (tag == null || _mapRequest.isEmpty()) return 0
 
         if (isDebug) {
             Log.i(RequestManager::class.java.name, "try cancelTag tag:$tag")
         }
 
         var count = 0
-        for ((task, info) in mMapRequest) {
+        for ((task, info) in _mapRequest) {
             if (tag == info.tag && task.cancel()) {
                 count++
             }
@@ -151,7 +151,7 @@ class RequestManager private constructor() {
      */
     @Synchronized
     fun cancelRequestIdentifier(request: IRequest?): Int {
-        if (request == null || mMapRequest.isEmpty()) return 0
+        if (request == null || _mapRequest.isEmpty()) return 0
         val identifier = requestIdentifierProvider?.provideRequestIdentifier(request)
         if (TextUtils.isEmpty(identifier)) {
             return 0
@@ -162,7 +162,7 @@ class RequestManager private constructor() {
         }
 
         var count = 0
-        for ((task, info) in mMapRequest) {
+        for ((task, info) in _mapRequest) {
             if (identifier == info.requestIdentifier && task.cancel()) {
                 count++
             }
