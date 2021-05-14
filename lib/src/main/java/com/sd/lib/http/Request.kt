@@ -16,16 +16,8 @@ abstract class Request : IRequest {
     //---------- IRequest implements start ----------
 
     override var baseUrl: String = ""
-        get() {
-            if (field == null) field = ""
-            return field
-        }
 
     override var urlSuffix: String = ""
-        get() {
-            if (field == null) field = ""
-            return field
-        }
 
     override var tag: String? = null
 
