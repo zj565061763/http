@@ -1,15 +1,9 @@
 package com.sd.lib.http.utils
 
 class TransmitParam {
-    private val mCalculateSpeedInterval: Long
-    private var mLastTime: Long = 0
-    private var mLastCount: Long = 0
-
-    @JvmOverloads
-    constructor(calculateSpeedInterval: Long = 0) {
-        val interval = if (calculateSpeedInterval > 0) calculateSpeedInterval else 100
-        mCalculateSpeedInterval = interval
-    }
+    private val _calculateSpeedInterval: Long
+    private var _lastTime: Long = 0
+    private var _lastCount: Long = 0
 
     /** 当前传输量 */
     var current: Long = 0
@@ -35,17 +29,27 @@ class TransmitParam {
     val isComplete: Boolean
         get() = current > 0 && current == total
 
+    @JvmOverloads
+    constructor(calculateSpeedInterval: Long = 100) {
+        val interval = if (calculateSpeedInterval > 0) {
+            calculateSpeedInterval
+        } else {
+            100
+        }
+        _calculateSpeedInterval = interval
+    }
+
     /**
      * 拷贝对象
      */
     fun copy(): TransmitParam {
-        val copy = TransmitParam(mCalculateSpeedInterval)
+        val copy = TransmitParam(_calculateSpeedInterval)
         copy.current = current
         copy.total = total
         copy.progress = progress
         copy.speedBps = speedBps
-        copy.mLastTime = mLastTime
-        copy.mLastCount = mLastCount
+        copy._lastTime = _lastTime
+        copy._lastCount = _lastCount
         return copy
     }
 
@@ -68,12 +72,12 @@ class TransmitParam {
         this.current = current
 
         val currentTime = System.currentTimeMillis()
-        val interval = currentTime - mLastTime
-        if (interval >= mCalculateSpeedInterval) {
-            val count = current - mLastCount
+        val interval = currentTime - _lastTime
+        if (interval >= _calculateSpeedInterval) {
+            val count = current - _lastCount
             speedBps = (count * (1000f / interval)).toInt()
-            mLastTime = currentTime
-            mLastCount = current
+            _lastTime = currentTime
+            _lastCount = current
         }
 
         progress = (current * 100 / total).toInt()
@@ -85,8 +89,8 @@ class TransmitParam {
         total = 0
         progress = 0
         speedBps = 0
-        mLastTime = 0
-        mLastCount = 0
+        _lastTime = 0
+        _lastCount = 0
     }
 
     override fun toString(): String {
