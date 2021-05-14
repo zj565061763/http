@@ -10,8 +10,7 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 
 abstract class Request : IRequest {
-
-    private val uploadTransmitParam: TransmitParam by lazy { TransmitParam() }
+    private val _uploadTransmitParam by lazy { TransmitParam() }
 
     //---------- IRequest implements start ----------
 
@@ -85,10 +84,10 @@ abstract class Request : IRequest {
     protected fun notifyProgressUpload(uploaded: Long, total: Long) {
         val callback = uploadProgressCallback ?: return
 
-        if (uploadTransmitParam.transmit(total, uploaded)) {
-            val param = uploadTransmitParam.copy()
+        if (_uploadTransmitParam.transmit(total, uploaded)) {
+            val copyParam = _uploadTransmitParam.copy()
             HttpUtils.runOnUiThread {
-                callback.onProgressUpload(param)
+                callback.onProgressUpload(copyParam)
             }
         }
     }
