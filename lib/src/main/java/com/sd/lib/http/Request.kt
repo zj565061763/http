@@ -82,12 +82,10 @@ abstract class Request : IRequest {
     protected abstract fun doExecute(): IResponse
 
     protected fun notifyProgressUpload(uploaded: Long, total: Long) {
-        val callback = uploadProgressCallback ?: return
-
         if (_uploadTransmitParam.transmit(total, uploaded)) {
             val copyParam = _uploadTransmitParam.copy()
             HttpUtils.runOnUiThread {
-                callback.onProgressUpload(copyParam)
+                uploadProgressCallback?.onProgressUpload(copyParam)
             }
         }
     }
