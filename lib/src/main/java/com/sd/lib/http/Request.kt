@@ -98,7 +98,11 @@ abstract class Request : IRequest {
         val model: T = try {
             parser.parse(clazz, response)
         } catch (e: Exception) {
-            return FResult.failure(HttpExceptionParseResponse(cause = e))
+            return if (e is HttpException) {
+                FResult.failure(e)
+            } else {
+                FResult.failure(HttpExceptionParseResponse(cause = e))
+            }
         }
 
         return FResult.success(model)
