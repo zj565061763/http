@@ -116,10 +116,9 @@ class RequestManager private constructor() {
     }
 
     /**
-     * 根据tag取消请求
+     * 根据[tag]取消请求
      *
-     * @param tag
-     * @return 申请取消成功的数量
+     * @return 取消的任务数量
      */
     @Synchronized
     fun cancelTag(tag: String?): Int {
@@ -143,10 +142,9 @@ class RequestManager private constructor() {
     }
 
     /**
-     * 根据Request的唯一标识取消请求[IRequestIdentifierProvider]
+     * 根据[request]的唯一标识取消请求，唯一标识由[IRequestIdentifierProvider]生成
      *
-     * @param request
-     * @return
+     * @return 取消的任务数量
      */
     @Synchronized
     fun cancelRequestIdentifier(request: IRequest?): Int {
