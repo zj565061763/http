@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.exception.HttpExceptionCancellation
-import com.sd.lib.http.exception.HttpExceptionParseIntercepted
+import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.exception.HttpExceptionParseResponse
 import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.impl.GetRequest
@@ -58,7 +58,7 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
                     is HttpExceptionCancellation -> {
                         "请求被取消"
                     }
-                    is HttpExceptionParseIntercepted -> {
+                    is HttpExceptionResultIntercepted -> {
                         "请求被拦截"
                     }
                     else -> result.failure.toString()

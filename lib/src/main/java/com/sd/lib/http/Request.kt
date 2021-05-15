@@ -94,9 +94,9 @@ abstract class Request : IRequest {
             return result
         }
 
-        val interceptor = RequestManager.instance.parseInterceptor
+        val interceptor = RequestManager.instance.resultInterceptor
         if (interceptor != null && interceptor.intercept(result)) {
-            return FResult.failure(HttpExceptionParseIntercepted())
+            return FResult.failure(HttpExceptionResultIntercepted())
         }
         return result
     }
