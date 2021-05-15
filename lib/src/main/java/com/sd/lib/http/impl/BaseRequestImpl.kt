@@ -47,7 +47,13 @@ abstract class BaseRequestImpl() : Request() {
         }
 
         override val code: Int
-            get() = _httpRequest.code()
+            get() {
+                try {
+                    return _httpRequest.code()
+                } catch (e: HttpRequest.HttpRequestException) {
+                    throw e.cause ?: e
+                }
+            }
 
         override val contentLength: Int
             get() = _httpRequest.contentLength()

@@ -39,7 +39,6 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
         mBody = body
     }
 
-    @Throws(Exception::class)
     override fun doExecute(): IResponse {
         val httpRequest = newHttpRequest(url, HttpRequest.METHOD_POST)
 
@@ -53,9 +52,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
             }
         }
 
-        val response = Response(httpRequest)
-        response.code
-        return response
+        return Response(httpRequest)
     }
 
     private fun executeBody(httpRequest: HttpRequest, requestBody: IRequestBody<*>) {
