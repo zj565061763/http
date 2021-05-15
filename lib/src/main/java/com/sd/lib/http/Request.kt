@@ -14,6 +14,9 @@ import javax.net.ssl.SSLSocketFactory
 abstract class Request : IRequest {
     private val _uploadTransmitParam by lazy { TransmitParam() }
 
+    /** 是否正在解析中 */
+    private var _isParsing: Boolean = false
+
     //---------- IRequest implements start ----------
 
     override var baseUrl: String = ""
@@ -77,7 +80,20 @@ abstract class Request : IRequest {
         return realResponse
     }
 
+    @Synchronized
     override fun <T> parse(clazz: Class<T>, checkCancel: (() -> Boolean)?): FResult<T> {
+        if (_isParsing) throw RuntimeException("Parse is in progress")
+
+        val result = try {
+            _isParsing = true
+            parseInternal(clazz, checkCancel)
+        } finally {
+            _isParsing = false
+        }
+        return result
+    }
+
+    private fun <T> parseInternal(clazz: Class<T>, checkCancel: (() -> Boolean)?): FResult<T> {
         require(!clazz.isInterface) { "clazz is interface ${clazz}" }
         require(!Modifier.isAbstract(clazz.modifiers)) { "clazz is abstract ${clazz}" }
 
