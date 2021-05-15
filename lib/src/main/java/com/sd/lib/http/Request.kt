@@ -109,8 +109,8 @@ abstract class Request : IRequest {
         if (exceptionCode != null) throw exceptionCode
 
         val parser = RequestManager.instance.responseParser
-        val model = try {
-            parser.parse(clazz, response)
+        return try {
+            parser.parse(clazz, response) ?: throw HttpExceptionParseResponse(cause = null)
         } catch (e: Exception) {
             if (e is HttpException) {
                 throw e
@@ -118,8 +118,6 @@ abstract class Request : IRequest {
                 throw HttpExceptionParseResponse(cause = e)
             }
         }
-
-        return model ?: throw HttpExceptionParseResponse(cause = null)
     }
 
     //---------- IRequest implements end ----------
