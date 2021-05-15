@@ -2,10 +2,7 @@ package com.sd.lib.http
 
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
-import com.sd.lib.http.exception.HttpException
-import com.sd.lib.http.exception.HttpExceptionParseIntercepted
-import com.sd.lib.http.exception.HttpExceptionParseResponse
-import com.sd.lib.http.exception.HttpExceptionResponseCode
+import com.sd.lib.http.exception.*
 import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
@@ -80,16 +77,21 @@ abstract class Request : IRequest {
         return realResponse
     }
 
-    override fun <T> parse(clazz: Class<T>): FResult<T> {
+    override fun <T> parse(clazz: Class<T>, checkCancel: (() -> Boolean)?): FResult<T> {
         require(!clazz.isInterface) { "clazz is interface ${clazz}" }
         require(!Modifier.isAbstract(clazz.modifiers)) { "clazz is abstract ${clazz}" }
 
         val result = try {
-            val model = parseInternal(clazz)
+            val model = parseInternal(clazz, checkCancel)
             FResult.success(model)
         } catch (e: Exception) {
             val exception = HttpException.wrap(e)
             FResult.failure(exception)
+        }
+
+        if (result.failure is HttpExceptionCancellation) {
+            // 如果是取消异常，则不经过拦截器，直接返回
+            return result
         }
 
         val interceptor = RequestManager.instance.parseInterceptor
@@ -100,9 +102,13 @@ abstract class Request : IRequest {
     }
 
     @Throws(Exception::class)
-    private fun <T> parseInternal(clazz: Class<T>): T {
+    private fun <T> parseInternal(clazz: Class<T>, checkCancel: (() -> Boolean)? = null): T {
         // 发起请求
         val response = execute()
+
+        if (checkCancel != null && checkCancel()) {
+            throw HttpExceptionCancellation()
+        }
 
         // 检查返回码
         val exceptionCode = HttpExceptionResponseCode.from(response.code)

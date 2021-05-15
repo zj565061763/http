@@ -83,7 +83,7 @@ interface IRequest {
     /**
      * 解析为实体
      */
-    fun <T> parse(clazz: Class<T>): FResult<T>
+    fun <T> parse(clazz: Class<T>, checkCancel: (() -> Boolean)? = null): FResult<T>
 
     companion object {
         /**默认连接超时*/
