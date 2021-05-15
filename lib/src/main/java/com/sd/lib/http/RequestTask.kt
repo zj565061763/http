@@ -16,10 +16,10 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private var _job: Job? = null
 
     @Volatile
-    private var isStartNotified: Boolean = false
+    private var _isStartNotified: Boolean = false
 
     @Volatile
-    private var isResultNotified: Boolean = false
+    private var _isResultNotified: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         _request = request
@@ -105,14 +105,14 @@ internal abstract class RequestTask : IUploadProgressCallback {
         val job = _job ?: return false
         if (!job.isActive) return false
 
-        HttpLog.e("$_logPrefix cancel start mIsStartNotified:${isStartNotified} mIsSuccessNotified:${isResultNotified}")
-        if (isResultNotified) return false
+        HttpLog.e("$_logPrefix cancel start mIsStartNotified:${_isStartNotified} mIsSuccessNotified:${_isResultNotified}")
+        if (_isResultNotified) return false
 
         job.cancel()
         val isActive = job.isActive
         val isCancelled = !isActive
 
-        if (isCancelled && !isStartNotified) {
+        if (isCancelled && !_isStartNotified) {
             HttpUtils.runOnUiThread {
                 notifyCancel()
                 notifyFinish()
@@ -125,20 +125,20 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
     private fun notifyStart() {
         HttpLog.i("$_logPrefix onStart ${Thread.currentThread()}")
-        isStartNotified = true
+        _isStartNotified = true
         _requestCallback.onStart()
     }
 
     private fun notifyError(e: Exception) {
         require(e !is CancellationException)
         HttpLog.i("$_logPrefix onError:$e  ${Thread.currentThread()}")
-        isResultNotified = true
+        _isResultNotified = true
         _requestCallback.onError(HttpException.wrap(e))
     }
 
     private fun notifySuccess() {
         HttpLog.i("$_logPrefix onSuccess  ${Thread.currentThread()}")
-        isResultNotified = true
+        _isResultNotified = true
         _requestCallback.onSuccess()
     }
 
