@@ -3,6 +3,7 @@ package com.sd.lib.http
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
+import com.sd.lib.http.interceptor.IResultInterceptor
 import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.result.FResult
 import javax.net.ssl.HostnameVerifier
@@ -54,6 +55,11 @@ interface IRequest {
      * 是否拦截请求
      */
     var interceptExecute: Boolean
+
+    /**
+     * 是否拦截[IResultInterceptor]
+     */
+    var interceptResult: Boolean
 
     /**
      * 上传回调

@@ -35,6 +35,8 @@ abstract class Request : IRequest {
 
     override var interceptExecute: Boolean = true
 
+    override var interceptResult: Boolean = true
+
     override var uploadProgressCallback: IUploadProgressCallback? = null
 
     override var sSLSocketFactory: SSLSocketFactory? = null
@@ -111,7 +113,7 @@ abstract class Request : IRequest {
         }
 
         val interceptor = RequestManager.instance.resultInterceptor
-        if (interceptor != null) {
+        if (interceptor != null && interceptResult) {
             val intercept = try {
                 interceptor.intercept(this, result)
             } catch (e: Exception) {
