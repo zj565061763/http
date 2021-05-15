@@ -3,7 +3,7 @@ package com.sd.lib.http.parser
 import com.sd.lib.http.IResponse
 
 /**
- * 返回结果解析
+ * http返回解析器
  */
 interface IResponseParser {
     @Throws(Exception::class)

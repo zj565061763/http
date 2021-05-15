@@ -3,6 +3,7 @@ package com.sd.lib.http
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
+import com.sd.lib.http.exception.HttpExceptionParseIntercepted
 import com.sd.lib.http.exception.HttpExceptionParseResponse
 import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.utils.HttpDataHolder
@@ -83,29 +84,40 @@ abstract class Request : IRequest {
         require(!clazz.isInterface) { "clazz is interface ${clazz}" }
         require(!Modifier.isAbstract(clazz.modifiers)) { "clazz is abstract ${clazz}" }
 
-        val response: IResponse = try {
-            execute()
-        } catch (e: HttpException) {
-            return FResult.failure(e)
+        val result = try {
+            val model = parseInternal(clazz)
+            FResult.success(model)
+        } catch (e: Exception) {
+            val exception = HttpException.wrap(e)
+            FResult.failure(exception)
         }
 
-        val exceptionCode = HttpExceptionResponseCode.from(response.code)
-        if (exceptionCode != null) {
-            return FResult.failure(exceptionCode)
+        val interceptor = RequestManager.instance.parseInterceptor
+        if (interceptor != null && interceptor.intercept(result)) {
+            return FResult.failure(HttpExceptionParseIntercepted())
         }
+        return result
+    }
+
+    @Throws(Exception::class)
+    private fun <T> parseInternal(clazz: Class<T>): T {
+        // 发起请求
+        val response = execute()
+
+        // 检查返回码
+        val exceptionCode = HttpExceptionResponseCode.from(response.code)
+        if (exceptionCode != null) throw exceptionCode
 
         val parser = RequestManager.instance.responseParser
-        val model: T = try {
-            parser.parse(clazz, response)
+        try {
+            return parser.parse(clazz, response)
         } catch (e: Exception) {
-            return if (e is HttpException) {
-                FResult.failure(e)
+            if (e is HttpException) {
+                throw e
             } else {
-                FResult.failure(HttpExceptionParseResponse(cause = e))
+                throw HttpExceptionParseResponse(cause = e)
             }
         }
-
-        return FResult.success(model)
     }
 
     //---------- IRequest implements end ----------

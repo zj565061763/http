@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.sd.lib.http.IResponse
 
 /**
- * 默认返回结果解析
+ * 默认http返回解析器
  */
 open class DefaultResponseParser : IResponseParser {
     final override fun <T> parse(clazz: Class<T>, response: IResponse): T {
