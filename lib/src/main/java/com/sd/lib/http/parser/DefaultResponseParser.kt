@@ -6,8 +6,8 @@ import com.sd.lib.http.IResponse
 /**
  * 默认返回结果解析
  */
-class DefaultResponseParser : IResponseParser {
-    override fun <T> parse(clazz: Class<T>, response: IResponse): T {
+open class DefaultResponseParser : IResponseParser {
+    final override fun <T> parse(clazz: Class<T>, response: IResponse): T {
         val content = response.asString
         if (clazz == String::class.java) {
             return content as T

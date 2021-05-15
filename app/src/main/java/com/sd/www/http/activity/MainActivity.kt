@@ -8,6 +8,7 @@ import com.sd.lib.http.RequestManager
 import com.sd.lib.http.cookie.SerializableCookieStore
 import com.sd.www.http.databinding.ActivityMainBinding
 import com.sd.www.http.utils.AppRequestInterceptor
+import com.sd.www.http.utils.AppResponseParser
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mBinding: ActivityMainBinding
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边传入的对象如果是和资源相关的对象，需要在资源销毁的时候remove
         RequestManager.instance.requestInterceptor = AppRequestInterceptor()
+
+        // 设置返回结果解析
+        RequestManager.instance.responseParser = AppResponseParser()
     }
 
     override fun onClick(v: View) {
