@@ -9,32 +9,31 @@ import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
 
 internal abstract class RequestTask : IUploadProgressCallback {
-    private val mRequest: IRequest
-    private val mRequestCallback: RequestCallback
+    private val _request: IRequest
+    private val _requestCallback: RequestCallback
 
-    private var mJob: Job? = null
-
-    @Volatile
-    private var mIsStartNotified: Boolean = false
+    /** 任务 */
+    private var _job: Job? = null
 
     @Volatile
-    private var mIsResultNotified: Boolean = false
+    private var isStartNotified: Boolean = false
+
+    @Volatile
+    private var isResultNotified: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
-        mRequest = request
-        mRequestCallback = requestCallback
+        _request = request
+        _requestCallback = requestCallback
         request.uploadProgressCallback = this
     }
 
-    private val logPrefix: String
-        get() = this.toString()
+    /** 日志前缀 */
+    private val _logPrefix: String by lazy { this@RequestTask.toString() }
 
-    /**
-     * 任务是否处于活动状态
-     */
+    /** 任务是否处于活动状态 */
     val isActive: Boolean
         get() {
-            val job = mJob ?: return false
+            val job = _job ?: return false
             return job.isActive
         }
 
@@ -54,9 +53,9 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
     @Synchronized
     private fun submitInternal(sequence: Boolean) {
-        if (mJob != null) return
+        if (_job != null) return
 
-        mJob = GlobalScope.launch(Dispatchers.Main) {
+        _job = GlobalScope.launch(Dispatchers.Main) {
             try {
                 // 用withContext包裹代码块，如果代码块中调用了取消，则代码不会继续往下执行，否者需要手动判断是否被取消
                 withContext(Dispatchers.Main) {
@@ -66,12 +65,12 @@ internal abstract class RequestTask : IUploadProgressCallback {
                 try {
                     val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
                     withContext(dispatcher) {
-                        HttpLog.i("$logPrefix execute ${Thread.currentThread()}")
-                        val response = mRequest.execute()
+                        HttpLog.i("$_logPrefix execute ${Thread.currentThread()}")
+                        val response = _request.execute()
 
-                        HttpLog.i("$logPrefix onSuccessBackground ${Thread.currentThread()}")
-                        mRequestCallback.saveResponse(response)
-                        mRequestCallback.onSuccessBackground()
+                        HttpLog.i("$_logPrefix onSuccessBackground ${Thread.currentThread()}")
+                        _requestCallback.saveResponse(response)
+                        _requestCallback.onSuccessBackground()
                     }
                 } catch (e: Exception) {
                     if (e is CancellationException) {
@@ -84,8 +83,8 @@ internal abstract class RequestTask : IUploadProgressCallback {
                 }
 
                 withContext(Dispatchers.Main) {
-                    HttpLog.i("$logPrefix onSuccessBefore  ${Thread.currentThread()}")
-                    mRequestCallback.onSuccessBefore()
+                    HttpLog.i("$_logPrefix onSuccessBefore  ${Thread.currentThread()}")
+                    _requestCallback.onSuccessBefore()
                 }
 
                 notifySuccess()
@@ -103,61 +102,61 @@ internal abstract class RequestTask : IUploadProgressCallback {
      */
     @Synchronized
     fun cancel(): Boolean {
-        val job = mJob ?: return false
+        val job = _job ?: return false
         if (!job.isActive) return false
 
-        HttpLog.e("$logPrefix cancel start mIsStartNotified:${mIsStartNotified} mIsSuccessNotified:${mIsResultNotified}")
-        if (mIsResultNotified) return false
+        HttpLog.e("$_logPrefix cancel start mIsStartNotified:${isStartNotified} mIsSuccessNotified:${isResultNotified}")
+        if (isResultNotified) return false
 
         job.cancel()
         val isActive = job.isActive
         val isCancelled = !isActive
 
-        if (isCancelled && !mIsStartNotified) {
+        if (isCancelled && !isStartNotified) {
             HttpUtils.runOnUiThread {
                 notifyCancel()
                 notifyFinish()
             }
         }
 
-        HttpLog.e("$logPrefix cancel finish isActive:${isActive}")
+        HttpLog.e("$_logPrefix cancel finish isActive:${isActive}")
         return isCancelled
     }
 
     private fun notifyStart() {
-        HttpLog.i("$logPrefix onStart ${Thread.currentThread()}")
-        mIsStartNotified = true
-        mRequestCallback.onStart()
+        HttpLog.i("$_logPrefix onStart ${Thread.currentThread()}")
+        isStartNotified = true
+        _requestCallback.onStart()
     }
 
     private fun notifyError(e: Exception) {
         require(e !is CancellationException)
-        HttpLog.i("$logPrefix onError:$e  ${Thread.currentThread()}")
-        mIsResultNotified = true
-        mRequestCallback.onError(HttpException.wrap(e))
+        HttpLog.i("$_logPrefix onError:$e  ${Thread.currentThread()}")
+        isResultNotified = true
+        _requestCallback.onError(HttpException.wrap(e))
     }
 
     private fun notifySuccess() {
-        HttpLog.i("$logPrefix onSuccess  ${Thread.currentThread()}")
-        mIsResultNotified = true
-        mRequestCallback.onSuccess()
+        HttpLog.i("$_logPrefix onSuccess  ${Thread.currentThread()}")
+        isResultNotified = true
+        _requestCallback.onSuccess()
     }
 
     private fun notifyCancel() {
-        HttpLog.i("$logPrefix onCancel  ${Thread.currentThread()}")
-        mRequestCallback.onCancel()
+        HttpLog.i("$_logPrefix onCancel  ${Thread.currentThread()}")
+        _requestCallback.onCancel()
     }
 
     private fun notifyFinish() {
-        HttpLog.i("$logPrefix onFinish ${Thread.currentThread()}")
-        mRequestCallback.onFinish()
+        HttpLog.i("$_logPrefix onFinish ${Thread.currentThread()}")
+        _requestCallback.onFinish()
         this@RequestTask.onFinish()
     }
 
     abstract fun onFinish()
 
     override fun onProgressUpload(param: TransmitParam) {
-        mRequestCallback.onProgressUpload(param)
+        _requestCallback.onProgressUpload(param)
     }
 
     companion object {
