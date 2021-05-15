@@ -9,7 +9,6 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 
 interface IRequest {
-
     /**
      * 设置基础url
      */
@@ -24,6 +23,7 @@ interface IRequest {
      * [baseUrl] 和 [urlSuffix] 组拼后的url
      */
     val url: String
+        get() = baseUrl + urlSuffix
 
     /**
      * 设置请求标识

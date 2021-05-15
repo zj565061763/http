@@ -12,25 +12,13 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 
 abstract class Request : IRequest {
-
-    private val uploadTransmitParam: TransmitParam by lazy { TransmitParam() }
+    private val _uploadTransmitParam by lazy { TransmitParam() }
 
     //---------- IRequest implements start ----------
 
     override var baseUrl: String = ""
-        get() {
-            if (field == null) field = ""
-            return field
-        }
 
     override var urlSuffix: String = ""
-        get() {
-            if (field == null) field = ""
-            return field
-        }
-
-    override val url: String
-        get() = baseUrl + urlSuffix
 
     override var tag: String? = null
 
@@ -63,10 +51,10 @@ abstract class Request : IRequest {
         val intercept = interceptExecute
         if (intercept) {
             try {
-                val beforeResponse = RequestManager.instance.mInternalRequestInterceptor.beforeExecute(this)
+                val beforeResponse = RequestManager.instance.internalRequestInterceptor.beforeExecute(this)
                 if (beforeResponse != null) return beforeResponse
             } catch (e: Exception) {
-                RequestManager.instance.mInternalRequestInterceptor.onError(e)
+                RequestManager.instance.internalRequestInterceptor.onError(e)
             }
         }
 
@@ -78,10 +66,10 @@ abstract class Request : IRequest {
 
         if (intercept) {
             try {
-                val afterResponse = RequestManager.instance.mInternalRequestInterceptor.afterExecute(this, realResponse)
+                val afterResponse = RequestManager.instance.internalRequestInterceptor.afterExecute(this, realResponse)
                 if (afterResponse != null) return afterResponse
             } catch (e: Exception) {
-                RequestManager.instance.mInternalRequestInterceptor.onError(e)
+                RequestManager.instance.internalRequestInterceptor.onError(e)
             }
         }
         return realResponse
@@ -100,12 +88,10 @@ abstract class Request : IRequest {
     protected abstract fun doExecute(): IResponse
 
     protected fun notifyProgressUpload(uploaded: Long, total: Long) {
-        val callback = uploadProgressCallback ?: return
-
-        if (uploadTransmitParam.transmit(total, uploaded)) {
-            val param = uploadTransmitParam.copy()
+        if (_uploadTransmitParam.transmit(total, uploaded)) {
+            val copyParam = _uploadTransmitParam.copy()
             HttpUtils.runOnUiThread {
-                callback.onProgressUpload(param)
+                uploadProgressCallback?.onProgressUpload(copyParam)
             }
         }
     }

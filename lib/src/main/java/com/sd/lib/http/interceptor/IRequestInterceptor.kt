@@ -10,7 +10,7 @@ interface IRequestInterceptor {
     /**
      * 发起网络请求之前回调
      *
-     * @param request
+     * @param request 请求对象
      * @return 如果返回不为null，则使用该返回值
      */
     @Throws(Exception::class)
@@ -19,7 +19,7 @@ interface IRequestInterceptor {
     /**
      * 发起网络请求之后回调
      *
-     * @param request
+     * @param request 请求对象
      * @param response 原始的返回
      * @return 如果返回不为null，则使用该返回值
      */
