@@ -105,7 +105,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
         val job = _job ?: return false
         if (!job.isActive) return false
 
-        HttpLog.e("$_logPrefix cancel start mIsStartNotified:${_isStartNotified} mIsSuccessNotified:${_isResultNotified}")
+        HttpLog.e("$_logPrefix cancel start _isStartNotified:${_isStartNotified} _isResultNotified:${_isResultNotified}")
         if (_isResultNotified) return false
 
         job.cancel()
