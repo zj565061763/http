@@ -94,13 +94,17 @@ class RequestManager private constructor() {
             )
         }
 
-        if (sequence) task.submitSequence() else task.submit()
+        if (sequence) {
+            task.submitSequence()
+        } else {
+            task.submit()
+        }
         return requestHandler
     }
 
     @Synchronized
     private fun removeTask(task: RequestTask): Boolean {
-        val info = _mapRequest.remove(task) ?: return false
+        _mapRequest.remove(task) ?: return false
         if (isDebug) {
             Log.i(
                 RequestManager::class.java.name, "removeTask"
