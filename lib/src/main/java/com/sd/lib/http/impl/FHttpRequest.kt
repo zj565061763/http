@@ -75,7 +75,6 @@ internal class FHttpRequest : HttpRequest {
 
     //---------- Override start ----------
 
-    @Throws(HttpRequestException::class)
     override fun code(): Int {
         val code = super.code()
         if (_code == null) {
