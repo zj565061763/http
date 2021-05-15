@@ -39,44 +39,42 @@ abstract class BaseRequestImpl() : Request() {
     }
 
     class Response : IResponse {
-
-        private val mHttpRequest: HttpRequest
+        private val _httpRequest: HttpRequest
+        private var _content: String? = null
 
         constructor(httpRequest: HttpRequest) {
-            mHttpRequest = httpRequest
+            _httpRequest = httpRequest
         }
 
-        private var mContent: String? = null
-
         override val code: Int
-            get() = mHttpRequest.code()
+            get() = _httpRequest.code()
 
         override val contentLength: Int
-            get() = mHttpRequest.contentLength()
+            get() = _httpRequest.contentLength()
 
         override val headers: Map<String, List<String>>
-            get() = mHttpRequest.headers()
+            get() = _httpRequest.headers()
 
         override val charset: String?
-            get() = mHttpRequest.charset()
+            get() = _httpRequest.charset()
 
         override val inputStream: InputStream
-            get() = mHttpRequest.stream()
+            get() = _httpRequest.stream()
 
         @get:Throws(HttpException::class)
         override val asString: String
             get() {
                 synchronized(this@Response) {
-                    if (TextUtils.isEmpty(mContent)) {
+                    if (TextUtils.isEmpty(_content)) {
                         try {
-                            mContent = HttpIOUtils.readString(inputStream, charset)
+                            _content = HttpIOUtils.readString(inputStream, charset)
                         } catch (e: IOException) {
                             throw HttpException.wrap(e)
                         } finally {
                             HttpIOUtils.closeQuietly(inputStream)
                         }
                     }
-                    return mContent!!
+                    return _content!!
                 }
             }
     }
