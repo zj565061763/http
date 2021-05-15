@@ -7,12 +7,12 @@ class HttpExceptionResponseCode : HttpException {
     val code: Int
 
     @JvmOverloads
-    constructor(code: Int, message: String? = null, cause: Throwable? = null) : super(message, cause) {
+    constructor(code: Int, message: String? = "", cause: Throwable? = null) : super(message, cause) {
         this.code = code
     }
 
     override fun toString(): String {
-        return "${super.toString()} code:${this.code}"
+        return "${super.toString()} code:${code}"
     }
 
     companion object {
