@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.cookie.SerializableCookieStore
 import com.sd.www.http.databinding.ActivityMainBinding
-import com.sd.www.http.utils.AppResultInterceptor
 import com.sd.www.http.utils.AppRequestInterceptor
 import com.sd.www.http.utils.AppResponseParser
+import com.sd.www.http.utils.AppResultInterceptor
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mBinding: ActivityMainBinding
@@ -19,19 +19,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        //设置调试模式，输出log
+        // 调试模式，输出log
         RequestManager.instance.isDebug = true
 
-        //设置cookie管理对象
+        // cookie管理对象
         RequestManager.instance.cookieStore = SerializableCookieStore(this)
 
-        //设置请求拦截对象，可用于log输出，或者一些需要全局处理的逻辑，注意这边传入的对象如果是和资源相关的对象，需要在资源销毁的时候remove
+        // 请求拦截
         RequestManager.instance.requestInterceptor = AppRequestInterceptor()
 
-        // 设置返回结果解析
+        // http返回解析器
         RequestManager.instance.responseParser = AppResponseParser()
 
-        // 设置结果拦截器
+        // 结果拦截器
         RequestManager.instance.resultInterceptor = AppResultInterceptor()
     }
 
