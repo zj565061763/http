@@ -1,6 +1,5 @@
 package com.sd.lib.http
 
-import android.text.TextUtils
 import android.util.Log
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.cookie.ICookieStore
@@ -20,9 +19,6 @@ class RequestManager private constructor() {
 
     /** 请求拦截 */
     var requestInterceptor: IRequestInterceptor? = null
-
-    /** Request对象标识生成器 */
-    var requestIdentifierProvider: IRequestIdentifierProvider? = null
 
     //---------- IRequestInterceptor start ----------
 
@@ -77,10 +73,7 @@ class RequestManager private constructor() {
         tCallback.saveRequestHandler(requestHandler)
         tCallback.onPrepare(request)
 
-        val info = RequestInfo().apply {
-            this.tag = request.tag
-            this.requestIdentifier = requestIdentifierProvider?.provideRequestIdentifier(request)
-        }
+        val info = RequestInfo(request.tag)
         _mapRequest[task] = info
 
         if (isDebug) {
@@ -88,7 +81,6 @@ class RequestManager private constructor() {
                 RequestManager::class.java.name, "execute"
                         + " task:${task}"
                         + " callback:${tCallback}"
-                        + " requestIdentifier:${info.requestIdentifier}"
                         + " tag:${info.tag}"
                         + " size:${_mapRequest.size}"
             )
@@ -141,40 +133,7 @@ class RequestManager private constructor() {
         return count
     }
 
-    /**
-     * 根据[request]的唯一标识取消请求，唯一标识由[IRequestIdentifierProvider]生成
-     *
-     * @return 取消的任务数量
-     */
-    @Synchronized
-    fun cancelRequestIdentifier(request: IRequest?): Int {
-        if (request == null || _mapRequest.isEmpty()) return 0
-        val identifier = requestIdentifierProvider?.provideRequestIdentifier(request)
-        if (TextUtils.isEmpty(identifier)) {
-            return 0
-        }
-
-        if (isDebug) {
-            Log.i(RequestManager::class.java.name, "try cancelRequestIdentifier requestIdentifier:$identifier")
-        }
-
-        var count = 0
-        for ((task, info) in _mapRequest) {
-            if (identifier == info.requestIdentifier && task.cancel()) {
-                count++
-            }
-        }
-
-        if (isDebug) {
-            Log.i(RequestManager::class.java.name, "try cancelRequestIdentifier requestIdentifier:$identifier count:$count")
-        }
-        return count
-    }
-
-    private class RequestInfo {
-        var tag: String? = null
-        var requestIdentifier: String? = null
-    }
+    private class RequestInfo(val tag: String?)
 
     companion object {
         val instance: RequestManager by lazy { RequestManager() }
