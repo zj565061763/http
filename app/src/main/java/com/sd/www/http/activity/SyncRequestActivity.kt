@@ -3,6 +3,10 @@ package com.sd.www.http.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.sd.lib.http.exception.HttpExceptionCancellation
+import com.sd.lib.http.exception.HttpExceptionParseIntercepted
+import com.sd.lib.http.exception.HttpExceptionParseResponse
+import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.impl.GetRequest
 import com.sd.www.http.databinding.ActivitySyncRequestBinding
 import com.sd.www.http.model.WeatherModel
@@ -35,13 +39,31 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             val result = withContext(Dispatchers.IO) {
-                request.parse(WeatherModel::class.java)
+                request.parse(WeatherModel::class.java) {
+                    // 返回true取消请求
+                    !isActive
+                }
             }
 
             if (result.isSuccess) {
                 _binding.tvResult.text = result.data!!.weatherinfo!!.city
             } else {
-                _binding.tvResult.text = result.failure.toString()
+                val desc = when (val failure = result.failure) {
+                    is HttpExceptionResponseCode -> {
+                        "返回异常，错误码:${failure.code}"
+                    }
+                    is HttpExceptionParseResponse -> {
+                        "数据解析异常:${failure}"
+                    }
+                    is HttpExceptionCancellation -> {
+                        "请求被取消"
+                    }
+                    is HttpExceptionParseIntercepted -> {
+                        "请求被拦截"
+                    }
+                    else -> result.failure.toString()
+                }
+                _binding.tvResult.text = desc
             }
         }
     }
