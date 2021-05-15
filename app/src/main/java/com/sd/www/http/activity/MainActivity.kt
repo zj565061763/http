@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.cookie.SerializableCookieStore
 import com.sd.www.http.databinding.ActivityMainBinding
+import com.sd.www.http.utils.AppParseInterceptor
 import com.sd.www.http.utils.AppRequestInterceptor
 import com.sd.www.http.utils.AppResponseParser
 
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         // 设置返回结果解析
         RequestManager.instance.responseParser = AppResponseParser()
+
+        // 设置解析拦截器
+        RequestManager.instance.parseInterceptor = AppParseInterceptor()
     }
 
     override fun onClick(v: View) {
