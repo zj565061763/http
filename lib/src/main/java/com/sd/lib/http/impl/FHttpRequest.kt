@@ -4,16 +4,15 @@ import android.text.TextUtils
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.utils.HttpLog
 import java.net.HttpCookie
-import java.util.*
 
 internal class FHttpRequest : HttpRequest {
     constructor(url: CharSequence?, method: String?) : super(url, method) {
         loadCookieForRequest()
     }
 
-    private var mCode: Int? = null
+    private var _code: Int? = null
 
-    private val responseCookie: List<HttpCookie>?
+    private val _responseCookie: List<HttpCookie>?
         private get() {
             val headers = headers()
             if (headers == null || headers.isEmpty()) return null
@@ -21,7 +20,7 @@ internal class FHttpRequest : HttpRequest {
             val listCookie = headers[HEADER_SET_COOKIE]
             if (listCookie == null || listCookie.isEmpty()) return null
 
-            val listResult: MutableList<HttpCookie> = ArrayList()
+            val listResult = mutableListOf<HttpCookie>()
             for (item in listCookie) {
                 listResult.addAll(HttpCookie.parse(item))
             }
@@ -40,9 +39,11 @@ internal class FHttpRequest : HttpRequest {
             if (listCookie != null && !listCookie.isEmpty()) {
                 val cookie = TextUtils.join(";", listCookie)
                 header(HEADER_COOKIE, cookie)
-                HttpLog.i("""cookie loadCookieForRequest $uri
+                HttpLog.i(
+                    """cookie loadCookieForRequest $uri
                     |$cookie
-                """.trimMargin())
+                """.trimMargin()
+                )
             }
         } catch (e: Exception) {
             HttpLog.e("cookie loadCookieForRequest error:$e")
@@ -56,14 +57,16 @@ internal class FHttpRequest : HttpRequest {
         try {
             val cookieStore = RequestManager.instance.cookieStore
             val uri = url().toURI()
-            val listCookie = responseCookie
+            val listCookie = _responseCookie
 
             if (listCookie != null) {
                 cookieStore.add(uri, listCookie)
 
-                HttpLog.i("""cookie saveCookieFromResponse $uri
+                HttpLog.i(
+                    """cookie saveCookieFromResponse $uri
                 |${TextUtils.join("\r\n", listCookie)}
-            """.trimMargin())
+            """.trimMargin()
+                )
             }
         } catch (e: Exception) {
             HttpLog.e("cookie saveCookieFromResponse error:$e")
@@ -75,8 +78,8 @@ internal class FHttpRequest : HttpRequest {
     @Throws(HttpRequestException::class)
     override fun code(): Int {
         val code = super.code()
-        if (mCode == null) {
-            mCode = code
+        if (_code == null) {
+            _code = code
             saveCookieFromResponse()
         }
         return code
