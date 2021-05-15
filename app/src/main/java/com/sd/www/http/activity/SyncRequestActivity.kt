@@ -50,7 +50,7 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 val desc = when (val failure = result.failure) {
                     is HttpExceptionResponseCode -> {
-                        "返回异常，错误码:${failure.code}"
+                        "服务器异常，错误码:${failure.code}"
                     }
                     is HttpExceptionParseResponse -> {
                         "数据解析异常:${failure}"
