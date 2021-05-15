@@ -7,7 +7,7 @@ class HttpExceptionResponseCode : HttpException {
     val code: Int
 
     @JvmOverloads
-    constructor(code: Int, message: String? = "", cause: Throwable? = null) : super(message, cause) {
+    constructor(code: Int, message: String? = "") : super(message = message) {
         this.code = code
     }
 
