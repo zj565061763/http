@@ -1,11 +1,17 @@
 package com.sd.www.http.utils
 
+import android.util.Log
+import com.sd.lib.http.IRequest
 import com.sd.lib.http.interceptor.IResultInterceptor
 import com.sd.lib.result.FResult
 import com.sd.lib.utils.context.FToast
 
 class AppResultInterceptor : IResultInterceptor {
-    override fun intercept(result: FResult<*>): Boolean {
+    val TAG = AppResultInterceptor::class.java.simpleName
+
+    override fun intercept(request: IRequest, result: FResult<*>): Boolean {
+        Log.i(TAG, "intercept request:${request}")
+
         if (result.isFailure) {
             FToast.show("结果拦截器：${result.failure}")
             // return true
