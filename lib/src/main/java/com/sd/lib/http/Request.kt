@@ -82,7 +82,7 @@ abstract class Request : IRequest {
         require(!Modifier.isAbstract(clazz.modifiers)) { "clazz is abstract ${clazz}" }
 
         val result = try {
-            val model = parseInternal(clazz, checkCancel)
+            val model = parseToModel(clazz, checkCancel)
             FResult.success(model)
         } catch (e: Exception) {
             val exception = HttpException.wrap(e)
@@ -102,7 +102,7 @@ abstract class Request : IRequest {
     }
 
     @Throws(Exception::class)
-    private fun <T> parseInternal(clazz: Class<T>, checkCancel: (() -> Boolean)? = null): T {
+    private fun <T> parseToModel(clazz: Class<T>, checkCancel: (() -> Boolean)? = null): T {
         // 发起请求
         val response = execute()
 
