@@ -111,9 +111,19 @@ abstract class Request : IRequest {
         }
 
         val interceptor = RequestManager.instance.resultInterceptor
-        if (interceptor != null && interceptor.intercept(this, result)) {
-            return FResult.failure(HttpExceptionResultIntercepted())
+        if (interceptor != null) {
+            val intercept = try {
+                interceptor.intercept(this, result)
+            } catch (e: Exception) {
+                HttpUtils.runOnUiThread { throw e }
+                false
+            }
+
+            if (intercept) {
+                return FResult.failure(HttpExceptionResultIntercepted())
+            }
         }
+
         return result
     }
 
