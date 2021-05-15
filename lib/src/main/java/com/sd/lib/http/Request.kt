@@ -106,6 +106,7 @@ abstract class Request : IRequest {
         // 发起请求
         val response = execute()
 
+        // 检查是否需要取消
         if (checkCancel != null && checkCancel()) {
             throw HttpExceptionCancellation()
         }
@@ -114,8 +115,9 @@ abstract class Request : IRequest {
         val exceptionCode = HttpExceptionResponseCode.from(response.code)
         if (exceptionCode != null) throw exceptionCode
 
+        // 解析数据
         val parser = RequestManager.instance.responseParser
-        return try {
+        val model = try {
             parser.parse(clazz, response) ?: throw HttpExceptionParseResponse(cause = null)
         } catch (e: Exception) {
             if (e is HttpException) {
@@ -124,6 +126,13 @@ abstract class Request : IRequest {
                 throw HttpExceptionParseResponse(cause = e)
             }
         }
+
+        // 检查是否需要取消
+        if (checkCancel != null && checkCancel()) {
+            throw HttpExceptionCancellation()
+        }
+
+        return model
     }
 
     //---------- IRequest implements end ----------
