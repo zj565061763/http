@@ -3,8 +3,8 @@ package com.sd.lib.http
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
-import com.sd.lib.http.target.IHttpFuture
 import com.sd.lib.http.utils.HttpDataHolder
+import com.sd.lib.result.FResult
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 
@@ -81,9 +81,9 @@ interface IRequest {
     fun execute(): IResponse
 
     /**
-     * [IHttpFuture]
+     * 解析为实体
      */
-    fun <T> future(clazz: Class<T>): IHttpFuture<T>
+    fun <T> parse(clazz: Class<T>): FResult<T>
 
     companion object {
         /**默认连接超时*/

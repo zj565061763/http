@@ -3,11 +3,13 @@ package com.sd.lib.http
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
-import com.sd.lib.http.target.DefaultHttpFuture
-import com.sd.lib.http.target.IHttpFuture
+import com.sd.lib.http.exception.HttpExceptionParseResponse
+import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
+import com.sd.lib.result.FResult
+import java.lang.reflect.Modifier
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 
@@ -75,8 +77,29 @@ abstract class Request : IRequest {
         return realResponse
     }
 
-    override fun <T> future(clazz: Class<T>): IHttpFuture<T> {
-        return DefaultHttpFuture(clazz, this)
+    override fun <T> parse(clazz: Class<T>): FResult<T> {
+        require(!clazz.isInterface) { "clazz is interface ${clazz}" }
+        require(!Modifier.isAbstract(clazz.modifiers)) { "clazz is abstract ${clazz}" }
+
+        val response: IResponse = try {
+            execute()
+        } catch (e: HttpException) {
+            return FResult.failure(e)
+        }
+
+        val exceptionCode = HttpExceptionResponseCode.from(response.code)
+        if (exceptionCode != null) {
+            return FResult.failure(exceptionCode)
+        }
+
+        val parser = RequestManager.instance.responseParser
+        val model: T = try {
+            parser.parse(clazz, response)
+        } catch (e: Exception) {
+            return FResult.failure(HttpExceptionParseResponse(cause = e))
+        }
+
+        return FResult.success(model)
     }
 
     //---------- IRequest implements end ----------

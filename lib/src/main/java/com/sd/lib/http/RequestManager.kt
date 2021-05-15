@@ -5,6 +5,8 @@ import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.cookie.ICookieStore
 import com.sd.lib.http.cookie.ModifyMemoryCookieStore
 import com.sd.lib.http.interceptor.IRequestInterceptor
+import com.sd.lib.http.parser.DefaultResponseParser
+import com.sd.lib.http.parser.IResponseParser
 import com.sd.lib.http.utils.HttpUtils
 import java.util.concurrent.ConcurrentHashMap
 
@@ -19,6 +21,9 @@ class RequestManager private constructor() {
 
     /** 请求拦截 */
     var requestInterceptor: IRequestInterceptor? = null
+
+    /** 结果处理器 */
+    var responseParser: IResponseParser = DefaultResponseParser()
 
     //---------- IRequestInterceptor start ----------
 
