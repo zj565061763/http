@@ -17,7 +17,7 @@ abstract class ModelRequestCallback<T> : StringRequestCallback() {
     }
 
     protected val modelType: Type
-        protected get() {
+        get() {
             val parameterizedType = javaClass.genericSuperclass as ParameterizedType
             val types = parameterizedType.actualTypeArguments
             return if (types != null && types.isNotEmpty()) {
