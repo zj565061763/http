@@ -1,6 +1,5 @@
 package com.sd.lib.http.impl
 
-import android.text.TextUtils
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.utils.HttpLog
 import java.net.HttpCookie
@@ -17,19 +16,19 @@ internal class FHttpRequest : HttpRequest {
      */
     private fun loadCookieForRequest() {
         try {
-            val cookieStore = RequestManager.instance.cookieStore
             val uri = url().toURI()
-            val listCookie = cookieStore[uri]
+            val listCookie = RequestManager.instance.cookieStore.get(uri)
+            if (listCookie == null || listCookie.isEmpty()) return
 
-            if (listCookie != null && !listCookie.isEmpty()) {
-                val cookie = TextUtils.join(";", listCookie)
-                header(HEADER_COOKIE, cookie)
-                HttpLog.i(
-                    """cookie loadCookieForRequest $uri
-                    |$cookie
-                """.trimMargin()
-                )
-            }
+            val cookie = listCookie.joinToString(separator = ";")
+            header(HEADER_COOKIE, cookie)
+
+            HttpLog.i(
+                """
+                cookie loadCookieForRequest ${uri}
+                ${cookie}
+            """.trimIndent()
+            )
         } catch (e: Exception) {
             HttpLog.e("cookie loadCookieForRequest error:$e")
         }
