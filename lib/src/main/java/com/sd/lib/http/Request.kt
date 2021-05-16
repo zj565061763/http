@@ -55,12 +55,8 @@ abstract class Request : IRequest {
     override fun execute(): IResponse {
         val intercept = interceptExecute
         if (intercept) {
-            try {
-                val beforeResponse = RequestManager.instance.internalRequestInterceptor.beforeExecute(this)
-                if (beforeResponse != null) return beforeResponse
-            } catch (e: Exception) {
-                RequestManager.instance.internalRequestInterceptor.onError(e)
-            }
+            val response = RequestManager.instance.internalRequestInterceptor.beforeExecute(this)
+            if (response != null) return response
         }
 
         val realResponse = try {
@@ -72,12 +68,8 @@ abstract class Request : IRequest {
         }
 
         if (intercept) {
-            try {
-                val afterResponse = RequestManager.instance.internalRequestInterceptor.afterExecute(this, realResponse)
-                if (afterResponse != null) return afterResponse
-            } catch (e: Exception) {
-                RequestManager.instance.internalRequestInterceptor.onError(e)
-            }
+            val response = RequestManager.instance.internalRequestInterceptor.afterExecute(this, realResponse)
+            if (response != null) return response
         }
         return realResponse
     }
