@@ -1,6 +1,5 @@
 package com.sd.lib.http.impl
 
-import android.text.TextUtils
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.Request
 import com.sd.lib.http.exception.HttpException
@@ -78,16 +77,25 @@ abstract class BaseRequestImpl() : Request() {
         override val asString: String
             get() {
                 synchronized(this@Response) {
-                    if (TextUtils.isEmpty(_content)) {
-                        try {
-                            _content = HttpIOUtils.readString(inputStream, charset)
-                        } catch (e: IOException) {
-                            throw HttpException.wrap(e)
-                        } finally {
-                            HttpIOUtils.closeQuietly(inputStream)
-                        }
+                    val content = _content
+                    if (content != null) {
+                        // 已经读取过了，直接返回保存的内容
+                        return content
                     }
-                    return _content!!
+
+                    if (isClosed) {
+                        // 输入流已经被关闭，返回空字符串
+                        return ""
+                    }
+
+                    try {
+                        _content = HttpIOUtils.readString(inputStream, charset)
+                        return _content!!
+                    } catch (e: IOException) {
+                        throw HttpException.wrap(e)
+                    } finally {
+                        HttpIOUtils.closeQuietly(inputStream)
+                    }
                 }
             }
     }
