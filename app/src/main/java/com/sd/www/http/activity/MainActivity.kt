@@ -12,12 +12,12 @@ import com.sd.www.http.utils.AppResponseParser
 import com.sd.www.http.utils.AppResultInterceptor
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var mBinding: ActivityMainBinding
+    private lateinit var _binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
         // 调试模式，输出log
         RequestManager.instance.isDebug = true
@@ -36,12 +36,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        if (v == mBinding.btnAsyncRequestActivity) {
-            startActivity(Intent(this, AsyncRequestActivity::class.java))
-        } else if (v == mBinding.btnSyncRequestActivity) {
-            startActivity(Intent(this, SyncRequestActivity::class.java))
-        } else if (v == mBinding.btnDownloadActivity) {
-            startActivity(Intent(this, DownloadActivity::class.java))
+        when (v) {
+            _binding.btnAsyncRequestActivity -> startActivity(Intent(this, AsyncRequestActivity::class.java))
+            _binding.btnSyncRequestActivity -> startActivity(Intent(this, SyncRequestActivity::class.java))
+            _binding.btnDownloadActivity -> startActivity(Intent(this, DownloadActivity::class.java))
         }
     }
 }
