@@ -99,17 +99,16 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
 
     private class FilePart {
         val name: String
-        val filename: String?
+        val filename: String
         val contentType: String?
         val file: File
 
         constructor(name: String, file: File, filename: String?, contentType: String?) {
-            require(!TextUtils.isEmpty(name)) { "name is empty" }
-            requireNotNull(file) { "file is null" }
+            require(name.isNotEmpty()) { "name is empty" }
 
             this.name = name
             this.file = file
-            this.filename = if (TextUtils.isEmpty(filename)) file.name else filename
+            this.filename = if (filename == null || filename.isEmpty()) file.name else filename
 
             var cType = contentType
             if (TextUtils.isEmpty(cType)) {
