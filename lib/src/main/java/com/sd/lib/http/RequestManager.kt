@@ -72,21 +72,21 @@ class RequestManager private constructor() {
      */
     @Synchronized
     fun execute(request: IRequest, callback: RequestCallback?): RequestHandler {
-        val tCallback = callback ?: object : RequestCallback() {
+        val finalCallback = callback ?: object : RequestCallback() {
             override fun onSuccess() {}
         }
 
         // 创建请求任务
-        val task = object : RequestTask(request, tCallback) {
+        val task = object : RequestTask(request, finalCallback) {
             override fun onFinish() {
                 removeTask(this)
             }
         }
         val requestHandler = RequestHandler(task)
 
-        tCallback.saveRequest(request)
-        tCallback.saveRequestHandler(requestHandler)
-        tCallback.onPrepare(request)
+        finalCallback.saveRequest(request)
+        finalCallback.saveRequestHandler(requestHandler)
+        finalCallback.onPrepare(request)
 
         val info = RequestInfo(request.tag)
         _mapRequest[task] = info
@@ -95,7 +95,7 @@ class RequestManager private constructor() {
             Log.i(
                 RequestManager::class.java.name, "execute"
                         + " task:${task}"
-                        + " callback:${tCallback}"
+                        + " callback:${finalCallback}"
                         + " tag:${info.tag}"
                         + " size:${_mapRequest.size}"
             )
