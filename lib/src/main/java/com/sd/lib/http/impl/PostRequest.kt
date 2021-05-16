@@ -6,6 +6,7 @@ import com.sd.lib.http.IPostRequest
 import com.sd.lib.http.IPostRequest.ParamsType
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.body.*
+import com.sd.lib.http.exception.HttpException
 import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
@@ -63,6 +64,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
             is BytesBody -> {
                 httpRequest.send(requestBody.body)
             }
+            else -> throw HttpException("unknown request body:${requestBody}")
         }
     }
 
