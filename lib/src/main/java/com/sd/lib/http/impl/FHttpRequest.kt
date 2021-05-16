@@ -6,26 +6,11 @@ import com.sd.lib.http.utils.HttpLog
 import java.net.HttpCookie
 
 internal class FHttpRequest : HttpRequest {
+    private var _code: Int? = null
+
     constructor(url: CharSequence, method: String) : super(url, method) {
         loadCookieForRequest()
     }
-
-    private var _code: Int? = null
-
-    private val _responseCookie: List<HttpCookie>?
-        private get() {
-            val headers = headers()
-            if (headers == null || headers.isEmpty()) return null
-
-            val listCookie = headers[HEADER_SET_COOKIE]
-            if (listCookie == null || listCookie.isEmpty()) return null
-
-            val listResult = mutableListOf<HttpCookie>()
-            for (item in listCookie) {
-                listResult.addAll(HttpCookie.parse(item))
-            }
-            return listResult
-        }
 
     /**
      * 填充cookie到请求对象
@@ -57,7 +42,7 @@ internal class FHttpRequest : HttpRequest {
         try {
             val cookieStore = RequestManager.instance.cookieStore
             val uri = url().toURI()
-            val listCookie = _responseCookie
+            val listCookie = getResponseCookie()
 
             if (listCookie != null) {
                 cookieStore.add(uri, listCookie)
@@ -71,6 +56,23 @@ internal class FHttpRequest : HttpRequest {
         } catch (e: Exception) {
             HttpLog.e("cookie saveCookieFromResponse error:$e")
         }
+    }
+
+    /**
+     * 获取接口返回的cookie
+     */
+    private fun getResponseCookie(): List<HttpCookie>? {
+        val headers = headers()
+        if (headers == null || headers.isEmpty()) return null
+
+        val listCookie = headers[HEADER_SET_COOKIE]
+        if (listCookie == null || listCookie.isEmpty()) return null
+
+        val listResult = mutableListOf<HttpCookie>()
+        for (item in listCookie) {
+            listResult.addAll(HttpCookie.parse(item))
+        }
+        return listResult
     }
 
     //---------- Override start ----------
