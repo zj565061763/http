@@ -15,13 +15,13 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 请求对象，[onPrepare]以及之后不为null
      */
-    val request: IRequest
+    val httpRequest: IRequest
         get() = _request
 
     /**
      * 请求响应对象，onSuccessXXXX方法以及之后不为null
      */
-    val response: IResponse
+    val httpResponse: IResponse
         get() = _response
 
     /**
@@ -61,7 +61,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     @Throws(Exception::class)
     open fun onSuccessBackground() {
         HttpUtils.checkBackgroundThread()
-        processResponseCode(response.code)
+        processResponseCode(httpResponse.code)
     }
 
     /**

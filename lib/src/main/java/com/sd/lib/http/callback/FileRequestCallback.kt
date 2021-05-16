@@ -17,8 +17,8 @@ abstract class FileRequestCallback : RequestCallback {
     @Throws(Exception::class)
     override fun onSuccessBackground() {
         super.onSuccessBackground()
-        val total = response.contentLength.toLong()
-        val input = response.inputStream
+        val total = httpResponse.contentLength.toLong()
+        val input = httpResponse.inputStream
         val output = FileOutputStream(file)
         try {
             HttpIOUtils.copy(input, output) { count ->

@@ -91,7 +91,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
 
             // 获得接口对应的实体
             val model = actModel!!
-            Log.i(TAG, "onSuccess code:${response.code} city:${model.weatherinfo!!.city}")
+            Log.i(TAG, "onSuccess code:${httpResponse.code} city:${model.weatherinfo!!.city}")
         }
 
         override fun onError(e: Exception) {
