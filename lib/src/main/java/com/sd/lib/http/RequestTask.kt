@@ -152,12 +152,4 @@ internal abstract class RequestTask : IUploadProgressCallback {
     override fun onProgressUpload(param: TransmitParam) {
         _requestCallback.onProgressUpload(param)
     }
-
-    companion object {
-        /** 单线程调度器 */
-        @JvmStatic
-        internal val singleThreadContext: ExecutorCoroutineDispatcher by lazy {
-            newSingleThreadContext("FHttp single thread")
-        }
-    }
 }
