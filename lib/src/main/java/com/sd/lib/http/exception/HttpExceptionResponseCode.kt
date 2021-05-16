@@ -1,7 +1,7 @@
 package com.sd.lib.http.exception
 
 /**
- * Http返回码异常
+ * http返回码异常
  */
 class HttpExceptionResponseCode : HttpException {
     val code: Int

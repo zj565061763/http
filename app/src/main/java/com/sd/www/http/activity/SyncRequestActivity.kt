@@ -50,7 +50,7 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
                     is HttpExceptionResponseCode -> "服务器异常，错误码:${exception.code}"
                     is HttpExceptionParseResponse -> "数据解析异常:${exception}"
                     is HttpExceptionCancellation -> "请求被取消"
-                    is HttpExceptionResultIntercepted -> "请求被拦截"
+                    is HttpExceptionResultIntercepted -> "请求结果被拦截"
                     else -> exception.toString()
                 }
                 _binding.tvResult.text = desc

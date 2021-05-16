@@ -1,7 +1,7 @@
 package com.sd.lib.http.exception
 
 /**
- * Http返回解析异常
+ * http返回数据解析异常
  */
 class HttpExceptionParseResponse : HttpException {
     @JvmOverloads
