@@ -110,12 +110,11 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
             this.file = file
             this.filename = if (filename == null || filename.isEmpty()) file.name else filename
 
-            var cType = contentType
-            if (TextUtils.isEmpty(cType)) {
-                cType = HttpURLConnection.guessContentTypeFromName(file.name)
-                if (TextUtils.isEmpty(cType)) cType = ContentType.STREAM
-            }
-            this.contentType = cType
+            var type = contentType
+            if (TextUtils.isEmpty(type)) type = HttpURLConnection.guessContentTypeFromName(file.name)
+            if (TextUtils.isEmpty(type)) type = ContentType.STREAM
+
+            this.contentType = type
         }
     }
 }
