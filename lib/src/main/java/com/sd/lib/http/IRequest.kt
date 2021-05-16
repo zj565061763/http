@@ -51,6 +51,9 @@ interface IRequest {
      */
     val headers: HttpDataHolder<String, String>
 
+    /** 扩展字段 */
+    var extra: Any?
+
     /**
      * 是否拦截请求
      */

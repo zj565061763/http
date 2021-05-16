@@ -33,6 +33,8 @@ abstract class Request : IRequest {
 
     override val headers by lazy { HttpDataHolder<String, String>() }
 
+    override var extra: Any? = null
+
     override var interceptExecute: Boolean = true
 
     override var interceptResult: Boolean = true
