@@ -10,7 +10,10 @@ import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.impl.GetRequest
 import com.sd.www.http.databinding.ActivitySyncRequestBinding
 import com.sd.www.http.model.WeatherModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * 同步请求demo
@@ -39,13 +42,7 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
                 this.extra = "SyncRequestActivity"
             }
 
-            val result = withContext(Dispatchers.IO) {
-                request.parse(WeatherModel::class.java) {
-                    // 返回true取消请求
-                    !isActive
-                }
-            }
-
+            val result = request.parseSuspend(WeatherModel::class.java)
             if (result.isSuccess) {
                 _binding.tvResult.text = result.data!!.weatherinfo!!.city
             } else {
