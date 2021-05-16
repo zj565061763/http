@@ -24,9 +24,6 @@ internal abstract class RequestTask : IUploadProgressCallback {
     @Volatile
     private var _isErrorNotified: Boolean = false
 
-    private val _isResultNotified: Boolean
-        get() = _isSuccessNotified || _isErrorNotified
-
     constructor(request: IRequest, requestCallback: RequestCallback) {
         _request = request
         _requestCallback = requestCallback
@@ -110,8 +107,9 @@ internal abstract class RequestTask : IUploadProgressCallback {
         val job = _job ?: return false
         if (!job.isActive) return false
 
-        HttpLog.e("$_logPrefix cancel start _isStartNotified:${_isStartNotified} _isResultNotified:${_isResultNotified}")
-        if (_isResultNotified) return false
+        val isResultNotified = _isSuccessNotified || _isErrorNotified
+        HttpLog.e("$_logPrefix cancel start isStartNotified:${_isStartNotified} isResultNotified:${isResultNotified}")
+        if (isResultNotified) return false
 
         job.cancel()
         val isActive = job.isActive
