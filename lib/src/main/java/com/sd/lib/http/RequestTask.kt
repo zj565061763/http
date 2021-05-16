@@ -58,14 +58,13 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private fun submitInternal(sequence: Boolean) {
         if (_job != null) return
 
-        _job = GlobalScope.launch(Dispatchers.Main) {
+        val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
+        _job = GlobalScope.launch(dispatcher) {
             try {
-                // 用withContext包裹代码块，如果代码块中调用了取消，则代码不会继续往下执行，否者需要手动判断是否被取消
                 withContext(Dispatchers.Main) {
                     notifyStart()
                 }
 
-                val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
                 withContext(dispatcher) {
                     try {
                         HttpLog.i("$_logPrefix execute ${Thread.currentThread()}")
