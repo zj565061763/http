@@ -39,6 +39,8 @@ abstract class BaseRequestImpl() : Request() {
 
     class Response : IResponse {
         private val _httpRequest: HttpRequest
+
+        @Volatile
         private var _content: String? = null
 
         constructor(httpRequest: HttpRequest) {
@@ -65,6 +67,9 @@ abstract class BaseRequestImpl() : Request() {
 
         override val inputStream: InputStream
             get() = _httpRequest.stream()
+
+        override val cachedString: String?
+            get() = _content
 
         @Synchronized
         @Throws(HttpException::class)

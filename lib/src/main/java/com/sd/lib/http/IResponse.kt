@@ -30,6 +30,11 @@ interface IResponse {
     val inputStream: InputStream
 
     /**
+     * [readString]读取过之后，缓存的字符串内容。不为null，说明已经读取过了
+     */
+    val cachedString: String?
+
+    /**
      * 读取输入流的内容，并以字符串返回，如果已经读取过了，则直接返回读取过的内容；
      * 如果未读取过，则会从输入流中读取，这时候需要在非UI线程操作
      */
