@@ -6,7 +6,7 @@ import com.sd.lib.http.utils.HttpLog
 import java.net.HttpCookie
 
 internal class FHttpRequest : HttpRequest {
-    constructor(url: CharSequence?, method: String?) : super(url, method) {
+    constructor(url: CharSequence, method: String) : super(url, method) {
         loadCookieForRequest()
     }
 
