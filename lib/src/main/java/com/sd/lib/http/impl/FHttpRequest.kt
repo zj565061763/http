@@ -40,21 +40,20 @@ internal class FHttpRequest : HttpRequest {
      */
     private fun saveCookieFromResponse() {
         try {
-            val cookieStore = RequestManager.instance.cookieStore
-            val uri = url().toURI()
             val listCookie = getResponseCookie()
+            if (listCookie == null || listCookie.isEmpty()) return
 
-            if (listCookie != null) {
-                cookieStore.add(uri, listCookie)
+            val uri = url().toURI()
+            RequestManager.instance.cookieStore.add(uri, listCookie)
 
-                HttpLog.i(
-                    """cookie saveCookieFromResponse $uri
-                |${TextUtils.join("\r\n", listCookie)}
-            """.trimMargin()
-                )
-            }
+            HttpLog.i(
+                """
+                cookie saveCookieFromResponse ${uri}
+                ${listCookie.joinToString("\r\n")}
+            """.trimIndent()
+            )
         } catch (e: Exception) {
-            HttpLog.e("cookie saveCookieFromResponse error:$e")
+            HttpLog.e("cookie saveCookieFromResponse error:${e}")
         }
     }
 
