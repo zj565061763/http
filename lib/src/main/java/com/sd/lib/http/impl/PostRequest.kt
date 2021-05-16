@@ -11,20 +11,16 @@ import java.io.File
 import java.net.HttpURLConnection
 
 class PostRequest : BaseRequestImpl(), IPostRequest {
-    private var mBody: IRequestBody<*>? = null
-    private var mListFile: MutableList<FilePart>? = null
+    private var _body: IRequestBody<*>? = null
+    private var _listFile: MutableList<FilePart>? = null
 
     private val listFile: MutableList<FilePart> by lazy {
-        val list: MutableList<FilePart> = ArrayList()
-        mListFile = list
-        list
+        mutableListOf<FilePart>().also {
+            _listFile = it
+        }
     }
 
     override var paramsType: ParamsType = ParamsType.Default
-        set(value) {
-            requireNotNull(value)
-            field = value
-        }
 
     override fun addPart(name: String, file: File) {
         addPart(name, file, null, null)
@@ -36,15 +32,15 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
     }
 
     override fun setBody(body: IRequestBody<*>?) {
-        mBody = body
+        _body = body
     }
 
     override fun doExecute(): IResponse {
         val httpRequest = newHttpRequest(url, HttpRequest.METHOD_POST)
 
-        val requestBody = mBody
+        val requestBody = _body
         if (requestBody != null) {
-            executeBody(httpRequest, requestBody)
+            executeBody(requestBody, httpRequest)
         } else {
             when (paramsType) {
                 ParamsType.Default -> executeDefault(httpRequest)
@@ -55,7 +51,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
         return Response(httpRequest)
     }
 
-    private fun executeBody(httpRequest: HttpRequest, requestBody: IRequestBody<*>) {
+    private fun executeBody(requestBody: IRequestBody<*>, httpRequest: HttpRequest) {
         httpRequest.contentType(requestBody.contentType)
         when (requestBody) {
             is StringBody -> {
@@ -72,7 +68,8 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
 
     private fun executeDefault(httpRequest: HttpRequest) {
         val map = params.toMap()
-        val list = mListFile
+
+        val list = _listFile
         if (list == null || list.isEmpty()) {
             httpRequest.form(map)
         } else {
@@ -95,7 +92,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
 
         val json = jsonObject.toString()
         val requestBody = JsonBody(json)
-        executeBody(httpRequest, requestBody)
+        executeBody(requestBody, httpRequest)
     }
 
     private class FilePart {
