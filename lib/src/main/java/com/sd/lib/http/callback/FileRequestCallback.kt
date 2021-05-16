@@ -22,7 +22,7 @@ abstract class FileRequestCallback : RequestCallback {
         val output = FileOutputStream(file)
         try {
             HttpIOUtils.copy(input, output) { count ->
-                if (requestHandler.isActive) {
+                if (httpRequestHandler.isActive) {
                     if (transmitParam.transmit(total, count)) {
                         HttpUtils.runOnUiThread(mUpdateProgressRunnable)
                     }

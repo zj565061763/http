@@ -27,7 +27,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      *  [onPrepare]以及之后不为null，但是在[onPrepare]中由于请求还未被提交，所以对象的方法调用无效
      */
-    val requestHandler: RequestHandler
+    val httpRequestHandler: RequestHandler
         get() = _requestHandler
 
     internal open fun saveRequest(request: IRequest) {
