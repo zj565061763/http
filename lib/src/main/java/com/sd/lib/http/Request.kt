@@ -78,13 +78,12 @@ abstract class Request : IRequest {
     override fun <T> parse(clazz: Class<T>, checkCancel: (() -> Boolean)?): FResult<T> {
         if (_isParsing) throw RuntimeException("Parse is in progress")
 
-        val result = try {
+        return try {
             _isParsing = true
             parseInternal(clazz, checkCancel)
         } finally {
             _isParsing = false
         }
-        return result
     }
 
     private fun <T> parseInternal(clazz: Class<T>, checkCancel: (() -> Boolean)?): FResult<T> {
