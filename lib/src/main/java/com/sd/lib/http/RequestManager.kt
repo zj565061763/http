@@ -33,23 +33,34 @@ class RequestManager private constructor() {
 
     internal val internalRequestInterceptor = object : IRequestInterceptor {
         override fun beforeExecute(request: IRequest): IResponse? {
-            return requestInterceptor?.beforeExecute(request)
+            return try {
+                requestInterceptor?.beforeExecute(request)
+            } catch (e: Exception) {
+                onError(e)
+                null
+            }
         }
 
         override fun afterExecute(request: IRequest, response: IResponse): IResponse? {
-            return requestInterceptor?.afterExecute(request, response)
+            return try {
+                requestInterceptor?.afterExecute(request, response)
+            } catch (e: Exception) {
+                onError(e)
+                null
+            }
         }
 
         override fun onError(e: Exception) {
             val interceptor = requestInterceptor
-            if (interceptor != null) {
-                try {
-                    interceptor.onError(e)
-                } catch (newE: Exception) {
-                    HttpUtils.runOnUiThread { throw RuntimeException(newE) }
-                }
-            } else {
+            if (interceptor == null) {
                 HttpUtils.runOnUiThread { throw RuntimeException(e) }
+                return
+            }
+
+            try {
+                interceptor.onError(e)
+            } catch (newE: Exception) {
+                HttpUtils.runOnUiThread { throw RuntimeException(newE) }
             }
         }
     }
