@@ -100,7 +100,7 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
     private class FilePart {
         val name: String
         val filename: String
-        val contentType: String?
+        val contentType: String
         val file: File
 
         constructor(name: String, file: File, filename: String?, contentType: String?) {
@@ -111,8 +111,8 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
             this.filename = if (filename == null || filename.isEmpty()) file.name else filename
 
             var type = contentType
-            if (TextUtils.isEmpty(type)) type = HttpURLConnection.guessContentTypeFromName(file.name)
-            if (TextUtils.isEmpty(type)) type = ContentType.STREAM
+            if (type == null || type.isEmpty()) type = HttpURLConnection.guessContentTypeFromName(file.name)
+            if (type == null || type.isEmpty()) type = ContentType.STREAM
 
             this.contentType = type
         }
