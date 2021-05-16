@@ -73,31 +73,33 @@ abstract class BaseRequestImpl() : Request() {
                 true
             }
 
+        @Synchronized
+        @Throws(HttpException::class)
+        override fun readString(): String {
+            val content = _content
+            if (content != null) {
+                // 已经读取过了，直接返回保存的内容
+                return content
+            }
+
+            if (isClosed) {
+                // 输入流已经被关闭，返回空字符串
+                return ""
+            }
+
+            try {
+                _content = HttpIOUtils.readString(inputStream, charset)
+                return _content!!
+            } catch (e: IOException) {
+                throw HttpException.wrap(e)
+            } finally {
+                HttpIOUtils.closeQuietly(inputStream)
+            }
+        }
+
         @get:Throws(HttpException::class)
         override val asString: String
-            get() {
-                synchronized(this@Response) {
-                    val content = _content
-                    if (content != null) {
-                        // 已经读取过了，直接返回保存的内容
-                        return content
-                    }
-
-                    if (isClosed) {
-                        // 输入流已经被关闭，返回空字符串
-                        return ""
-                    }
-
-                    try {
-                        _content = HttpIOUtils.readString(inputStream, charset)
-                        return _content!!
-                    } catch (e: IOException) {
-                        throw HttpException.wrap(e)
-                    } finally {
-                        HttpIOUtils.closeQuietly(inputStream)
-                    }
-                }
-            }
+            get() = readString()
     }
 
     companion object {

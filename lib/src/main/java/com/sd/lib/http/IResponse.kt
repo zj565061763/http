@@ -38,6 +38,13 @@ interface IResponse {
      * 读取输入流的内容，并以字符串返回，如果已经读取过了，则直接返回读取过的内容；
      * 如果未读取过，则会从输入流中读取，这时候需要在非UI线程操作
      */
+    @Throws(HttpException::class)
+    fun readString(): String
+
+    /**
+     * 用[readString]替代
+     */
+    @Deprecated("")
     @get:Throws(HttpException::class)
     val asString: String
 }
