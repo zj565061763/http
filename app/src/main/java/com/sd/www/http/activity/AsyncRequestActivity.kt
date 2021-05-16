@@ -39,22 +39,23 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
      * 发起请求
      */
     private fun requestData() {
-        val request = GetRequest()
-        // 设置请求地址
-        request.baseUrl = URL
-        // 设置请求参数
-        request.params.put("aaa", "aaa").put("bbb", "bbb")
-        // 设置该请求的tag，可用于取消请求
-        request.tag = TAG
+        val request = GetRequest().apply {
+            // 设置请求地址
+            this.baseUrl = URL
+            // 设置请求参数
+            this.params.put("aaa", "aaa")
+            // 设置该请求的tag，可用于取消请求
+            this.tag = TAG
+        }
 
         // 发起异步请求
-        request.execute(mModelRequestCallback)
+        request.execute(_requestCallback)
     }
 
     /**
      * 回调对象
      */
-    private val mModelRequestCallback = object : ModelRequestCallback<WeatherModel>() {
+    private val _requestCallback = object : ModelRequestCallback<WeatherModel>() {
 
         override fun onPrepare(request: IRequest) {
             super.onPrepare(request)
@@ -68,16 +69,9 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             Log.i(TAG, "onStart")
         }
 
-        @Throws(Exception::class)
-        override fun onSuccessBackground() {
-            super.onSuccessBackground()
-            // 成功回调，super里面回调了parseToModel方法把返回的内容转为实体（非UI线程）
-            Log.i(TAG, "onSuccessBackground")
-        }
-
-        @Throws(Exception::class)
         override fun parseToModel(content: String, type: Type): WeatherModel {
             // 把返回的内容转实体（非UI线程）
+            Log.i(TAG, "parseToModel content:${content} type:${type}")
             return Gson().fromJson(content, type)
         }
 
