@@ -67,6 +67,13 @@ abstract class BaseRequestImpl() : Request() {
         override val inputStream: InputStream
             get() = _httpRequest.stream()
 
+        override val isClosed: Boolean
+            get() = try {
+                inputStream.available() <= 0
+            } catch (e: IOException) {
+                true
+            }
+
         @get:Throws(HttpException::class)
         override val asString: String
             get() {
