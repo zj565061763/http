@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.exception.HttpExceptionCancellation
-import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.exception.HttpExceptionParseResponse
 import com.sd.lib.http.exception.HttpExceptionResponseCode
+import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.impl.GetRequest
 import com.sd.www.http.databinding.ActivitySyncRequestBinding
 import com.sd.www.http.model.WeatherModel
@@ -36,6 +36,7 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         _mainScope.launch {
             val request = GetRequest().apply {
                 this.baseUrl = "http://www.weather.com.cn/data/cityinfo/101010100.html"
+                this.extra = "SyncRequestActivity"
             }
 
             val result = withContext(Dispatchers.IO) {

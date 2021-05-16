@@ -10,7 +10,7 @@ class AppResultInterceptor : IResultInterceptor {
     val TAG = AppResultInterceptor::class.java.simpleName
 
     override fun intercept(request: IRequest, result: FResult<*>): Boolean {
-        Log.i(TAG, "intercept request:${request}")
+        Log.i(TAG, "intercept request:${request} extra:${request.extra}")
 
         if (result.isFailure) {
             FToast.show("结果拦截器：${result.failure}")
