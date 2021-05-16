@@ -19,7 +19,13 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private var _isStartNotified: Boolean = false
 
     @Volatile
-    private var _isResultNotified: Boolean = false
+    private var _isSuccessNotified: Boolean = false
+
+    @Volatile
+    private var _isErrorNotified: Boolean = false
+
+    private val _isResultNotified: Boolean
+        get() = _isSuccessNotified || _isErrorNotified
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         _request = request
@@ -62,24 +68,23 @@ internal abstract class RequestTask : IUploadProgressCallback {
                     notifyStart()
                 }
 
-                try {
-                    val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
-                    withContext(dispatcher) {
+                val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
+                withContext(dispatcher) {
+                    try {
                         HttpLog.i("$_logPrefix execute ${Thread.currentThread()}")
                         val response = _request.execute()
 
                         HttpLog.i("$_logPrefix onSuccessBackground ${Thread.currentThread()}")
                         _requestCallback.saveResponse(response)
                         _requestCallback.onSuccessBackground()
-                    }
-                } catch (e: Exception) {
-                    if (e is CancellationException) {
-                        // 让取消异常继续传播
-                        throw e
-                    } else {
+                    } catch (e: Exception) {
                         notifyError(e)
-                        return@launch
+                        return@withContext
                     }
+                }
+
+                if (_isErrorNotified) {
+                    return@launch
                 }
 
                 withContext(Dispatchers.Main) {
@@ -132,13 +137,13 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private fun notifyError(e: Exception) {
         require(e !is CancellationException)
         HttpLog.i("$_logPrefix onError:$e ${Thread.currentThread()}")
-        _isResultNotified = true
+        _isErrorNotified = true
         _requestCallback.onError(HttpException.wrap(e))
     }
 
     private fun notifySuccess() {
         HttpLog.i("$_logPrefix onSuccess ${Thread.currentThread()}")
-        _isResultNotified = true
+        _isSuccessNotified = true
         _requestCallback.onSuccess()
     }
 
