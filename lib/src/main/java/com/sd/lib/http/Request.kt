@@ -25,9 +25,9 @@ abstract class Request : IRequest {
 
     override var tag: String? = null
 
-    override var connectTimeout = IRequest.DEFAULT_CONNECT_TIMEOUT
+    override var connectTimeout: Int = IRequest.DEFAULT_CONNECT_TIMEOUT
 
-    override var readTimeout = IRequest.DEFAULT_READ_TIMEOUT
+    override var readTimeout: Int = IRequest.DEFAULT_READ_TIMEOUT
 
     override val params by lazy { HttpDataHolder<String, Any>() }
 
