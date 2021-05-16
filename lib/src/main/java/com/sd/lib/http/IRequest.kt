@@ -79,11 +79,6 @@ interface IRequest {
     fun execute(callback: RequestCallback?): RequestHandler
 
     /**
-     * 异步请求，在单线程线程池执行(发起的异步请求会按顺序一个个执行)
-     */
-    fun executeSequence(callback: RequestCallback?): RequestHandler
-
-    /**
      * 同步请求
      */
     @Throws(HttpException::class)

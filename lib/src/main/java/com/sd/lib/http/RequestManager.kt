@@ -69,12 +69,9 @@ class RequestManager private constructor() {
 
     /**
      * 异步执行请求
-     *
-     * @param sequence 是否按顺序执行
      */
-    @JvmOverloads
     @Synchronized
-    fun execute(request: IRequest, sequence: Boolean = false, callback: RequestCallback?): RequestHandler {
+    fun execute(request: IRequest, callback: RequestCallback?): RequestHandler {
         val tCallback = callback ?: object : RequestCallback() {
             override fun onSuccess() {}
         }
@@ -104,11 +101,7 @@ class RequestManager private constructor() {
             )
         }
 
-        if (sequence) {
-            task.submitSequence()
-        } else {
-            task.submit()
-        }
+        task.submit()
         return requestHandler
     }
 

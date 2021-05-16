@@ -41,30 +41,23 @@ internal abstract class RequestTask : IUploadProgressCallback {
         }
 
     /**
-     * 提交任务，任务按顺序一个个执行
-     */
-    fun submitSequence() {
-        submitInternal(singleThreadContext)
-    }
-
-    /**
      * 提交任务
      */
     fun submit() {
-        submitInternal(Dispatchers.IO)
+        submitInternal()
     }
 
     @Synchronized
-    private fun submitInternal(dispatcher: CoroutineDispatcher) {
+    private fun submitInternal() {
         if (_job != null) return
 
-        _job = GlobalScope.launch(dispatcher) {
+        _job = GlobalScope.launch() {
             try {
                 withContext(Dispatchers.Main) {
                     notifyStart()
                 }
 
-                withContext(dispatcher) {
+                withContext(Dispatchers.IO) {
                     try {
                         HttpLog.i("$_logPrefix execute ${Thread.currentThread()}")
                         val response = _request.execute()

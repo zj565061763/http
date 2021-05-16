@@ -46,11 +46,7 @@ abstract class Request : IRequest {
     override var hostnameVerifier: HostnameVerifier? = null
 
     override fun execute(callback: RequestCallback?): RequestHandler {
-        return RequestManager.instance.execute(this, false, callback)
-    }
-
-    override fun executeSequence(callback: RequestCallback?): RequestHandler {
-        return RequestManager.instance.execute(this, true, callback)
+        return RequestManager.instance.execute(this, callback)
     }
 
     @Throws(HttpException::class)
