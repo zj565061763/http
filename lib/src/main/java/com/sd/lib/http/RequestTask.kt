@@ -44,21 +44,20 @@ internal abstract class RequestTask : IUploadProgressCallback {
      * 提交任务，任务按顺序一个个执行
      */
     fun submitSequence() {
-        submitInternal(true)
+        submitInternal(singleThreadContext)
     }
 
     /**
      * 提交任务
      */
     fun submit() {
-        submitInternal(false)
+        submitInternal(Dispatchers.IO)
     }
 
     @Synchronized
-    private fun submitInternal(sequence: Boolean) {
+    private fun submitInternal(dispatcher: CoroutineDispatcher) {
         if (_job != null) return
 
-        val dispatcher = if (sequence) singleThreadContext else Dispatchers.IO
         _job = GlobalScope.launch(dispatcher) {
             try {
                 withContext(Dispatchers.Main) {
