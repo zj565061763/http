@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.sd.lib.http.IRequest
-import com.sd.lib.http.RequestHandler
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.callback.ModelRequestCallback
 import com.sd.lib.http.impl.GetRequest
@@ -21,20 +20,18 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
     private val TAG = AsyncRequestActivity::class.java.simpleName
     private val URL = "http://www.weather.com.cn/data/cityinfo/101010100.html"
 
-    private lateinit var mBinding: ActivityAsyncRequestBinding
-    private val mRequestHandlers: MutableList<RequestHandler> = ArrayList()
+    private lateinit var _binding: ActivityAsyncRequestBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivityAsyncRequestBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        _binding = ActivityAsyncRequestBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
     }
 
     override fun onClick(v: View) {
-        if (v == mBinding.btnStart) {
-            requestData()
-        } else if (v == mBinding.btnCancel) {
-            cancelRequest()
+        when (v) {
+            _binding.btnStart -> requestData()
+            _binding.btnCancel -> cancelRequest()
         }
     }
 
@@ -69,7 +66,6 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             super.onStart()
             // 开始回调（UI线程）
             Log.i(TAG, "onStart")
-            mRequestHandlers.add(requestHandler)
         }
 
         @Throws(Exception::class)
@@ -114,7 +110,6 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             super.onFinish()
             // 结束回调（UI线程）
             Log.i(TAG, "onFinish")
-            mRequestHandlers.remove(requestHandler)
         }
     }
 
@@ -122,15 +117,13 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
      * 取消请求
      */
     private fun cancelRequest() {
-        mRequestHandlers.forEach {
-            it.cancel()
-        }
+        // 根据tag取消请求
+        RequestManager.instance.cancelTag(TAG)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "onDestroy")
-        // 根据tag取消请求
-        RequestManager.instance.cancelTag(TAG)
+        cancelRequest()
     }
 }
