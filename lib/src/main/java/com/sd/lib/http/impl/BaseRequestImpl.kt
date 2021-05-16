@@ -66,13 +66,6 @@ abstract class BaseRequestImpl() : Request() {
         override val inputStream: InputStream
             get() = _httpRequest.stream()
 
-        override val isClosed: Boolean
-            get() = try {
-                inputStream.available() <= 0
-            } catch (e: IOException) {
-                true
-            }
-
         @Synchronized
         @Throws(HttpException::class)
         override fun readString(): String {
@@ -80,11 +73,6 @@ abstract class BaseRequestImpl() : Request() {
             if (content != null) {
                 // 已经读取过了，直接返回保存的内容
                 return content
-            }
-
-            if (isClosed) {
-                // 输入流已经被关闭，返回空字符串
-                return ""
             }
 
             try {
