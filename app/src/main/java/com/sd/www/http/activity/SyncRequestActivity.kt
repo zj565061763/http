@@ -46,20 +46,12 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             if (result.isSuccess) {
                 _binding.tvResult.text = result.data!!.weatherinfo!!.city
             } else {
-                val desc = when (val failure = result.failure) {
-                    is HttpExceptionResponseCode -> {
-                        "服务器异常，错误码:${failure.code}"
-                    }
-                    is HttpExceptionParseResponse -> {
-                        "数据解析异常:${failure}"
-                    }
-                    is HttpExceptionCancellation -> {
-                        "请求被取消"
-                    }
-                    is HttpExceptionResultIntercepted -> {
-                        "请求被拦截"
-                    }
-                    else -> result.failure.toString()
+                val desc = when (val exception = result.exception) {
+                    is HttpExceptionResponseCode -> "服务器异常，错误码:${exception.code}"
+                    is HttpExceptionParseResponse -> "数据解析异常:${exception}"
+                    is HttpExceptionCancellation -> "请求被取消"
+                    is HttpExceptionResultIntercepted -> "请求被拦截"
+                    else -> exception.toString()
                 }
                 _binding.tvResult.text = desc
             }

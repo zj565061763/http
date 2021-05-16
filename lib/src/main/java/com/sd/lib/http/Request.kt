@@ -105,7 +105,7 @@ abstract class Request : IRequest {
             FResult.failure(exception)
         }
 
-        if (result.failure is HttpExceptionCancellation) {
+        if (result.exception is HttpExceptionCancellation) {
             // 如果是取消异常，则不经过拦截器，直接返回
             return result
         }
