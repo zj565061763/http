@@ -7,6 +7,9 @@ import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 import com.sd.lib.result.FResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import java.lang.reflect.Modifier
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
@@ -81,6 +84,12 @@ abstract class Request : IRequest {
             parseInternal(clazz, checkCancel)
         } finally {
             _isParsing = false
+        }
+    }
+
+    override suspend fun <T> parseSuspend(clazz: Class<T>): FResult<T> {
+        return withContext(Dispatchers.IO) {
+            parse(clazz) { !isActive }
         }
     }
 

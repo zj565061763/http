@@ -89,6 +89,11 @@ interface IRequest {
      */
     fun <T> parse(clazz: Class<T>, checkCancel: (() -> Boolean)? = null): FResult<T>
 
+    /**
+     * 解析为实体
+     */
+    suspend fun <T> parseSuspend(clazz: Class<T>): FResult<T>
+
     companion object {
         /**默认连接超时*/
         const val DEFAULT_CONNECT_TIMEOUT = 15 * 1000
