@@ -13,7 +13,7 @@ class AppResultInterceptor : IResultInterceptor {
         Log.i(TAG, "intercept request:${request} extra:${request.extra}")
 
         if (result.isFailure) {
-            FToast.show("结果拦截器：${result.failure}")
+            FToast.show("结果拦截器：${result.exception}")
             // return true
         }
 
