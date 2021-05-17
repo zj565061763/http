@@ -141,7 +141,7 @@ abstract class Request : IRequest {
         val exceptionCode = HttpExceptionResponseCode.from(response.code)
         if (exceptionCode != null) throw exceptionCode
 
-        // 解析数据
+        // 读取内容
         val content = response.readString()
 
         // 检查是否需要取消
@@ -149,6 +149,7 @@ abstract class Request : IRequest {
             throw HttpExceptionCancellation()
         }
 
+        // 将内容解析为实体
         val model = try {
             RequestManager.instance.responseParser.parse(content, clazz, this)
                 ?: throw HttpExceptionParseResponse(cause = null)
