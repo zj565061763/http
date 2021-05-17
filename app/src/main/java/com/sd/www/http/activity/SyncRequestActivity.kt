@@ -38,13 +38,13 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
     private fun requestData() {
         _mainScope.launch {
             val request = GetRequest().apply {
-                this.baseUrl = "https://www.hao123.com/"
+                this.baseUrl = "http://www.weather.com.cn/data/cityinfo/101010100.html"
                 this.extra = "SyncRequestActivity"
             }
 
-            val result = request.parseSuspend(String::class.java)
+            val result = request.parseSuspend(WeatherModel::class.java)
             if (result.isSuccess) {
-                _binding.tvResult.text = result.data!!
+                _binding.tvResult.text = result.data!!.weatherinfo!!.city
             } else {
                 val desc = when (val exception = result.exception) {
                     is HttpExceptionResponseCode -> "服务器异常，错误码:${exception.code}"
