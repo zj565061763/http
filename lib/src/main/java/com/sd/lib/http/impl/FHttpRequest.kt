@@ -66,7 +66,10 @@ internal class FHttpRequest : HttpRequest {
 
         val listResult = mutableListOf<HttpCookie>()
         for (item in listCookie) {
-            listResult.addAll(HttpCookie.parse(item))
+            val listItem = HttpCookie.parse(item)
+            if (listItem != null) {
+                listResult.addAll(listItem)
+            }
         }
         return listResult
     }
