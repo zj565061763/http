@@ -1,15 +1,16 @@
-package com.sd.lib.http.cookie
+package com.sd.lib.http.cookie.store
 
+import com.sd.lib.http.cookie.ICookieStore
+import com.sd.lib.http.cookie.SerializableHttpCookie
 import java.net.HttpCookie
 import java.net.URI
 
-internal class MemoryCookieStore : ICookieStore {
-    private val _cookieStore by lazy { InMemoryCookieStore() }
+abstract class SimpleCookieStore : ICookieStore {
+    private val _cookie by lazy { mutableMapOf<URI, List<SerializableHttpCookie>>() }
+    private val _cookieStore by lazy { MemoryCookieStore() }
 
     override fun add(uri: URI?, listCookie: List<HttpCookie?>?) {
-        listCookie?.forEach {
-            add(uri, it)
-        }
+        _cookieStore.add(uri, listCookie)
     }
 
     override fun add(uri: URI?, cookie: HttpCookie?) {
