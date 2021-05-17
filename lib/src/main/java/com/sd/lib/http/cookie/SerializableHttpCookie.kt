@@ -3,7 +3,7 @@ package com.sd.lib.http.cookie
 import java.io.Serializable
 import java.net.HttpCookie
 
-class SerializableHttpCookie : Serializable {
+internal class SerializableHttpCookie : Serializable {
     val name: String
     var value: String? = null
 
