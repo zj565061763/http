@@ -2,10 +2,10 @@ package com.sd.lib.http.exception
 
 import android.content.Context
 import com.sd.lib.http.R
-import com.sd.lib.result.exception.FExceptionHttp
+import com.sd.lib.result.exception.FException
 import java.net.SocketTimeoutException
 
-open class HttpException : FExceptionHttp {
+open class HttpException : FException {
     @JvmOverloads
     constructor(message: String? = "", cause: Throwable? = null) : super(message, cause)
 
