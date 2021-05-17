@@ -62,13 +62,8 @@ abstract class PersistentCookieStore : ICookieStore {
             val mapCache = mutableMapOf<URI?, List<SerializableHttpCookie>>()
 
             for ((key, value) in mapCookie) {
-                val listCopy = mutableListOf<SerializableHttpCookie>()
+                val listCopy = value.map { SerializableHttpCookie.from(it) }
                 mapCache.put(key, listCopy)
-
-                value.forEach { item ->
-                    val cookie = SerializableHttpCookie.from(item)
-                    listCopy.add(cookie)
-                }
             }
             saveCacheImpl(mapCache)
         }
