@@ -60,24 +60,24 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         override fun onPrepare(request: IRequest) {
             super.onPrepare(request)
             // 请求在执行之前的准备回调（发起请求的线程）
-            Log.i(TAG, "onPrepare-----> ${Thread.currentThread()}")
+            Log.i(TAG, "onPrepare-----> thread:${Thread.currentThread().name}")
         }
 
         override fun onStart() {
             super.onStart()
             // 开始回调（UI线程）
-            Log.i(TAG, "onStart")
+            Log.i(TAG, "onStart thread:${Thread.currentThread().name}")
         }
 
         override fun parseToModel(content: String, type: Type): WeatherModel {
             // 把返回的内容转实体（非UI线程）
-            Log.i(TAG, "parseToModel content:${content} type:${type} ${Thread.currentThread()}")
+            Log.i(TAG, "parseToModel content:${content} type:${type} thread:${Thread.currentThread().name}")
             return Gson().fromJson(content, type)
         }
 
         override fun onSuccessBefore() {
             // 成功回调（UI线程）
-            Log.i(TAG, "onSuccessBefore ${Thread.currentThread()}")
+            Log.i(TAG, "onSuccessBefore thread:${Thread.currentThread().name}")
         }
 
         override fun onSuccess() {
@@ -85,25 +85,25 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
 
             // 获得接口对应的实体
             val model = actModel!!
-            Log.i(TAG, "onSuccess code:${httpResponse.code} city:${model.weatherinfo!!.city} ${Thread.currentThread()}")
+            Log.i(TAG, "onSuccess code:${httpResponse.code} city:${model.weatherinfo!!.city} thread:${Thread.currentThread().name}")
         }
 
         override fun onError(e: Exception) {
             super.onError(e)
             // 异常回调，请求异常或者成功之后的数据处理异常（UI线程）
-            Log.i(TAG, "onError:${e} ${Thread.currentThread()}")
+            Log.i(TAG, "onError:${e} thread:${Thread.currentThread().name}")
         }
 
         override fun onCancel() {
             super.onCancel()
             // 取消回调（UI线程）
-            Log.i(TAG, "onCancel ${Thread.currentThread()}")
+            Log.i(TAG, "onCancel thread:${Thread.currentThread().name}")
         }
 
         override fun onFinish() {
             super.onFinish()
             // 结束回调（UI线程）
-            Log.i(TAG, "onFinish ${Thread.currentThread()}")
+            Log.i(TAG, "onFinish thread:${Thread.currentThread().name}")
         }
     }
 
