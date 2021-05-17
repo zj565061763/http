@@ -8,7 +8,7 @@ internal class MemoryCookieStore : ICookieStore {
 
     override fun add(uri: URI?, listCookie: List<HttpCookie?>?) {
         listCookie?.forEach {
-            add(uri, it)
+            _cookieStore.add(uri, it)
         }
     }
 
