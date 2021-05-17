@@ -16,54 +16,54 @@ class DownloadActivity : AppCompatActivity(), View.OnClickListener {
     private val TAG = DownloadActivity::class.java.simpleName
     private val URL_FILE = "https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk"
 
-    private lateinit var mBinding: ActivityDownloadBinding
+    private lateinit var _binding: ActivityDownloadBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivityDownloadBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        _binding = ActivityDownloadBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
     }
 
     override fun onClick(v: View) {
-        if (v === mBinding.btnStart) {
-            startDownload()
-        } else if (v === mBinding.btnStop) {
-            stopDownload()
+        when (v) {
+            _binding.btnStart -> startDownload()
+            _binding.btnStop -> stopDownload()
         }
     }
 
     private fun startDownload() {
-        val file = File(externalCacheDir, "download.apk")
+        val request: Request = GetRequest().apply {
+            this.baseUrl = URL_FILE
+            this.tag = TAG
+        }
 
-        val request: Request = GetRequest()
-        request.baseUrl = URL_FILE
-        request.tag = TAG
+        val file = File(externalCacheDir, "download.apk")
         request.execute(object : FileRequestCallback(file) {
 
             override fun onStart() {
                 super.onStart()
-                Log.i(TAG, "download start")
+                Log.i(TAG, "onStart")
             }
 
             override fun onProgressDownload(param: TransmitParam) {
-                mBinding.progressBar.progress = param.progress
-                mBinding.tvProgress.text = "${param.progress}%"
-                mBinding.tvSpeed.text = "${param.speedKBps}KB/秒"
+                _binding.progressBar.progress = param.progress
+                _binding.tvProgress.text = "${param.progress}%"
+                _binding.tvSpeed.text = "${param.speedKBps}KB/秒"
             }
 
             override fun onSuccess() {
-                Log.i(TAG, "download finish")
+                Log.i(TAG, "onSuccess")
             }
 
             override fun onError(e: Exception) {
                 super.onError(e)
-                Log.i(TAG, "download error:$e")
+                Log.i(TAG, "onError:$e")
             }
 
             override fun onCancel() {
                 super.onCancel()
-                mBinding.tvSpeed.text = ""
-                Log.i(TAG, "download cancelled")
+                _binding.tvSpeed.text = ""
+                Log.i(TAG, "onCancel")
             }
         })
     }
