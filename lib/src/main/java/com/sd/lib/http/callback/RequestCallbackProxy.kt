@@ -5,7 +5,7 @@ import com.sd.lib.http.IResponse
 import com.sd.lib.http.RequestHandler
 import com.sd.lib.http.utils.TransmitParam
 
-class RequestCallbackProxy private constructor(vararg callbacks: RequestCallback) : RequestCallback() {
+class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallback>) : RequestCallback() {
     private val callbacks: Array<out RequestCallback> = callbacks
 
     override fun saveRequest(request: IRequest) {
@@ -85,7 +85,7 @@ class RequestCallbackProxy private constructor(vararg callbacks: RequestCallback
     companion object {
         @JvmStatic
         fun get(vararg callbacks: RequestCallback): RequestCallback {
-            return RequestCallbackProxy(*callbacks)
+            return RequestCallbackProxy(callbacks)
         }
     }
 }
