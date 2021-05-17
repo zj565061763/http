@@ -20,9 +20,7 @@ open class HttpException : FExceptionHttp {
             else -> {
                 var desc = context.getString(R.string.lib_http_desc_exception_http)
                 toString().also {
-                    if (it.isNotEmpty()) {
-                        desc = "${desc}, ${it}"
-                    }
+                    if (it.isNotEmpty()) desc = "${desc}，${it}"
                 }
                 desc
             }
