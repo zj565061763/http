@@ -61,7 +61,8 @@ internal class FHttpRequest : HttpRequest {
         val headers = headers()
         if (headers == null || headers.isEmpty()) return null
 
-        val listCookie = headers[HEADER_SET_COOKIE]
+        var listCookie = headers[HEADER_SET_COOKIE]
+        if (listCookie == null || listCookie.isEmpty()) listCookie = headers[HEADER_SET_COOKIE2]
         if (listCookie == null || listCookie.isEmpty()) return null
 
         val listResult = mutableListOf<HttpCookie>()
@@ -90,6 +91,9 @@ internal class FHttpRequest : HttpRequest {
     companion object {
         /** 'Set-Cookie' header name */
         const val HEADER_SET_COOKIE = "Set-Cookie"
+
+        /** 'Set-Cookie2' header name */
+        const val HEADER_SET_COOKIE2 = "Set-Cookie2"
 
         /** 'Cookie' header name */
         const val HEADER_COOKIE = "Cookie"
