@@ -15,7 +15,8 @@ class HttpExceptionResponseCode : HttpException {
     }
 
     override fun getDescFormat(context: Context): String {
-        return context.getString(R.string.lib_http_desc_exception_response_code, code)
+        var desc = context.getString(R.string.lib_http_desc_exception_response_code)
+        return desc + toStringSuffix()
     }
 
     override fun toString(): String {

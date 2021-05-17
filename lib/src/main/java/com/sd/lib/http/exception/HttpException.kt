@@ -15,15 +15,22 @@ open class HttpException : FExceptionHttp {
     open fun getDescFormat(context: Context): String {
         return when (cause) {
             is SocketTimeoutException -> {
-                context.getString(R.string.lib_http_desc_exception_timeout, toString())
+                var desc = context.getString(R.string.lib_http_desc_exception_timeout)
+                desc + toStringSuffix()
             }
             else -> {
                 var desc = context.getString(R.string.lib_http_desc_exception_http)
-                toString().also {
-                    if (it.isNotEmpty()) desc = "${desc}，${it}"
-                }
-                desc
+                desc + toStringSuffix()
             }
+        }
+    }
+
+    protected fun toStringSuffix(): String {
+        val content = toString()
+        return if (content.isEmpty()) {
+            content
+        } else {
+            "，${content}"
         }
     }
 

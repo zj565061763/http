@@ -11,6 +11,7 @@ class HttpExceptionParseResponse : HttpException {
     constructor(message: String? = "", cause: Throwable?) : super(message, cause)
 
     override fun getDescFormat(context: Context): String {
-        return context.getString(R.string.lib_http_desc_exception_parse_response, toString())
+        var desc = context.getString(R.string.lib_http_desc_exception_parse_response)
+        return desc + toStringSuffix()
     }
 }
