@@ -19,7 +19,7 @@ class SerializableCookieStore : PersistentCookieStore {
 
     constructor(context: Context) : super(context)
 
-    override fun saveCacheImpl(cookies: Map<URI, List<SerializableHttpCookie>>) {
+    override fun saveCacheImpl(cookies: Map<URI?, List<SerializableHttpCookie>>) {
         try {
             val file = _file!!
             if (!file.exists()) {
@@ -37,7 +37,7 @@ class SerializableCookieStore : PersistentCookieStore {
         }
     }
 
-    override fun getCacheImpl(): Map<URI, List<SerializableHttpCookie>>? {
+    override fun getCacheImpl(): Map<URI?, List<SerializableHttpCookie>>? {
         try {
             val file = _file!!
             val obj = deserializeObject<SerializableCookieHolder>(file)
@@ -74,7 +74,7 @@ class SerializableCookieStore : PersistentCookieStore {
 }
 
 class SerializableCookieHolder : Serializable {
-    var map: Map<URI, List<SerializableHttpCookie>>? = null
+    var map: Map<URI?, List<SerializableHttpCookie>>? = null
 
     companion object {
         private const val serialVersionUID = 42L
