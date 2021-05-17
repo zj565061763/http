@@ -22,6 +22,10 @@ class SerializableCookieStore : PersistentCookieStore {
     override fun saveCacheImpl(cookies: Map<URI, List<SerializableHttpCookie>>) {
         try {
             val file = _file!!
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+
             val holder = SerializableCookieHolder().apply {
                 this.map = cookies
             }
