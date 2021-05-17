@@ -46,7 +46,8 @@ class SerializableHttpCookie : Serializable {
     }
 
     companion object {
-        fun from(cookie: HttpCookie): SerializableHttpCookie {
+        fun from(cookie: HttpCookie?): SerializableHttpCookie? {
+            if (cookie == null) return null
             return SerializableHttpCookie(cookie)
         }
     }

@@ -80,6 +80,16 @@ public class InMemoryCookieStore implements CookieStore {
     }
     // END Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex
 
+    // modify by lib
+    public void runLock(Runnable runnable) {
+        lock.lock();
+        try {
+            runnable.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+
     /**
      * Add one cookie into cookie store.
      */
