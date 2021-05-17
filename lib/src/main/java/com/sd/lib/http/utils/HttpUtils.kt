@@ -15,6 +15,10 @@ internal object HttpUtils {
     }
 
     fun checkBackgroundThread() {
-        require(Looper.myLooper() != Looper.getMainLooper())
+        assert(Looper.myLooper() != Looper.getMainLooper())
+    }
+
+    fun checkMainThread() {
+        assert(Looper.myLooper() == Looper.getMainLooper())
     }
 }

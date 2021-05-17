@@ -53,7 +53,9 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 开始回调（UI线程）
      */
-    open fun onStart() {}
+    open fun onStart() {
+        HttpUtils.checkMainThread()
+    }
 
     /**
      * 成功回调，常用来解析数据（后台线程）
@@ -75,7 +77,9 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 成功回调，常用来做一些统一的处理（UI线程）
      */
-    open fun onSuccessBefore() {}
+    open fun onSuccessBefore() {
+        HttpUtils.checkMainThread()
+    }
 
     /**
      * 成功回调，在[onSuccessBefore]方法之后执行（UI线程）
@@ -85,22 +89,30 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 上传回调（UI线程）
      */
-    override fun onProgressUpload(param: TransmitParam) {}
+    override fun onProgressUpload(param: TransmitParam) {
+        HttpUtils.checkMainThread()
+    }
 
     /**
      * 错误回调（UI线程）
      */
-    open fun onError(e: Exception) {}
+    open fun onError(e: Exception) {
+        HttpUtils.checkMainThread()
+    }
 
     /**
      * 取消回调（UI线程）
      */
-    open fun onCancel() {}
+    open fun onCancel() {
+        HttpUtils.checkMainThread()
+    }
 
     /**
      * 结束回调（UI线程）
      */
-    open fun onFinish() {}
+    open fun onFinish() {
+        HttpUtils.checkMainThread()
+    }
 
     //---------- notify method end ----------
 }
