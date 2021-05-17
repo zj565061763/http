@@ -62,6 +62,8 @@ class DownloadActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onCancel() {
                 super.onCancel()
+                _binding.progressBar.progress = 0
+                _binding.tvProgress.text = ""
                 _binding.tvSpeed.text = ""
                 Log.i(TAG, "onCancel")
             }

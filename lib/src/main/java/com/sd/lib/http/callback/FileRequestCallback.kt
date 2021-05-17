@@ -20,6 +20,7 @@ abstract class FileRequestCallback : RequestCallback {
         val total = httpResponse.contentLength.toLong()
         val input = httpResponse.inputStream
         val output = FileOutputStream(file)
+
         try {
             HttpIOUtils.copy(input, output) { count ->
                 if (httpRequestHandler.isActive) {
@@ -33,7 +34,6 @@ abstract class FileRequestCallback : RequestCallback {
                 }
             }
         } finally {
-            HttpUtils.runOnUiThread { onProgressDownload(_transmitParam.copy()) }
             HttpIOUtils.closeQuietly(input)
             HttpIOUtils.closeQuietly(output)
         }
