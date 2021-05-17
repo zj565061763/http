@@ -9,7 +9,7 @@ import com.sd.lib.utils.context.FToast
 class AppResultInterceptor : IResultInterceptor {
     val TAG = AppResultInterceptor::class.java.simpleName
 
-    override fun intercept(request: IRequest, result: FResult<*>): Boolean {
+    override fun intercept(result: FResult<*>, request: IRequest): Boolean {
         Log.i(TAG, "intercept request:${request} extra:${request.extra}")
 
         if (result.isFailure) {

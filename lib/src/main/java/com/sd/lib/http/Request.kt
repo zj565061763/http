@@ -113,7 +113,7 @@ abstract class Request : IRequest {
         val interceptor = RequestManager.instance.resultInterceptor
         if (interceptor != null && interceptResult) {
             val intercept = try {
-                interceptor.intercept(this, result)
+                interceptor.intercept(result, this)
             } catch (e: Exception) {
                 HttpUtils.runOnUiThread { throw e }
                 false
