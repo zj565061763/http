@@ -67,9 +67,7 @@ abstract class PersistentCookieStore : ICookieStore {
 
                 value.forEach { item ->
                     val cookie = SerializableHttpCookie.from(item)
-                    if (cookie != null) {
-                        listCopy.add(cookie)
-                    }
+                    listCopy.add(cookie)
                 }
             }
             saveCacheImpl(mapCache)
