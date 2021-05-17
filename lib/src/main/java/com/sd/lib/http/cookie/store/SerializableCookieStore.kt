@@ -8,19 +8,16 @@ import java.io.*
 import java.net.URI
 
 class SerializableCookieStore : PersistentCookieStore {
-    private val _context: Context
 
     private var _file: File? = null
         get() {
             if (field == null) {
-                field = File(_context.filesDir, "f_http_cookie")
+                field = File(context.filesDir, "f_http_cookie")
             }
             return field
         }
 
-    constructor(context: Context) : super() {
-        this._context = context.applicationContext
-    }
+    constructor(context: Context) : super(context)
 
     override fun saveCacheImpl(cookies: Map<URI, List<SerializableHttpCookie>>) {
         try {

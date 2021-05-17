@@ -1,13 +1,16 @@
 package com.sd.lib.http.cookie.store
 
+import android.content.Context
 import com.sd.lib.http.cookie.SerializableHttpCookie
 import java.net.HttpCookie
 import java.net.URI
 
 abstract class PersistentCookieStore : ICookieStore {
+    val context: Context
     private val _cookieStore = InMemoryCookieStore()
 
-    constructor() {
+    constructor(context: Context) {
+        this.context = context.applicationContext
         getCache()
     }
 
