@@ -51,7 +51,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private fun submitInternal() {
         if (_job != null) return
 
-        _job = GlobalScope.launch() {
+        _job = GlobalScope.launch(Dispatchers.Main) {
             try {
                 withContext(Dispatchers.Main) {
                     notifyStart()
