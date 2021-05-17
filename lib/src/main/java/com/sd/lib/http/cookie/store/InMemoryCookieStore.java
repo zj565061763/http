@@ -65,7 +65,7 @@ public class InMemoryCookieStore implements CookieStore {
     private Map<String, List<HttpCookie>> domainIndex = null;
     */
     // END Android-removed: Remove cookieJar and domainIndex
-    private Map<URI, List<HttpCookie>> uriIndex = null;
+    public Map<URI, List<HttpCookie>> uriIndex = null;
 
     // use ReentrantLock instead of syncronized for scalability
     private ReentrantLock lock = null;
@@ -73,15 +73,8 @@ public class InMemoryCookieStore implements CookieStore {
     // BEGIN Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex
     private final boolean applyMCompatibility;
 
-    /**
-     * The default ctor
-     */
     public InMemoryCookieStore() {
-        this(new HashMap<>());
-    }
-
-    public InMemoryCookieStore(Map<URI, List<HttpCookie>> map) {
-        uriIndex = map;
+        uriIndex = new HashMap<>();
         lock = new ReentrantLock(false);
         applyMCompatibility = false;
     }
