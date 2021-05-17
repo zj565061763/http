@@ -2,6 +2,8 @@ package com.sd.lib.http.cookie.store
 
 import android.content.Context
 import com.sd.lib.http.cookie.SerializableHttpCookie
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.net.HttpCookie
 import java.net.URI
 
@@ -57,11 +59,13 @@ abstract class PersistentCookieStore : ICookieStore {
     }
 
     private fun saveCache() {
-        _cookieStore.runLock {
-            val map = mutableMapOf<URI, List<SerializableHttpCookie>>()
-            for ((key, value) in _cookieStore.uriIndex) {
+        GlobalScope.launch {
+            val mapCookie = _cookieStore.copyCookie()
+            val mapCache = mutableMapOf<URI?, List<SerializableHttpCookie>>()
+
+            for ((key, value) in mapCookie) {
                 val listCopy = mutableListOf<SerializableHttpCookie>()
-                map.put(key, listCopy)
+                mapCache.put(key, listCopy)
 
                 value.forEach { item ->
                     val cookie = SerializableHttpCookie.from(item)
@@ -70,25 +74,17 @@ abstract class PersistentCookieStore : ICookieStore {
                     }
                 }
             }
-            saveCacheImpl(map)
+            saveCacheImpl(mapCache)
         }
     }
 
     private fun getCache() {
-        _cookieStore.runLock {
-            val map = getCacheImpl()
-            if (map == null || map.isEmpty()) return@runLock
+        val mapCache = getCacheImpl()
+        if (mapCache == null || mapCache.isEmpty()) return
 
-            for ((key, value) in map) {
-                val listCopy = mutableListOf<HttpCookie>()
-                _cookieStore.uriIndex.put(key, listCopy)
-
-                value.forEach { item ->
-                    val cookie = item?.toHttpCookie()
-                    if (cookie != null) {
-                        listCopy.add(cookie)
-                    }
-                }
+        for ((key, value) in mapCache) {
+            value.forEach { item ->
+                _cookieStore.add(key, item.toHttpCookie())
             }
         }
     }
@@ -96,10 +92,10 @@ abstract class PersistentCookieStore : ICookieStore {
     /**
      * 保存到缓存
      */
-    protected abstract fun saveCacheImpl(cookies: Map<URI, List<SerializableHttpCookie>>)
+    protected abstract fun saveCacheImpl(cookies: Map<URI?, List<SerializableHttpCookie>>)
 
     /**
      * 读取缓存
      */
-    protected abstract fun getCacheImpl(): Map<URI, List<SerializableHttpCookie>>?
+    protected abstract fun getCacheImpl(): Map<URI?, List<SerializableHttpCookie>>?
 }
