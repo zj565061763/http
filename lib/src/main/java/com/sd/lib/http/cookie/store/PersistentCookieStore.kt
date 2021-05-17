@@ -41,19 +41,15 @@ abstract class PersistentCookieStore : ICookieStore {
     }
 
     override fun remove(uri: URI?, cookie: HttpCookie): Boolean {
-        val remove = _cookieStore.remove(uri, cookie)
-        if (remove) {
-            saveCache()
+        return _cookieStore.remove(uri, cookie).also {
+            if (it) saveCache()
         }
-        return remove
     }
 
     override fun removeAll(): Boolean {
-        val removeAll = _cookieStore.removeAll()
-        if (removeAll) {
-            saveCache()
+        return _cookieStore.removeAll().also {
+            if (it) saveCache()
         }
-        return removeAll
     }
 
     private fun saveCache() {
