@@ -16,33 +16,31 @@ abstract class PersistentCookieStore : ICookieStore {
         getCache()
     }
 
-    override fun add(uri: URI?, listCookie: List<HttpCookie>?) {
-        if (listCookie != null) {
-            listCookie.forEach {
-                _cookieStore.add(uri, it)
-            }
-            saveCache()
+    override fun add(uri: URI?, listCookie: List<HttpCookie>) {
+        listCookie.forEach {
+            _cookieStore.add(uri, it)
         }
+        saveCache()
     }
 
-    override fun add(uri: URI?, cookie: HttpCookie?) {
+    override fun add(uri: URI?, cookie: HttpCookie) {
         _cookieStore.add(uri, cookie)
         saveCache()
     }
 
-    override fun get(uri: URI?): MutableList<HttpCookie> {
+    override fun get(uri: URI?): List<HttpCookie> {
         return _cookieStore.get(uri)
     }
 
-    override fun getCookies(): MutableList<HttpCookie> {
+    override fun getCookies(): List<HttpCookie> {
         return _cookieStore.cookies
     }
 
-    override fun getURIs(): MutableList<URI> {
+    override fun getURIs(): List<URI?> {
         return _cookieStore.urIs
     }
 
-    override fun remove(uri: URI?, cookie: HttpCookie?): Boolean {
+    override fun remove(uri: URI?, cookie: HttpCookie): Boolean {
         val remove = _cookieStore.remove(uri, cookie)
         if (remove) {
             saveCache()

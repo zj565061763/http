@@ -6,8 +6,8 @@ import java.net.URI
 internal class MemoryCookieStore : ICookieStore {
     private val _cookieStore by lazy { InMemoryCookieStore() }
 
-    override fun add(uri: URI?, listCookie: List<HttpCookie>?) {
-        listCookie?.forEach {
+    override fun add(uri: URI?, listCookie: List<HttpCookie>) {
+        listCookie.forEach {
             _cookieStore.add(uri, it)
         }
     }
