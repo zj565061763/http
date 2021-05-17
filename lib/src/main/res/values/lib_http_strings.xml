@@ -1,0 +1,3 @@
+<resources>
+    <string name="lib_http_desc_exception_http">请求服务器失败</string>
+</resources>
