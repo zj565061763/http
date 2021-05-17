@@ -24,8 +24,7 @@ internal class FHttpRequest : HttpRequest {
             header(HEADER_COOKIE, cookie)
 
             HttpLog.i(
-                """
-                cookie loadCookieForRequest ${uri}
+                """cookie loadCookieForRequest ${uri} size:${uri}${listCookie.size}
                 ${cookie}
             """.trimIndent()
             )
@@ -46,9 +45,8 @@ internal class FHttpRequest : HttpRequest {
             RequestManager.instance.cookieStore.add(uri, listCookie)
 
             HttpLog.i(
-                """
-                cookie saveCookieFromResponse ${uri}
-                ${listCookie.joinToString("\r\n")}
+                """cookie saveCookieFromResponse ${uri} size:${listCookie.size}
+                    ${listCookie}
             """.trimIndent()
             )
         } catch (e: Exception) {
