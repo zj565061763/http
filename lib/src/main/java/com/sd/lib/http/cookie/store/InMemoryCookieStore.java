@@ -77,13 +77,13 @@ public class InMemoryCookieStore implements CookieStore {
      * The default ctor
      */
     public InMemoryCookieStore() {
-        this(28);
+        this(new HashMap<>());
     }
 
-    public InMemoryCookieStore(int targetSdkVersion) {
-        uriIndex = new HashMap<>();
+    public InMemoryCookieStore(Map<URI, List<HttpCookie>> map) {
+        uriIndex = map;
         lock = new ReentrantLock(false);
-        applyMCompatibility = (targetSdkVersion <= 23);
+        applyMCompatibility = false;
     }
     // END Android-changed: Add targetSdkVersion and remove cookieJar and domainIndex
 
