@@ -60,7 +60,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         override fun onPrepare(request: IRequest) {
             super.onPrepare(request)
             // 请求在执行之前的准备回调（发起请求的线程）
-            Log.i(TAG, "onPrepare----->")
+            Log.i(TAG, "onPrepare-----> ${Thread.currentThread()}")
         }
 
         override fun onStart() {
@@ -71,13 +71,13 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
 
         override fun parseToModel(content: String, type: Type): WeatherModel {
             // 把返回的内容转实体（非UI线程）
-            Log.i(TAG, "parseToModel content:${content} type:${type}")
+            Log.i(TAG, "parseToModel content:${content} type:${type} ${Thread.currentThread()}")
             return Gson().fromJson(content, type)
         }
 
         override fun onSuccessBefore() {
             // 成功回调（UI线程）
-            Log.i(TAG, "onSuccessBefore")
+            Log.i(TAG, "onSuccessBefore ${Thread.currentThread()}")
         }
 
         override fun onSuccess() {
@@ -85,25 +85,25 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
 
             // 获得接口对应的实体
             val model = actModel!!
-            Log.i(TAG, "onSuccess code:${httpResponse.code} city:${model.weatherinfo!!.city}")
+            Log.i(TAG, "onSuccess code:${httpResponse.code} city:${model.weatherinfo!!.city} ${Thread.currentThread()}")
         }
 
         override fun onError(e: Exception) {
             super.onError(e)
             // 异常回调，请求异常或者成功之后的数据处理异常（UI线程）
-            Log.i(TAG, "onError:$e")
+            Log.i(TAG, "onError:${e} ${Thread.currentThread()}")
         }
 
         override fun onCancel() {
             super.onCancel()
             // 取消回调（UI线程）
-            Log.i(TAG, "onCancel")
+            Log.i(TAG, "onCancel ${Thread.currentThread()}")
         }
 
         override fun onFinish() {
             super.onFinish()
             // 结束回调（UI线程）
-            Log.i(TAG, "onFinish")
+            Log.i(TAG, "onFinish ${Thread.currentThread()}")
         }
     }
 
