@@ -35,8 +35,8 @@ abstract class RequestCallback : IUploadProgressCallback {
     }
 
     internal open fun saveResponse(response: IResponse) {
-        HttpUtils.checkBackgroundThread()
         _response = response
+        processResponseCode(response.code)
     }
 
     internal open fun saveRequestHandler(requestHandler: RequestHandler) {
@@ -61,7 +61,6 @@ abstract class RequestCallback : IUploadProgressCallback {
     @Throws(Exception::class)
     open fun onSuccessBackground() {
         HttpUtils.checkBackgroundThread()
-        processResponseCode(httpResponse.code)
     }
 
     /**
