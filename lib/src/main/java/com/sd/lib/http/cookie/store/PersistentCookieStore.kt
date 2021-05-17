@@ -1,11 +1,10 @@
 package com.sd.lib.http.cookie.store
 
-import com.sd.lib.http.cookie.ICookieStore
 import com.sd.lib.http.cookie.SerializableHttpCookie
 import java.net.HttpCookie
 import java.net.URI
 
-abstract class SimpleCookieStore : ICookieStore {
+abstract class PersistentCookieStore : ICookieStore {
     private val _cookie by lazy { mutableMapOf<URI, List<SerializableHttpCookie>>() }
     private val _cookieStore by lazy { MemoryCookieStore() }
 
@@ -36,4 +35,14 @@ abstract class SimpleCookieStore : ICookieStore {
     override fun removeAll(): Boolean {
         return _cookieStore.removeAll()
     }
+
+    /**
+     * 保存到缓存
+     */
+    protected abstract fun saveCache(cookies: Map<URI, List<SerializableHttpCookie>>)
+
+    /**
+     * 读取缓存
+     */
+    protected abstract fun getCache(): Map<URI, List<SerializableHttpCookie>>
 }

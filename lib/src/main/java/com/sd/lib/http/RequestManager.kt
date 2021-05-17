@@ -2,7 +2,7 @@ package com.sd.lib.http
 
 import android.util.Log
 import com.sd.lib.http.callback.RequestCallback
-import com.sd.lib.http.cookie.ICookieStore
+import com.sd.lib.http.cookie.store.ICookieStore
 import com.sd.lib.http.cookie.ModifyMemoryCookieStore
 import com.sd.lib.http.interceptor.IRequestInterceptor
 import com.sd.lib.http.interceptor.IResultInterceptor

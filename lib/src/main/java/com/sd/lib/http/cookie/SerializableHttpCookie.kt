@@ -3,7 +3,7 @@ package com.sd.lib.http.cookie
 import java.io.Serializable
 import java.net.HttpCookie
 
-internal class SerializableHttpCookie : Serializable {
+class SerializableHttpCookie : Serializable {
     val name: String
     var value: String? = null
 
@@ -17,7 +17,7 @@ internal class SerializableHttpCookie : Serializable {
     var secure: Boolean = false
     var version: Int = 1
 
-    private constructor(cookie: HttpCookie) {
+    constructor(cookie: HttpCookie) {
         this.name = cookie.name
         this.value = cookie.value
         this.comment = cookie.comment

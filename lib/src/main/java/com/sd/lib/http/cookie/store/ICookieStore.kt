@@ -1,4 +1,4 @@
-package com.sd.lib.http.cookie
+package com.sd.lib.http.cookie.store
 
 import java.net.CookieStore
 import java.net.HttpCookie

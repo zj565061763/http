@@ -1,6 +1,5 @@
 package com.sd.lib.http.cookie.store
 
-import com.sd.lib.http.cookie.ICookieStore
 import java.net.HttpCookie
 import java.net.URI
 
