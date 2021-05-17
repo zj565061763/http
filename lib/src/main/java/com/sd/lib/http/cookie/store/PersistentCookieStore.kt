@@ -56,12 +56,12 @@ abstract class PersistentCookieStore : ICookieStore {
     private fun saveCache() {
         _cookieStore.runLock {
             val map = mutableMapOf<URI, List<SerializableHttpCookie>>()
-            _cookieStore.uriIndex.forEach { entry ->
+            for ((key, value) in _cookieStore.uriIndex) {
                 val listCopy = mutableListOf<SerializableHttpCookie>()
-                map.put(entry.key, listCopy)
+                map.put(key, listCopy)
 
-                entry.value.forEach {
-                    val cookie = SerializableHttpCookie.from(it)
+                value.forEach { item ->
+                    val cookie = SerializableHttpCookie.from(item)
                     if (cookie != null) {
                         listCopy.add(cookie)
                     }
@@ -74,12 +74,14 @@ abstract class PersistentCookieStore : ICookieStore {
     private fun getCache() {
         _cookieStore.runLock {
             val map = getCacheImpl()
-            map.forEach { entry ->
-                val listCopy = mutableListOf<HttpCookie>()
-                _cookieStore.uriIndex.put(entry.key, listCopy)
+            if (map == null || map.isEmpty()) return@runLock
 
-                entry.value.forEach {
-                    val cookie = it?.toHttpCookie()
+            for ((key, value) in map) {
+                val listCopy = mutableListOf<HttpCookie>()
+                _cookieStore.uriIndex.put(key, listCopy)
+
+                value.forEach { item ->
+                    val cookie = item?.toHttpCookie()
                     if (cookie != null) {
                         listCopy.add(cookie)
                     }
@@ -96,5 +98,5 @@ abstract class PersistentCookieStore : ICookieStore {
     /**
      * 读取缓存
      */
-    protected abstract fun getCacheImpl(): Map<URI, List<SerializableHttpCookie>>
+    protected abstract fun getCacheImpl(): Map<URI, List<SerializableHttpCookie>>?
 }

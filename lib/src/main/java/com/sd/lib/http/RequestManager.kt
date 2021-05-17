@@ -3,7 +3,7 @@ package com.sd.lib.http
 import android.util.Log
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.cookie.store.ICookieStore
-import com.sd.lib.http.cookie.ModifyMemoryCookieStore
+import com.sd.lib.http.cookie.store.MemoryCookieStore
 import com.sd.lib.http.interceptor.IRequestInterceptor
 import com.sd.lib.http.interceptor.IResultInterceptor
 import com.sd.lib.http.parser.DefaultResponseParser
@@ -18,7 +18,7 @@ class RequestManager private constructor() {
     var isDebug = false
 
     /** cookie管理对象 */
-    var cookieStore: ICookieStore = ModifyMemoryCookieStore()
+    var cookieStore: ICookieStore = MemoryCookieStore()
 
     /** 请求拦截 */
     var requestInterceptor: IRequestInterceptor? = null

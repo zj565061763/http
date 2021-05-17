@@ -46,6 +46,8 @@ class SerializableHttpCookie : Serializable {
     }
 
     companion object {
+        private const val serialVersionUID = 42L
+
         fun from(cookie: HttpCookie?): SerializableHttpCookie? {
             if (cookie == null) return null
             return SerializableHttpCookie(cookie)

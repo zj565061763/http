@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.RequestManager
-import com.sd.lib.http.cookie.SerializableCookieStore
+import com.sd.lib.http.cookie.store.SerializableCookieStore
 import com.sd.www.http.cookie.InMemoryCookieStore
 import com.sd.www.http.databinding.ActivityMainBinding
 import com.sd.www.http.utils.AppRequestInterceptor
