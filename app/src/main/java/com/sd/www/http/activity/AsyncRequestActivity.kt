@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.sd.lib.http.IRequest
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.callback.ModelRequestCallback
+import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.impl.GetRequest
 import com.sd.www.http.databinding.ActivityAsyncRequestBinding
 import com.sd.www.http.model.WeatherModel
@@ -91,7 +92,13 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
         override fun onError(e: Exception) {
             super.onError(e)
             // 异常回调，请求异常或者成功之后的数据处理异常（UI线程）
-            Log.i(TAG, "onError:${e} thread:${Thread.currentThread().name}")
+            val desc: String = if (e is HttpException) {
+                e.getDescFormat(application)
+            } else {
+                e.toString()
+            }
+
+            Log.i(TAG, "onError:${desc} thread:${Thread.currentThread().name}")
         }
 
         override fun onCancel() {
