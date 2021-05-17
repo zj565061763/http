@@ -1,11 +1,9 @@
-package com.sd.lib.http.cookie;
+package com.sd.lib.http.cookie
 
-import java.net.CookieStore;
-import java.net.HttpCookie;
-import java.net.URI;
-import java.util.List;
+import java.net.CookieStore
+import java.net.HttpCookie
+import java.net.URI
 
-public interface ICookieStore extends CookieStore
-{
-    void add(URI uri, List<HttpCookie> listCookie);
+interface ICookieStore : CookieStore {
+    fun add(uri: URI?, listCookie: List<HttpCookie?>?): Boolean
 }
