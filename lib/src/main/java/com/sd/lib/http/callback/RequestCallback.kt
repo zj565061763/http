@@ -66,7 +66,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 处理返回码
      */
-    @Throws(Exception::class)
+    @Throws(HttpExceptionResponseCode::class)
     protected fun processResponseCode(code: Int) {
         val codeException = HttpExceptionResponseCode.from(code)
         if (codeException != null) throw codeException
