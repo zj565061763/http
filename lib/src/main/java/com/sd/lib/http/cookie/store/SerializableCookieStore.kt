@@ -19,6 +19,7 @@ class SerializableCookieStore : PersistentCookieStore {
 
     constructor(context: Context) : super(context)
 
+    @Synchronized
     override fun saveCacheImpl(cookies: Map<URI?, List<SerializableHttpCookie>>) {
         try {
             val file = _file!!
