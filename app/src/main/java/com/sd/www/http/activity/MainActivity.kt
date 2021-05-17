@@ -2,17 +2,14 @@ package com.sd.www.http.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.cookie.store.SerializableCookieStore
-import com.sd.www.http.cookie.InMemoryCookieStore
 import com.sd.www.http.databinding.ActivityMainBinding
 import com.sd.www.http.utils.AppRequestInterceptor
 import com.sd.www.http.utils.AppResponseParser
 import com.sd.www.http.utils.AppResultInterceptor
-import java.net.URI
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var _binding: ActivityMainBinding
@@ -36,8 +33,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         // 结果拦截器
         RequestManager.instance.resultInterceptor = AppResultInterceptor()
-
-        testCookie()
     }
 
     override fun onClick(v: View) {
@@ -46,20 +41,5 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             _binding.btnSyncRequestActivity -> startActivity(Intent(this, SyncRequestActivity::class.java))
             _binding.btnDownloadActivity -> startActivity(Intent(this, DownloadActivity::class.java))
         }
-    }
-
-    private fun testCookie() {
-
-        val manager = java.net.CookieManager(InMemoryCookieStore(), null)
-
-        val uri = URI.create("http://foo.com/hello")
-        val listCookie = mutableListOf("session=1111111111", "userId=aaa")
-        val header = mutableMapOf<String, List<String>>("Set-Cookie" to listCookie)
-        manager.put(uri, header)
-
-        val resultUri = URI.create("http://bar.foo.com/world")
-        val resultHeader = manager.get(resultUri, mutableMapOf<String, List<String>>())
-
-        Log.i(MainActivity::class.java.simpleName, resultHeader.toString())
     }
 }
