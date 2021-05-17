@@ -5,10 +5,10 @@ import java.net.HttpCookie
 import java.net.URI
 
 abstract class PersistentCookieStore : ICookieStore {
-    private val _cookieStore by lazy {
-        InMemoryCookieStore().apply {
-            getCache()
-        }
+    private val _cookieStore = InMemoryCookieStore()
+
+    constructor() {
+        getCache()
     }
 
     override fun add(uri: URI?, listCookie: List<HttpCookie?>?) {
