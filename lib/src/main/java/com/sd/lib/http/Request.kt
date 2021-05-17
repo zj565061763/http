@@ -142,9 +142,16 @@ abstract class Request : IRequest {
         if (exceptionCode != null) throw exceptionCode
 
         // 解析数据
-        val parser = RequestManager.instance.responseParser
+        val content = response.readString()
+
+        // 检查是否需要取消
+        if (checkCancel != null && checkCancel()) {
+            throw HttpExceptionCancellation()
+        }
+
         val model = try {
-            parser.parse(clazz, response) ?: throw HttpExceptionParseResponse(cause = null)
+            RequestManager.instance.responseParser.parse(content, clazz, this)
+                ?: throw HttpExceptionParseResponse(cause = null)
         } catch (e: Exception) {
             if (e is HttpException) {
                 throw e
