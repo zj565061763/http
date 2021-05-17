@@ -16,7 +16,7 @@ internal class MemoryCookieStore : ICookieStore {
         _cookieStore.add(uri, cookie)
     }
 
-    override fun get(uri: URI?): List<HttpCookie> {
+    override fun get(uri: URI): List<HttpCookie> {
         return _cookieStore.get(uri)
     }
 

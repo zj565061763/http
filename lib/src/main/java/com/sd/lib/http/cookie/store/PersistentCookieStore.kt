@@ -28,7 +28,7 @@ abstract class PersistentCookieStore : ICookieStore {
         saveCache()
     }
 
-    override fun get(uri: URI?): List<HttpCookie> {
+    override fun get(uri: URI): List<HttpCookie> {
         return _cookieStore.get(uri)
     }
 

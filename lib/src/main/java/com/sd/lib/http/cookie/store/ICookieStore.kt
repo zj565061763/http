@@ -9,7 +9,7 @@ interface ICookieStore : CookieStore {
 
     override fun add(uri: URI?, cookie: HttpCookie)
 
-    override fun get(uri: URI?): List<HttpCookie>
+    override fun get(uri: URI): List<HttpCookie>
 
     override fun getCookies(): List<HttpCookie>
 
