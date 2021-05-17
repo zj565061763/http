@@ -1,6 +1,7 @@
 package com.sd.lib.http.callback
 
 import androidx.annotation.CallSuper
+import com.sd.lib.http.exception.HttpExceptionParseResponse
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -13,7 +14,11 @@ abstract class ModelRequestCallback<T> : StringRequestCallback() {
     override fun onSuccessBackground() {
         super.onSuccessBackground()
         val type = modelType
-        actModel = parseToModel(result, type)
+        try {
+            actModel = parseToModel(result, type)
+        } catch (e: Exception) {
+            throw HttpExceptionParseResponse(cause = e)
+        }
     }
 
     protected val modelType: Type
