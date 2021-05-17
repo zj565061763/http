@@ -6,13 +6,13 @@ import java.net.URI
 internal class MemoryCookieStore : ICookieStore {
     private val _cookieStore by lazy { InMemoryCookieStore() }
 
-    override fun add(uri: URI?, listCookie: List<HttpCookie?>?) {
+    override fun add(uri: URI?, listCookie: List<HttpCookie>?) {
         listCookie?.forEach {
             _cookieStore.add(uri, it)
         }
     }
 
-    override fun add(uri: URI?, cookie: HttpCookie?) {
+    override fun add(uri: URI?, cookie: HttpCookie) {
         _cookieStore.add(uri, cookie)
     }
 
@@ -20,15 +20,15 @@ internal class MemoryCookieStore : ICookieStore {
         return _cookieStore.get(uri)
     }
 
-    override fun getCookies(): MutableList<HttpCookie> {
+    override fun getCookies(): List<HttpCookie> {
         return _cookieStore.cookies
     }
 
-    override fun getURIs(): MutableList<URI> {
+    override fun getURIs(): List<URI?> {
         return _cookieStore.urIs
     }
 
-    override fun remove(uri: URI?, cookie: HttpCookie?): Boolean {
+    override fun remove(uri: URI?, cookie: HttpCookie): Boolean {
         return _cookieStore.remove(uri, cookie)
     }
 

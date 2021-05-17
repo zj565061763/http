@@ -16,7 +16,7 @@ abstract class PersistentCookieStore : ICookieStore {
         getCache()
     }
 
-    override fun add(uri: URI?, listCookie: List<HttpCookie?>?) {
+    override fun add(uri: URI?, listCookie: List<HttpCookie>?) {
         if (listCookie != null) {
             listCookie.forEach {
                 _cookieStore.add(uri, it)

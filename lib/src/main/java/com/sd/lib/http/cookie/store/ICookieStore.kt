@@ -5,5 +5,5 @@ import java.net.HttpCookie
 import java.net.URI
 
 interface ICookieStore : CookieStore {
-    fun add(uri: URI?, listCookie: List<HttpCookie?>?)
+    fun add(uri: URI?, listCookie: List<HttpCookie>?)
 }
