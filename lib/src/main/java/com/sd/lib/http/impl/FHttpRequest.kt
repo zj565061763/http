@@ -24,7 +24,7 @@ internal class FHttpRequest : HttpRequest {
             header(HEADER_COOKIE, cookie)
 
             HttpLog.i(
-                """cookie loadCookieForRequest ${uri} size:${uri}${listCookie.size}
+                """cookie loadCookieForRequest ${uri} size:${listCookie.size}
                 ${cookie}
             """.trimIndent()
             )
