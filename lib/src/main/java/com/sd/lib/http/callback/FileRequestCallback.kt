@@ -8,7 +8,7 @@ import java.io.FileOutputStream
 
 abstract class FileRequestCallback : RequestCallback {
     val file: File
-    val transmitParam = TransmitParam()
+    private val _transmitParam = TransmitParam()
 
     constructor(file: File) {
         this.file = file
@@ -23,8 +23,9 @@ abstract class FileRequestCallback : RequestCallback {
         try {
             HttpIOUtils.copy(input, output) { count ->
                 if (httpRequestHandler.isActive) {
-                    if (transmitParam.transmit(total, count)) {
-                        HttpUtils.runOnUiThread(mUpdateProgressRunnable)
+                    if (_transmitParam.transmit(total, count)) {
+                        val copyParam = _transmitParam.copy()
+                        HttpUtils.runOnUiThread { onProgressDownload(copyParam) }
                     }
                     false
                 } else {
@@ -32,18 +33,11 @@ abstract class FileRequestCallback : RequestCallback {
                 }
             }
         } finally {
-            HttpUtils.runOnUiThread(mUpdateProgressRunnable)
+            HttpUtils.runOnUiThread { onProgressDownload(_transmitParam.copy()) }
             HttpIOUtils.closeQuietly(input)
             HttpIOUtils.closeQuietly(output)
         }
     }
 
-    private val mUpdateProgressRunnable = Runnable { onProgressDownload(transmitParam) }
-
     protected abstract fun onProgressDownload(param: TransmitParam)
-
-    override fun onCancel() {
-        super.onCancel()
-        HttpUtils.removeCallbacks(mUpdateProgressRunnable)
-    }
 }

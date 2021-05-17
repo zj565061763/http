@@ -14,10 +14,6 @@ internal object HttpUtils {
         }
     }
 
-    fun removeCallbacks(runnable: Runnable) {
-        _mainHandler.removeCallbacks(runnable)
-    }
-
     fun checkBackgroundThread() {
         require(Looper.myLooper() != Looper.getMainLooper())
     }
