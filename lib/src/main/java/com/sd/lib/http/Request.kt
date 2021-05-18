@@ -49,14 +49,14 @@ abstract class Request : IRequest {
     override var hostnameVerifier: HostnameVerifier? = null
 
     override fun execute(callback: RequestCallback?): RequestHandler {
-        return RequestManager.instance.execute(this, callback)
+        return RequestManager.execute(this, callback)
     }
 
     @Throws(HttpException::class)
     override fun execute(): IResponse {
         val intercept = interceptExecute
         if (intercept) {
-            val response = RequestManager.instance.internalRequestInterceptor.beforeExecute(this)
+            val response = RequestManager.internalRequestInterceptor.beforeExecute(this)
             if (response != null) return response
         }
 
@@ -69,7 +69,7 @@ abstract class Request : IRequest {
         }
 
         if (intercept) {
-            val response = RequestManager.instance.internalRequestInterceptor.afterExecute(this, realResponse)
+            val response = RequestManager.internalRequestInterceptor.afterExecute(this, realResponse)
             if (response != null) return response
         }
         return realResponse
@@ -110,7 +110,7 @@ abstract class Request : IRequest {
             return result
         }
 
-        val interceptor = RequestManager.instance.resultInterceptor
+        val interceptor = RequestManager.resultInterceptor
         if (interceptor != null && interceptResult) {
             val intercept = try {
                 interceptor.intercept(result, this)
@@ -151,7 +151,7 @@ abstract class Request : IRequest {
 
         // 将内容解析为实体
         val model = try {
-            RequestManager.instance.responseParser.parse(content, clazz, this)
+            RequestManager.responseParser.parse(content, clazz, this)
                 ?: throw HttpExceptionParseResponse(cause = null)
         } catch (e: Exception) {
             if (e is HttpException) {

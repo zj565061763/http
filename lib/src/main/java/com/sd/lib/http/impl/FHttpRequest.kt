@@ -17,7 +17,7 @@ internal class FHttpRequest : HttpRequest {
     private fun loadCookieForRequest() {
         try {
             val uri = url().toURI()
-            val listCookie = RequestManager.instance.cookieStore.get(uri)
+            val listCookie = RequestManager.cookieStore.get(uri)
             if (listCookie == null || listCookie.isEmpty()) return
 
             val cookie = listCookie.joinToString(separator = ";")
@@ -42,7 +42,7 @@ internal class FHttpRequest : HttpRequest {
             if (listCookie == null || listCookie.isEmpty()) return
 
             val uri = url().toURI()
-            RequestManager.instance.cookieStore.add(uri, listCookie)
+            RequestManager.cookieStore.add(uri, listCookie)
 
             HttpLog.i(
                 """cookie saveCookieFromResponse ${uri} size:${listCookie.size}

@@ -20,19 +20,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(_binding.root)
 
         // 调试模式，输出log
-        RequestManager.instance.isDebug = true
+        RequestManager.isDebug = true
 
         // cookie管理对象
-        RequestManager.instance.cookieStore = SerializableCookieStore(this)
+        RequestManager.cookieStore = SerializableCookieStore(this)
 
         // 请求拦截
-        RequestManager.instance.requestInterceptor = AppRequestInterceptor()
+        RequestManager.requestInterceptor = AppRequestInterceptor()
 
         // http返回解析器
-        RequestManager.instance.responseParser = AppResponseParser()
+        RequestManager.responseParser = AppResponseParser()
 
         // 结果拦截器
-        RequestManager.instance.resultInterceptor = AppResultInterceptor()
+        RequestManager.resultInterceptor = AppResultInterceptor()
     }
 
     override fun onClick(v: View) {

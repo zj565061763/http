@@ -105,7 +105,7 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun cancelRequest() {
         // 根据tag取消请求
-        RequestManager.instance.cancelTag(TAG)
+        RequestManager.cancelTag(TAG)
     }
 
     override fun onDestroy() {

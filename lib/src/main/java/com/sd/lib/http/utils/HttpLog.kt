@@ -8,14 +8,14 @@ internal object HttpLog {
 
     @JvmStatic
     fun i(msg: String) {
-        if (RequestManager.instance.isDebug) {
+        if (RequestManager.isDebug) {
             Log.i(TAG, msg)
         }
     }
 
     @JvmStatic
     fun e(msg: String) {
-        if (RequestManager.instance.isDebug) {
+        if (RequestManager.isDebug) {
             Log.e(TAG, msg)
         }
     }

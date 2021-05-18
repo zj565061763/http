@@ -11,7 +11,10 @@ import com.sd.lib.http.parser.IResponseParser
 import com.sd.lib.http.utils.HttpUtils
 import java.util.concurrent.ConcurrentHashMap
 
-class RequestManager private constructor() {
+object RequestManager {
+    @JvmStatic
+    val instance: RequestManager by lazy { RequestManager }
+
     private val _mapRequest: MutableMap<RequestTask, RequestInfo> = ConcurrentHashMap()
 
     /** 调试模式 */
@@ -145,8 +148,4 @@ class RequestManager private constructor() {
     }
 
     private class RequestInfo(val tag: String?)
-
-    companion object {
-        val instance: RequestManager by lazy { RequestManager() }
-    }
 }
