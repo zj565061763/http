@@ -41,6 +41,6 @@ abstract class ModelRequestCallback<T> : RequestCallback() {
      */
     @Throws(Exception::class)
     protected open fun parseToModel(content: String, type: Type): T {
-        return FJson.GSON.fromJson<T>(content, type)
+        return FJson.GSON.fromJson(content, type)
     }
 }
