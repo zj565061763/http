@@ -3,8 +3,6 @@ package com.example.result
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sd.example.http.utils.Lifecycle
 import com.sd.example.http.utils.LifecycleRequestCallback
-import com.sd.lib.http.callback.RequestCallback
-import com.sd.lib.http.callback.RequestCallbackProxy
 import com.sd.lib.http.impl.GetRequest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,20 +19,34 @@ class ExampleInstrumentedTest {
     }
 
     @Test
+    fun testNormal() {
+        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
+            override fun onFinish() {
+                super.onFinish()
+                checkLifecycle(
+                    Lifecycle.onPrepare,
+                    Lifecycle.onStart,
+                    Lifecycle.onResponseBackground,
+                    Lifecycle.onSuccessBefore,
+                    Lifecycle.onSuccess,
+                    Lifecycle.onFinish,
+                )
+            }
+        }
+        GET_REQUEST.execute(lifecycleRequestCallback)
+    }
+
+    @Test
     fun testCancel_onStart() {
-        val lifecycleRequestCallback = LifecycleRequestCallback()
-        val callback = object : RequestCallback() {
+        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
             override fun onStart() {
                 super.onStart()
                 httpRequestHandler.cancel()
             }
 
-            override fun onSuccess() {
-            }
-
             override fun onFinish() {
                 super.onFinish()
-                lifecycleRequestCallback.checkLifecycle(
+                checkLifecycle(
                     Lifecycle.onPrepare,
                     Lifecycle.onStart,
                     Lifecycle.onCancel,
@@ -42,7 +54,6 @@ class ExampleInstrumentedTest {
                 )
             }
         }
-
-        GET_REQUEST.execute(RequestCallbackProxy.get(lifecycleRequestCallback, callback))
+        GET_REQUEST.execute(lifecycleRequestCallback)
     }
 }
