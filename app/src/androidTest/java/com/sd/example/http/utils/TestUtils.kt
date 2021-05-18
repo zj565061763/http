@@ -10,6 +10,7 @@ open class LifecycleRequestCallback : RequestCallback() {
 
     fun checkLifecycle(vararg lifecycle: Lifecycle) {
         val listParams = lifecycle.toList()
+        assert(list !== listParams)
         assert(list == listParams)
     }
 
