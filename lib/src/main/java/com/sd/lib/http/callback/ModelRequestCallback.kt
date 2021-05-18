@@ -32,7 +32,11 @@ abstract class ModelRequestCallback<T> : RequestCallback() {
         try {
             actModel = parseToModel(content, type)
         } catch (e: Exception) {
-            throw HttpExceptionParseResponse(cause = e)
+            if (e is HttpExceptionParseResponse) {
+                throw e
+            } else {
+                throw HttpExceptionParseResponse(cause = e)
+            }
         }
     }
 

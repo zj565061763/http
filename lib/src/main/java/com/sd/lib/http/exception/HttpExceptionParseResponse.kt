@@ -8,7 +8,7 @@ import com.sd.lib.http.R
  */
 class HttpExceptionParseResponse : HttpException {
     @JvmOverloads
-    constructor(message: String? = "", cause: Throwable?) : super(message, cause)
+    constructor(message: String? = "", cause: Throwable? = null) : super(message, cause)
 
     override fun getDescFormat(context: Context): String {
         var desc = context.getString(R.string.lib_http_desc_exception_parse_response)
