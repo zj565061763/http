@@ -12,13 +12,13 @@ abstract class RequestCallback : IUploadProgressCallback {
     private lateinit var _requestHandler: RequestHandler
 
     /**
-     * 请求对象，[onPrepare]以及之后不为null
+     * [onPrepare]以及之后不为null
      */
     val httpRequest: IRequest
         get() = _request
 
     /**
-     *  [onPrepare]以及之后不为null，但是在[onPrepare]中由于请求还未被提交，所以对象的方法调用无效
+     * [onPrepare]以及之后不为null，但是在[onPrepare]中由于请求还未被提交，所以对象的方法调用无效
      */
     val httpRequestHandler: RequestHandler
         get() = _requestHandler
