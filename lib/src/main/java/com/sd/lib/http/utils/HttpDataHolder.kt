@@ -28,7 +28,7 @@ class HttpDataHolder<K, V> {
         return this
     }
 
-    fun get(key: Any): V? {
+    fun get(key: K): V? {
         return _map[key]
     }
 
