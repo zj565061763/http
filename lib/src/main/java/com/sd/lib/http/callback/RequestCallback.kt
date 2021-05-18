@@ -9,8 +9,8 @@ import com.sd.lib.http.utils.TransmitParam
 
 abstract class RequestCallback : IUploadProgressCallback {
     private lateinit var _request: IRequest
-    private lateinit var _response: IResponse
     private lateinit var _requestHandler: RequestHandler
+    private lateinit var _response: IResponse
 
     /**
      * 请求对象，[onPrepare]以及之后不为null
@@ -19,28 +19,28 @@ abstract class RequestCallback : IUploadProgressCallback {
         get() = _request
 
     /**
-     * 请求响应对象，onSuccessXXXX方法以及之后不为null
-     */
-    val httpResponse: IResponse
-        get() = _response
-
-    /**
      *  [onPrepare]以及之后不为null，但是在[onPrepare]中由于请求还未被提交，所以对象的方法调用无效
      */
     val httpRequestHandler: RequestHandler
         get() = _requestHandler
 
+    /**
+     * 请求响应对象，onSuccessXXXX方法以及之后不为null
+     */
+    val httpResponse: IResponse
+        get() = _response
+
     internal open fun saveRequest(request: IRequest) {
         _request = request
+    }
+
+    internal open fun saveRequestHandler(requestHandler: RequestHandler) {
+        _requestHandler = requestHandler
     }
 
     internal open fun saveResponse(response: IResponse) {
         _response = response
         processResponseCode(response.code)
-    }
-
-    internal open fun saveRequestHandler(requestHandler: RequestHandler) {
-        _requestHandler = requestHandler
     }
 
     //---------- notify method start ----------
