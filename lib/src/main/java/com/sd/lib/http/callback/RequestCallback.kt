@@ -64,9 +64,12 @@ abstract class RequestCallback : IUploadProgressCallback {
         onCancel()
     }
 
-    //---------- internal end ----------
+    internal open fun notifyFinish() {
+        HttpUtils.checkMainThread()
+        onFinish()
+    }
 
-    //---------- notify method start ----------
+    //---------- internal end ----------
 
     /**
      * 预备回调（和提交请求对象在同一个线程）
@@ -124,9 +127,5 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 结束回调（UI线程）
      */
-    open fun onFinish() {
-        HttpUtils.checkMainThread()
-    }
-
-    //---------- notify method end ----------
+    protected open fun onFinish() {}
 }

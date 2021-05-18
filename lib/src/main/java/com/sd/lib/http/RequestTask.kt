@@ -140,7 +140,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
     private fun notifyFinish() {
         HttpLog.i("$_logPrefix notifyFinish ${Thread.currentThread().name}")
-        _requestCallback.onFinish()
+        _requestCallback.notifyFinish()
         this@RequestTask.onFinish()
     }
 

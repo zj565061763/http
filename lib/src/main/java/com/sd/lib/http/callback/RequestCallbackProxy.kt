@@ -59,9 +59,9 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
         }
     }
 
-    override fun onFinish() {
+    override fun notifyFinish() {
         for (item in callbacks) {
-            item?.onFinish()
+            item?.notifyFinish()
         }
     }
 
