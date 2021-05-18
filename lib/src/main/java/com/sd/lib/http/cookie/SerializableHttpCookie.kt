@@ -17,7 +17,7 @@ class SerializableHttpCookie : Serializable {
     var secure: Boolean = false
     var version: Int = 1
 
-    constructor(cookie: HttpCookie) {
+    private constructor(cookie: HttpCookie) {
         this.name = cookie.name
         this.value = cookie.value
         this.comment = cookie.comment
@@ -43,6 +43,16 @@ class SerializableHttpCookie : Serializable {
             secure = this@SerializableHttpCookie.secure
             version = this@SerializableHttpCookie.version
         }
+    }
+
+    override fun hashCode(): Int {
+        return toHttpCookie().hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SerializableHttpCookie) return false
+        return this.toHttpCookie().equals(other.toHttpCookie())
     }
 
     companion object {
