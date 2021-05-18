@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import com.sd.lib.http.IRequest
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.callback.ModelRequestCallback
@@ -12,7 +11,6 @@ import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.impl.GetRequest
 import com.sd.www.http.databinding.ActivityAsyncRequestBinding
 import com.sd.www.http.model.WeatherModel
-import java.lang.reflect.Type
 
 /**
  * 异步请求demo
@@ -67,11 +65,6 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             super.onStart()
             // 开始回调（UI线程）
             Log.i(TAG, "onStart thread:${Thread.currentThread().name}")
-        }
-
-        override fun onSuccessBefore() {
-            // 成功回调（UI线程）
-            Log.i(TAG, "onSuccessBefore thread:${Thread.currentThread().name}")
         }
 
         override fun onSuccess() {

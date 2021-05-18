@@ -86,7 +86,7 @@ class RequestManager private constructor() {
 
         finalCallback.saveRequest(request)
         finalCallback.saveRequestHandler(requestHandler)
-        finalCallback.onPrepare(request)
+        finalCallback.notifyPrepare()
 
         val info = RequestInfo(request.tag)
         _mapRequest[task] = info
