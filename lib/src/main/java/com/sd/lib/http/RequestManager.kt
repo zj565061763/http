@@ -12,6 +12,7 @@ import com.sd.lib.http.utils.HttpUtils
 import java.util.concurrent.ConcurrentHashMap
 
 object RequestManager {
+    @Deprecated("")
     @JvmStatic
     val instance: RequestManager by lazy { RequestManager }
 
