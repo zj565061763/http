@@ -39,6 +39,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     }
 
     internal open fun saveResponse(response: IResponse) {
+        HttpUtils.checkBackgroundThread()
         _response = response
         processResponseCode(response.code)
     }
