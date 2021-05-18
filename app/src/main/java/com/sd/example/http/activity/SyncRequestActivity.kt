@@ -1,4 +1,4 @@
-package com.sd.www.http.activity
+package com.sd.example.http.activity
 
 import android.os.Bundle
 import android.view.View
@@ -7,8 +7,8 @@ import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.exception.HttpExceptionCancellation
 import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.impl.GetRequest
-import com.sd.www.http.databinding.ActivitySyncRequestBinding
-import com.sd.www.http.model.WeatherModel
+import com.sd.example.http.databinding.ActivitySyncRequestBinding
+import com.sd.example.http.model.WeatherModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel

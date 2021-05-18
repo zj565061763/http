@@ -1,4 +1,4 @@
-package com.sd.www.http.activity
+package com.sd.example.http.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,10 +6,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.lib.http.RequestManager
 import com.sd.lib.http.cookie.store.SerializableCookieStore
-import com.sd.www.http.databinding.ActivityMainBinding
-import com.sd.www.http.utils.AppRequestInterceptor
-import com.sd.www.http.utils.AppResponseParser
-import com.sd.www.http.utils.AppResultInterceptor
+import com.sd.example.http.databinding.ActivityMainBinding
+import com.sd.example.http.utils.AppRequestInterceptor
+import com.sd.example.http.utils.AppResponseParser
+import com.sd.example.http.utils.AppResultInterceptor
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var _binding: ActivityMainBinding

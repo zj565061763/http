@@ -1,4 +1,4 @@
-package com.sd.www.http.model
+package com.sd.example.http.model
 
 class WeatherModel {
     var weatherinfo: WeatherInfo? = null

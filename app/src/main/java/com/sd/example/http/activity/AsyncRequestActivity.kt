@@ -1,4 +1,4 @@
-package com.sd.www.http.activity
+package com.sd.example.http.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +9,8 @@ import com.sd.lib.http.RequestManager
 import com.sd.lib.http.callback.ModelRequestCallback
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.impl.GetRequest
-import com.sd.www.http.databinding.ActivityAsyncRequestBinding
-import com.sd.www.http.model.WeatherModel
+import com.sd.example.http.databinding.ActivityAsyncRequestBinding
+import com.sd.example.http.model.WeatherModel
 
 /**
  * 异步请求demo
