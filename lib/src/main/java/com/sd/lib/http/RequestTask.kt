@@ -77,7 +77,6 @@ internal abstract class RequestTask : IUploadProgressCallback {
                     return@launch
                 }
 
-                HttpLog.i("$_logPrefix notifySuccess  ${Thread.currentThread().name}")
                 notifySuccess()
             } catch (e: CancellationException) {
                 notifyCancel()
@@ -116,7 +115,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     }
 
     private fun notifyStart() {
-        HttpLog.i("$_logPrefix onStart ${Thread.currentThread().name}")
+        HttpLog.i("$_logPrefix notifyStart ${Thread.currentThread().name}")
         _isStartNotified = true
         _requestCallback.notifyStart()
     }
@@ -125,22 +124,22 @@ internal abstract class RequestTask : IUploadProgressCallback {
         require(e !is CancellationException)
         HttpLog.i("$_logPrefix onError:$e ${Thread.currentThread().name}")
         _isErrorNotified = true
-        _requestCallback.onError(HttpException.wrap(e))
+        _requestCallback.notifyError(HttpException.wrap(e))
     }
 
     private fun notifySuccess() {
-        HttpLog.i("$_logPrefix onSuccess ${Thread.currentThread().name}")
+        HttpLog.i("$_logPrefix notifySuccess ${Thread.currentThread().name}")
         _isSuccessNotified = true
         _requestCallback.notifySuccess()
     }
 
     private fun notifyCancel() {
-        HttpLog.i("$_logPrefix onCancel ${Thread.currentThread().name}")
+        HttpLog.i("$_logPrefix notifyCancel ${Thread.currentThread().name}")
         _requestCallback.onCancel()
     }
 
     private fun notifyFinish() {
-        HttpLog.i("$_logPrefix onFinish ${Thread.currentThread().name}")
+        HttpLog.i("$_logPrefix notifyFinish ${Thread.currentThread().name}")
         _requestCallback.onFinish()
         this@RequestTask.onFinish()
     }

@@ -47,9 +47,9 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
     override fun onSuccess() {
     }
 
-    override fun onError(e: Exception) {
+    override fun notifyError(e: Exception) {
         for (item in callbacks) {
-            item?.onError(e)
+            item?.notifyError(e)
         }
     }
 

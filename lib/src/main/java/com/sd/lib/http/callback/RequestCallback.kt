@@ -54,6 +54,11 @@ abstract class RequestCallback : IUploadProgressCallback {
         onSuccess()
     }
 
+    internal open fun notifyError(e: Exception) {
+        HttpUtils.checkMainThread()
+        onError(e)
+    }
+
     //---------- internal end ----------
 
     //---------- notify method start ----------
@@ -107,7 +112,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 错误回调（UI线程）
      */
-    open fun onError(e: Exception) {
+    protected open fun onError(e: Exception) {
         HttpUtils.checkMainThread()
     }
 
