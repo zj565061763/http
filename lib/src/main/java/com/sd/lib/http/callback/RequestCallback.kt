@@ -1,5 +1,6 @@
 package com.sd.lib.http.callback
 
+import androidx.annotation.CallSuper
 import com.sd.lib.http.IRequest
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.RequestHandler
@@ -23,12 +24,20 @@ abstract class RequestCallback : IUploadProgressCallback {
     val httpRequestHandler: RequestHandler
         get() = _requestHandler
 
+    @CallSuper
     internal open fun saveRequest(request: IRequest) {
         _request = request
     }
 
+    @CallSuper
     internal open fun saveRequestHandler(requestHandler: RequestHandler) {
         _requestHandler = requestHandler
+    }
+
+    @CallSuper
+    internal open fun notifyStart() {
+        HttpUtils.checkMainThread()
+        onStart()
     }
 
     internal open fun saveResponse(response: IResponse) {
@@ -47,9 +56,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 开始回调（UI线程）
      */
-    open fun onStart() {
-        HttpUtils.checkMainThread()
-    }
+    open fun onStart() {}
 
     /**
      * 成功回调，常用来解析数据（后台线程）

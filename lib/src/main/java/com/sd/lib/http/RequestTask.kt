@@ -122,7 +122,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private fun notifyStart() {
         HttpLog.i("$_logPrefix onStart ${Thread.currentThread().name}")
         _isStartNotified = true
-        _requestCallback.onStart()
+        _requestCallback.notifyStart()
     }
 
     private fun notifyError(e: Exception) {
