@@ -15,7 +15,7 @@ abstract class ModelRequestCallback<T> : StringRequestCallback() {
         super.onSuccessBackground()
         val type = modelType
         try {
-            actModel = parseToModel(result, type)
+            actModel = parseToModel(result!!, type)
         } catch (e: Exception) {
             throw HttpExceptionParseResponse(cause = e)
         }
