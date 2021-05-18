@@ -16,8 +16,8 @@ abstract class FileRequestCallback : RequestCallback {
     }
 
     @Throws(Exception::class)
-    override fun onSuccessBackground(response: IResponse) {
-        super.onSuccessBackground(response)
+    override fun onResponseBackground(response: IResponse) {
+        super.onResponseBackground(response)
         val total = response.contentLength.toLong()
         val input = response.inputStream
         val output = FileOutputStream(file)

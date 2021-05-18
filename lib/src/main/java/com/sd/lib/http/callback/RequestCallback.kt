@@ -45,7 +45,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     internal open fun notifyResponse(response: IResponse) {
         HttpUtils.checkBackgroundThread()
         processResponseCode(response.code)
-        onSuccessBackground(response)
+        onResponseBackground(response)
     }
 
     //---------- internal end ----------
@@ -66,7 +66,7 @@ abstract class RequestCallback : IUploadProgressCallback {
      * 成功回调，常用来解析数据（后台线程）
      */
     @Throws(Exception::class)
-    protected open fun onSuccessBackground(response: IResponse) {
+    protected open fun onResponseBackground(response: IResponse) {
         HttpUtils.checkBackgroundThread()
     }
 
