@@ -32,9 +32,9 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
         }
     }
 
-    override fun saveResponse(response: IResponse) {
+    override fun notifyResponse(response: IResponse) {
         for (item in callbacks) {
-            item?.saveResponse(response)
+            item?.notifyResponse(response)
         }
     }
 
