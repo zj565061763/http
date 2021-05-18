@@ -53,9 +53,9 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
         }
     }
 
-    override fun onCancel() {
+    override fun notifyCancel() {
         for (item in callbacks) {
-            item?.onCancel()
+            item?.notifyCancel()
         }
     }
 

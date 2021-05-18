@@ -59,6 +59,11 @@ abstract class RequestCallback : IUploadProgressCallback {
         onError(e)
     }
 
+    internal open fun notifyCancel() {
+        HttpUtils.checkMainThread()
+        onCancel()
+    }
+
     //---------- internal end ----------
 
     //---------- notify method start ----------
@@ -78,7 +83,6 @@ abstract class RequestCallback : IUploadProgressCallback {
      */
     @Throws(Exception::class)
     protected open fun onResponseBackground(response: IResponse) {
-        HttpUtils.checkBackgroundThread()
     }
 
     /**
@@ -93,9 +97,7 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 成功回调，在[onSuccess]之前执行，常用来做一些统一的处理（UI线程）
      */
-    protected open fun onSuccessBefore() {
-        HttpUtils.checkMainThread()
-    }
+    protected open fun onSuccessBefore() {}
 
     /**
      * 成功回调，在[onSuccessBefore]之后执行（UI线程）
@@ -112,16 +114,12 @@ abstract class RequestCallback : IUploadProgressCallback {
     /**
      * 错误回调（UI线程）
      */
-    protected open fun onError(e: Exception) {
-        HttpUtils.checkMainThread()
-    }
+    protected open fun onError(e: Exception) {}
 
     /**
      * 取消回调（UI线程）
      */
-    open fun onCancel() {
-        HttpUtils.checkMainThread()
-    }
+    protected open fun onCancel() {}
 
     /**
      * 结束回调（UI线程）
