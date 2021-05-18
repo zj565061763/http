@@ -52,7 +52,7 @@ class SerializableHttpCookie : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is SerializableHttpCookie) return false
-        return this.toHttpCookie().equals(other.toHttpCookie())
+        return this.toHttpCookie() == other.toHttpCookie()
     }
 
     companion object {
