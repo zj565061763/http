@@ -3,7 +3,7 @@ package com.sd.lib.http.cookie.store
 import java.net.HttpCookie
 import java.net.URI
 
-internal class MemoryCookieStore : ICookieStore {
+class MemoryCookieStore : ICookieStore {
     private val _cookieStore by lazy { InMemoryCookieStore() }
 
     override fun add(uri: URI?, listCookie: List<HttpCookie>) {
