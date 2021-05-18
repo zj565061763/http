@@ -10,7 +10,6 @@ import com.sd.lib.http.utils.TransmitParam
 abstract class RequestCallback : IUploadProgressCallback {
     private lateinit var _request: IRequest
     private lateinit var _requestHandler: RequestHandler
-    private lateinit var _response: IResponse
 
     /**
      * 请求对象，[onPrepare]以及之后不为null
@@ -24,12 +23,6 @@ abstract class RequestCallback : IUploadProgressCallback {
     val httpRequestHandler: RequestHandler
         get() = _requestHandler
 
-    /**
-     * 请求响应对象，onSuccessXXXX方法以及之后不为null
-     */
-    val httpResponse: IResponse
-        get() = _response
-
     internal open fun saveRequest(request: IRequest) {
         _request = request
     }
@@ -40,8 +33,8 @@ abstract class RequestCallback : IUploadProgressCallback {
 
     internal open fun saveResponse(response: IResponse) {
         HttpUtils.checkBackgroundThread()
-        _response = response
         processResponseCode(response.code)
+        onSuccessBackground(response)
     }
 
     //---------- notify method start ----------
@@ -62,7 +55,7 @@ abstract class RequestCallback : IUploadProgressCallback {
      * 成功回调，常用来解析数据（后台线程）
      */
     @Throws(Exception::class)
-    open fun onSuccessBackground() {
+    protected open fun onSuccessBackground(response: IResponse) {
         HttpUtils.checkBackgroundThread()
     }
 
@@ -70,7 +63,7 @@ abstract class RequestCallback : IUploadProgressCallback {
      * 处理返回码
      */
     @Throws(HttpExceptionResponseCode::class)
-    protected fun processResponseCode(code: Int) {
+    protected open fun processResponseCode(code: Int) {
         val codeException = HttpExceptionResponseCode.from(code)
         if (codeException != null) throw codeException
     }

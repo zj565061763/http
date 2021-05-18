@@ -1,5 +1,6 @@
 package com.sd.lib.http.callback
 
+import com.sd.lib.http.IResponse
 import com.sd.lib.http.utils.HttpIOUtils
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
@@ -15,10 +16,10 @@ abstract class FileRequestCallback : RequestCallback {
     }
 
     @Throws(Exception::class)
-    override fun onSuccessBackground() {
-        super.onSuccessBackground()
-        val total = httpResponse.contentLength.toLong()
-        val input = httpResponse.inputStream
+    override fun onSuccessBackground(response: IResponse) {
+        super.onSuccessBackground(response)
+        val total = response.contentLength.toLong()
+        val input = response.inputStream
         val output = FileOutputStream(file)
 
         try {

@@ -1,16 +1,15 @@
 package com.sd.lib.http.callback
 
-import androidx.annotation.CallSuper
+import com.sd.lib.http.IResponse
 
 abstract class StringRequestCallback : RequestCallback() {
-    /** 返回请求的字符串内容，onSuccessXXXX方法中才可以访问 */
+    /** 返回请求的字符串内容，onSuccessXXXX方法中不为null */
     var result: String? = null
         private set
 
-    @CallSuper
     @Throws(Exception::class)
-    override fun onSuccessBackground() {
-        super.onSuccessBackground()
-        result = httpResponse.readString()
+    override fun onSuccessBackground(response: IResponse) {
+        super.onSuccessBackground(response)
+        result = response.readString()
     }
 }

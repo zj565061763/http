@@ -38,14 +38,6 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
         }
     }
 
-    @Throws(Exception::class)
-    override fun onSuccessBackground() {
-        for (item in callbacks) {
-            // 如果其中一个item发生异常，则循环将被停止，所有item将收到该异常回调
-            item?.onSuccessBackground()
-        }
-    }
-
     override fun onSuccessBefore() {
         for (item in callbacks) {
             item?.onSuccessBefore()

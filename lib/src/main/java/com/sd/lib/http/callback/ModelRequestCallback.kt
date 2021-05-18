@@ -1,6 +1,6 @@
 package com.sd.lib.http.callback
 
-import androidx.annotation.CallSuper
+import com.sd.lib.http.IResponse
 import com.sd.lib.http.exception.HttpExceptionParseResponse
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -9,10 +9,9 @@ abstract class ModelRequestCallback<T> : StringRequestCallback() {
     var actModel: T? = null
         private set
 
-    @CallSuper
     @Throws(Exception::class)
-    override fun onSuccessBackground() {
-        super.onSuccessBackground()
+    override fun onSuccessBackground(response: IResponse) {
+        super.onSuccessBackground(response)
         val type = modelType
         try {
             actModel = parseToModel(result!!, type)
