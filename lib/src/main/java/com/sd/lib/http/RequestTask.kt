@@ -58,9 +58,7 @@ internal abstract class RequestTask {
 
         _job = GlobalScope.launch(Dispatchers.Main) {
             try {
-                withContext(Dispatchers.Main) {
-                    notifyStart()
-                }
+                notifyStart()
 
                 val exception: Exception? = withContext(Dispatchers.IO) {
                     try {
@@ -119,10 +117,12 @@ internal abstract class RequestTask {
         return isCancelled
     }
 
-    private fun notifyStart() {
-        HttpLog.i("$_logPrefix notifyStart ${Thread.currentThread().name}")
-        _isStartNotified = true
-        _requestCallback.notifyStart()
+    private suspend fun notifyStart() {
+        withContext(Dispatchers.Main) {
+            HttpLog.i("$_logPrefix notifyStart ${Thread.currentThread().name}")
+            _isStartNotified = true
+            _requestCallback.notifyStart()
+        }
     }
 
     private fun notifyError(e: Exception) {
