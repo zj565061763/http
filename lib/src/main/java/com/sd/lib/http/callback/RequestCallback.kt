@@ -94,7 +94,7 @@ abstract class RequestCallback {
     }
 
     /**
-     * 处理返回码
+     * 处理返回码（后台线程）
      */
     @Throws(HttpExceptionResponseCode::class)
     protected open fun processResponseCode(code: Int) {
