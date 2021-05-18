@@ -14,15 +14,15 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
         }
     }
 
-    override fun saveResponse(response: IResponse) {
-        for (item in callbacks) {
-            item?.saveResponse(response)
-        }
-    }
-
     override fun saveRequestHandler(requestHandler: RequestHandler) {
         for (item in callbacks) {
             item?.saveRequestHandler(requestHandler)
+        }
+    }
+
+    override fun saveResponse(response: IResponse) {
+        for (item in callbacks) {
+            item?.saveResponse(response)
         }
     }
 
