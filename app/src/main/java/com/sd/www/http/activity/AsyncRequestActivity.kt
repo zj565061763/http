@@ -57,7 +57,6 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
      * 回调对象
      */
     private val _requestCallback = object : ModelRequestCallback<WeatherModel>() {
-
         override fun onPrepare(request: IRequest) {
             super.onPrepare(request)
             // 请求在执行之前的准备回调（发起请求的线程）
@@ -68,12 +67,6 @@ class AsyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             super.onStart()
             // 开始回调（UI线程）
             Log.i(TAG, "onStart thread:${Thread.currentThread().name}")
-        }
-
-        override fun parseToModel(content: String, type: Type): WeatherModel {
-            // 把返回的内容转实体（非UI线程）
-            Log.i(TAG, "parseToModel content:${content} type:${type} thread:${Thread.currentThread().name}")
-            return Gson().fromJson(content, type)
         }
 
         override fun onSuccessBefore() {

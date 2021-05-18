@@ -2,12 +2,27 @@ package com.sd.lib.http.callback
 
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.exception.HttpExceptionParseResponse
+import com.sd.lib.utils.json.FJson
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
 abstract class ModelRequestCallback<T> : RequestCallback() {
     var actModel: T? = null
         private set
+
+    /**
+     * 要解析的实体类型
+     */
+    protected open val modelType: Type
+        get() {
+            val parameterizedType = javaClass.genericSuperclass as ParameterizedType
+            val types = parameterizedType.actualTypeArguments
+            return if (types != null && types.isNotEmpty()) {
+                types[0]
+            } else {
+                throw RuntimeException("generic type not found")
+            }
+        }
 
     @Throws(Exception::class)
     override fun onSuccessBackground(response: IResponse) {
@@ -21,20 +36,11 @@ abstract class ModelRequestCallback<T> : RequestCallback() {
         }
     }
 
-    protected val modelType: Type
-        get() {
-            val parameterizedType = javaClass.genericSuperclass as ParameterizedType
-            val types = parameterizedType.actualTypeArguments
-            return if (types != null && types.isNotEmpty()) {
-                types[0]
-            } else {
-                throw RuntimeException("generic type not found")
-            }
-        }
-
     /**
      * 将字符串[content]解析为实体
      */
     @Throws(Exception::class)
-    protected abstract fun parseToModel(content: String, type: Type): T
+    protected open fun parseToModel(content: String, type: Type): T {
+        return FJson.GSON.fromJson<T>(content, type)
+    }
 }
