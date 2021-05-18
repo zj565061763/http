@@ -152,7 +152,7 @@ abstract class Request : IRequest {
         // 将内容解析为实体
         val model = try {
             RequestManager.responseParser.parse(content, clazz, this)
-                ?: throw HttpExceptionParseResponse(cause = null)
+                ?: throw HttpExceptionParseResponse(message = "parse return null")
         } catch (e: Exception) {
             if (e is HttpException) {
                 throw e
