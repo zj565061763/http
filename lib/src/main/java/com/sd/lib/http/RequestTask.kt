@@ -59,10 +59,10 @@ internal abstract class RequestTask : IUploadProgressCallback {
 
                 val exception: Exception? = withContext(Dispatchers.IO) {
                     try {
-                        HttpLog.i("$_logPrefix execute ${Thread.currentThread()}")
+                        HttpLog.i("$_logPrefix execute ${Thread.currentThread().name}")
                         val response = _request.execute()
 
-                        HttpLog.i("$_logPrefix onSuccessBackground ${Thread.currentThread()}")
+                        HttpLog.i("$_logPrefix onSuccessBackground ${Thread.currentThread().name}")
                         _requestCallback.saveResponse(response)
                         _requestCallback.onSuccessBackground()
                         null
@@ -79,7 +79,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
                 }
 
                 withContext(Dispatchers.Main) {
-                    HttpLog.i("$_logPrefix onSuccessBefore  ${Thread.currentThread()}")
+                    HttpLog.i("$_logPrefix onSuccessBefore  ${Thread.currentThread().name}")
                     _requestCallback.onSuccessBefore()
                 }
 
@@ -121,31 +121,31 @@ internal abstract class RequestTask : IUploadProgressCallback {
     }
 
     private fun notifyStart() {
-        HttpLog.i("$_logPrefix onStart ${Thread.currentThread()}")
+        HttpLog.i("$_logPrefix onStart ${Thread.currentThread().name}")
         _isStartNotified = true
         _requestCallback.onStart()
     }
 
     private fun notifyError(e: Exception) {
         require(e !is CancellationException)
-        HttpLog.i("$_logPrefix onError:$e ${Thread.currentThread()}")
+        HttpLog.i("$_logPrefix onError:$e ${Thread.currentThread().name}")
         _isErrorNotified = true
         _requestCallback.onError(HttpException.wrap(e))
     }
 
     private fun notifySuccess() {
-        HttpLog.i("$_logPrefix onSuccess ${Thread.currentThread()}")
+        HttpLog.i("$_logPrefix onSuccess ${Thread.currentThread().name}")
         _isSuccessNotified = true
         _requestCallback.onSuccess()
     }
 
     private fun notifyCancel() {
-        HttpLog.i("$_logPrefix onCancel ${Thread.currentThread()}")
+        HttpLog.i("$_logPrefix onCancel ${Thread.currentThread().name}")
         _requestCallback.onCancel()
     }
 
     private fun notifyFinish() {
-        HttpLog.i("$_logPrefix onFinish ${Thread.currentThread()}")
+        HttpLog.i("$_logPrefix onFinish ${Thread.currentThread().name}")
         _requestCallback.onFinish()
         this@RequestTask.onFinish()
     }
