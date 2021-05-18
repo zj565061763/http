@@ -69,9 +69,9 @@ class RequestCallbackProxy : RequestCallback {
         }
     }
 
-    override fun onProgressUpload(param: TransmitParam) {
+    override fun notifyProgressUpload(params: TransmitParam) {
         for (item in callbacks) {
-            item?.onProgressUpload(param)
+            item?.notifyProgressUpload(params)
         }
     }
 

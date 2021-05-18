@@ -8,7 +8,7 @@ import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 import kotlinx.coroutines.*
 
-internal abstract class RequestTask : IUploadProgressCallback {
+internal abstract class RequestTask {
     private val _request: IRequest
     private val _requestCallback: RequestCallback
 
@@ -27,7 +27,12 @@ internal abstract class RequestTask : IUploadProgressCallback {
     constructor(request: IRequest, requestCallback: RequestCallback) {
         _request = request
         _requestCallback = requestCallback
-        request.uploadProgressCallback = this
+
+        request.uploadProgressCallback = object : IUploadProgressCallback {
+            override fun onProgressUpload(params: TransmitParam) {
+                _requestCallback.notifyProgressUpload(params)
+            }
+        }
     }
 
     /** 日志前缀 */
@@ -145,8 +150,4 @@ internal abstract class RequestTask : IUploadProgressCallback {
     }
 
     abstract fun onFinish()
-
-    override fun onProgressUpload(param: TransmitParam) {
-        _requestCallback.onProgressUpload(param)
-    }
 }

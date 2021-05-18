@@ -7,7 +7,7 @@ import com.sd.lib.http.exception.HttpExceptionResponseCode
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
 
-abstract class RequestCallback : IUploadProgressCallback {
+abstract class RequestCallback {
     private lateinit var _request: IRequest
     private lateinit var _requestHandler: RequestHandler
 
@@ -69,6 +69,11 @@ abstract class RequestCallback : IUploadProgressCallback {
         onFinish()
     }
 
+    internal open fun notifyProgressUpload(params: TransmitParam) {
+        HttpUtils.checkMainThread()
+        onProgressUpload(params)
+    }
+
     //---------- internal end ----------
 
     /**
@@ -108,13 +113,6 @@ abstract class RequestCallback : IUploadProgressCallback {
     protected abstract fun onSuccess()
 
     /**
-     * 上传回调（UI线程）
-     */
-    override fun onProgressUpload(param: TransmitParam) {
-        HttpUtils.checkMainThread()
-    }
-
-    /**
      * 错误回调（UI线程）
      */
     protected open fun onError(e: Exception) {}
@@ -128,4 +126,9 @@ abstract class RequestCallback : IUploadProgressCallback {
      * 结束回调（UI线程）
      */
     protected open fun onFinish() {}
+
+    /**
+     * 上传回调（UI线程）
+     */
+    protected open fun onProgressUpload(params: TransmitParam) {}
 }
