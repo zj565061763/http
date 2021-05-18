@@ -19,10 +19,7 @@ internal abstract class RequestTask {
     private var _isStartNotified: Boolean = false
 
     @Volatile
-    private var _isSuccessNotified: Boolean = false
-
-    @Volatile
-    private var _isErrorNotified: Boolean = false
+    private var _isResultNotified: Boolean = false
 
     constructor(request: IRequest, requestCallback: RequestCallback) {
         _request = request
@@ -58,29 +55,39 @@ internal abstract class RequestTask {
 
         _job = GlobalScope.launch(Dispatchers.Main) {
             try {
-                notifyStart()
+                // 通知开始
+                withContext(Dispatchers.Main) {
+                    notifyStart()
+                }
 
-                val exception: Exception? = withContext(Dispatchers.IO) {
+                // 发起请求
+                val response: IResponse = withContext(Dispatchers.IO) {
                     try {
                         HttpLog.i("$_logPrefix execute ${Thread.currentThread().name}")
-                        val response = _request.execute()
+                        _request.execute()
+                    } catch (e: Exception) {
+                        notifyError(e)
+                        null
+                    }
+                } ?: return@launch
 
+                // 通知请求结果
+                val notifyResponse: Boolean = withContext(Dispatchers.IO) {
+                    try {
                         HttpLog.i("$_logPrefix notifyResponse ${Thread.currentThread().name}")
                         _requestCallback.notifyResponse(response)
-                        null
+                        true
                     } catch (e: Exception) {
-                        e
+                        notifyError(e)
+                        false
                     }
                 }
 
-                if (exception != null) {
-                    withContext(Dispatchers.Main) {
-                        notifyError(exception)
-                    }
-                    return@launch
+                if (notifyResponse) {
+                    // 通知成功
+                    notifySuccess()
                 }
 
-                notifySuccess()
             } catch (e: CancellationException) {
                 notifyCancel()
             } finally {
@@ -98,7 +105,7 @@ internal abstract class RequestTask {
         val job = _job ?: return false
         if (!job.isActive) return false
 
-        val isResultNotified = _isSuccessNotified || _isErrorNotified
+        val isResultNotified = _isResultNotified
         HttpLog.e("$_logPrefix cancel start isStartNotified:${_isStartNotified} isResultNotified:${isResultNotified}")
         if (isResultNotified) return false
 
@@ -117,29 +124,30 @@ internal abstract class RequestTask {
         return isCancelled
     }
 
-    private suspend fun notifyStart() {
-        withContext(Dispatchers.Main) {
-            HttpLog.i("$_logPrefix notifyStart ${Thread.currentThread().name}")
-            _isStartNotified = true
-            _requestCallback.notifyStart()
-        }
+    private fun notifyStart() {
+        HttpLog.i("$_logPrefix notifyStart ${Thread.currentThread().name}")
+        _isStartNotified = true
+        _requestCallback.notifyStart()
     }
 
-    private fun notifyError(e: Exception) {
+    private suspend fun notifyError(e: Exception) {
         require(e !is CancellationException)
-        HttpLog.i("$_logPrefix notifyError:$e ${Thread.currentThread().name}")
-        _isErrorNotified = true
-        _requestCallback.notifyError(HttpException.wrap(e))
+        withContext(Dispatchers.Main) {
+            HttpLog.i("$_logPrefix notifyError:$e ${Thread.currentThread().name}")
+            _isResultNotified = true
+            _requestCallback.notifyError(HttpException.wrap(e))
+        }
     }
 
     private fun notifySuccess() {
         HttpLog.i("$_logPrefix notifySuccess ${Thread.currentThread().name}")
-        _isSuccessNotified = true
+        _isResultNotified = true
         _requestCallback.notifySuccess()
     }
 
     private fun notifyCancel() {
         HttpLog.i("$_logPrefix notifyCancel ${Thread.currentThread().name}")
+        _isResultNotified = true
         _requestCallback.notifyCancel()
     }
 
