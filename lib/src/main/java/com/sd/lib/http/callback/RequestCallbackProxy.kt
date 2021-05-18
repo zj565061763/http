@@ -10,37 +10,37 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
 
     override fun saveRequest(request: IRequest) {
         for (item in callbacks) {
-            item?.saveRequest(request)
+            item.saveRequest(request)
         }
     }
 
     override fun saveRequestHandler(requestHandler: RequestHandler) {
         for (item in callbacks) {
-            item?.saveRequestHandler(requestHandler)
+            item.saveRequestHandler(requestHandler)
         }
     }
 
     override fun notifyPrepare() {
         for (item in callbacks) {
-            item?.notifyPrepare()
+            item.notifyPrepare()
         }
     }
 
     override fun notifyStart() {
         for (item in callbacks) {
-            item?.notifyStart()
+            item.notifyStart()
         }
     }
 
     override fun notifyResponse(response: IResponse) {
         for (item in callbacks) {
-            item?.notifyResponse(response)
+            item.notifyResponse(response)
         }
     }
 
     override fun notifySuccess() {
         for (item in callbacks) {
-            item?.notifySuccess()
+            item.notifySuccess()
         }
     }
 
@@ -49,25 +49,25 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
 
     override fun notifyError(e: Exception) {
         for (item in callbacks) {
-            item?.notifyError(e)
+            item.notifyError(e)
         }
     }
 
     override fun notifyCancel() {
         for (item in callbacks) {
-            item?.notifyCancel()
+            item.notifyCancel()
         }
     }
 
     override fun notifyFinish() {
         for (item in callbacks) {
-            item?.notifyFinish()
+            item.notifyFinish()
         }
     }
 
     override fun onProgressUpload(param: TransmitParam) {
         for (item in callbacks) {
-            item?.onProgressUpload(param)
+            item.onProgressUpload(param)
         }
     }
 

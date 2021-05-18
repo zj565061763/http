@@ -17,7 +17,7 @@ abstract class ModelRequestCallback<T> : RequestCallback() {
         get() {
             val parameterizedType = javaClass.genericSuperclass as ParameterizedType
             val types = parameterizedType.actualTypeArguments
-            return if (types != null && types.isNotEmpty()) {
+            return if (types.isNotEmpty()) {
                 types[0]
             } else {
                 throw RuntimeException("generic type not found")

@@ -43,7 +43,7 @@ class SerializableCookieStore : PersistentCookieStore {
             val file = _file!!
             val obj = deserializeObject<SerializableCookieHolder>(file)
             HttpLog.i("cookie CookieStore getCacheImpl obj:${obj}")
-            return obj?.map
+            return obj.map
         } catch (e: Exception) {
             HttpLog.e("cookie CookieStore getCacheImpl error:${e}")
             return null
