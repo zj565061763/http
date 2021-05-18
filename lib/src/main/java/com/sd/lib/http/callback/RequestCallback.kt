@@ -48,6 +48,12 @@ abstract class RequestCallback : IUploadProgressCallback {
         onResponseBackground(response)
     }
 
+    internal open fun notifySuccess() {
+        HttpUtils.checkMainThread()
+        onSuccessBefore()
+        onSuccess()
+    }
+
     //---------- internal end ----------
 
     //---------- notify method start ----------
@@ -80,16 +86,16 @@ abstract class RequestCallback : IUploadProgressCallback {
     }
 
     /**
-     * 成功回调，常用来做一些统一的处理（UI线程）
+     * 成功回调，在[onSuccess]之前执行，常用来做一些统一的处理（UI线程）
      */
-    open fun onSuccessBefore() {
+    protected open fun onSuccessBefore() {
         HttpUtils.checkMainThread()
     }
 
     /**
-     * 成功回调，在[onSuccessBefore]方法之后执行（UI线程）
+     * 成功回调，在[onSuccessBefore]之后执行（UI线程）
      */
-    abstract fun onSuccess()
+    protected abstract fun onSuccess()
 
     /**
      * 上传回调（UI线程）

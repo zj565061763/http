@@ -77,11 +77,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
                     return@launch
                 }
 
-                withContext(Dispatchers.Main) {
-                    HttpLog.i("$_logPrefix onSuccessBefore  ${Thread.currentThread().name}")
-                    _requestCallback.onSuccessBefore()
-                }
-
+                HttpLog.i("$_logPrefix notifySuccess  ${Thread.currentThread().name}")
                 notifySuccess()
             } catch (e: CancellationException) {
                 notifyCancel()
@@ -135,7 +131,7 @@ internal abstract class RequestTask : IUploadProgressCallback {
     private fun notifySuccess() {
         HttpLog.i("$_logPrefix onSuccess ${Thread.currentThread().name}")
         _isSuccessNotified = true
-        _requestCallback.onSuccess()
+        _requestCallback.notifySuccess()
     }
 
     private fun notifyCancel() {

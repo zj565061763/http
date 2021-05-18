@@ -38,16 +38,13 @@ class RequestCallbackProxy private constructor(callbacks: Array<out RequestCallb
         }
     }
 
-    override fun onSuccessBefore() {
+    override fun notifySuccess() {
         for (item in callbacks) {
-            item?.onSuccessBefore()
+            item?.notifySuccess()
         }
     }
 
     override fun onSuccess() {
-        for (item in callbacks) {
-            item?.onSuccess()
-        }
     }
 
     override fun onError(e: Exception) {
