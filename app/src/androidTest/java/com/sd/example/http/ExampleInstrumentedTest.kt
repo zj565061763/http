@@ -109,6 +109,29 @@ class ExampleInstrumentedTest {
     }
 
     @Test
+    fun testCancel_onError() {
+        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
+            override fun onError(e: Exception) {
+                super.onError(e)
+                httpRequestHandler.cancel()
+            }
+
+            override fun onFinish() {
+                super.onFinish()
+                checkLifecycle(
+                    Lifecycle.onPrepare,
+                    Lifecycle.onStart,
+                    Lifecycle.onResponseBackground,
+                    Lifecycle.onSuccessBefore,
+                    Lifecycle.onSuccess,
+                    Lifecycle.onFinish,
+                )
+            }
+        }
+        GET_REQUEST.execute(lifecycleRequestCallback)
+    }
+
+    @Test
     fun testException_onResponseBackground() {
         val lifecycleRequestCallback = object : LifecycleRequestCallback() {
             override fun onResponseBackground(response: IResponse) {
