@@ -1,8 +1,11 @@
 package com.example.result
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.sd.lib.result.FResult
-import org.junit.Assert.assertEquals
+import com.sd.example.http.utils.Lifecycle
+import com.sd.example.http.utils.LifecycleRequestCallback
+import com.sd.lib.http.callback.RequestCallback
+import com.sd.lib.http.callback.RequestCallbackProxy
+import com.sd.lib.http.impl.GetRequest
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -13,12 +16,33 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+    val GET_REQUEST = GetRequest().apply {
+        this.baseUrl = "http://www.weather.com.cn/data/cityinfo/101010100.html"
+    }
+
     @Test
     fun testResultSuccess() {
-        val result = FResult.success("success")
-        assertEquals(true, result.isSuccess)
-        assertEquals(false, result.isFailure)
-        assertEquals("success", result.data)
-        assertEquals(null, result.exception)
+        val lifecycleRequestCallback = LifecycleRequestCallback()
+        val callback = object : RequestCallback() {
+            override fun onStart() {
+                super.onStart()
+                httpRequestHandler.cancel()
+            }
+
+            override fun onSuccess() {
+            }
+
+            override fun onFinish() {
+                super.onFinish()
+                lifecycleRequestCallback.checkLifecycle(
+                    Lifecycle.onPrepare,
+                    Lifecycle.onStart,
+                    Lifecycle.onCancel,
+                    Lifecycle.onFinish,
+                )
+            }
+        }
+
+        GET_REQUEST.execute(RequestCallbackProxy.get(lifecycleRequestCallback, callback))
     }
 }
