@@ -5,7 +5,7 @@ import com.sd.lib.http.exception.HttpExceptionParseResponse
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-abstract class ModelRequestCallback<T> : StringRequestCallback() {
+abstract class ModelRequestCallback<T> : RequestCallback() {
     var actModel: T? = null
         private set
 
@@ -13,8 +13,9 @@ abstract class ModelRequestCallback<T> : StringRequestCallback() {
     override fun onSuccessBackground(response: IResponse) {
         super.onSuccessBackground(response)
         val type = modelType
+        val content = response.readString()
         try {
-            actModel = parseToModel(result!!, type)
+            actModel = parseToModel(content, type)
         } catch (e: Exception) {
             throw HttpExceptionParseResponse(cause = e)
         }
