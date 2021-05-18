@@ -12,7 +12,7 @@ class AppResultInterceptor : IResultInterceptor {
     override fun intercept(result: FResult<*>, request: IRequest): Boolean {
         Log.i(TAG, "intercept request:${request} extra:${request.extra}")
 
-        if (result.isFailure) {
+        if (result is FResult.Failure) {
             FToast.show("结果拦截器：${result.exception}")
             // return true
         }

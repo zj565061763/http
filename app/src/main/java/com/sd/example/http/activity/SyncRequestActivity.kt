@@ -3,12 +3,13 @@ package com.sd.example.http.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.sd.example.http.databinding.ActivitySyncRequestBinding
+import com.sd.example.http.model.WeatherModel
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.exception.HttpExceptionCancellation
 import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.impl.GetRequest
-import com.sd.example.http.databinding.ActivitySyncRequestBinding
-import com.sd.example.http.model.WeatherModel
+import com.sd.lib.result.FResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -42,9 +43,10 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             val result = request.parseSuspend(WeatherModel::class.java)
-            if (result.isSuccess) {
-                _binding.tvResult.text = result.data!!.weatherinfo!!.city
+            if (result is FResult.Success<WeatherModel>) {
+                _binding.tvResult.text = result.data.weatherinfo!!.city
             } else {
+                result as FResult.Failure
                 val desc = when (val exception = result.exception) {
                     is HttpExceptionCancellation -> "请求被取消"
                     is HttpExceptionResultIntercepted -> "请求结果被拦截"
