@@ -107,4 +107,26 @@ class ExampleInstrumentedTest {
         }
         GET_REQUEST.execute(lifecycleRequestCallback)
     }
+
+    @Test
+    fun testException_onResponseBackground() {
+        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
+            override fun onResponseBackground(response: IResponse) {
+                super.onResponseBackground(response)
+                throw RuntimeException("RuntimeException")
+            }
+
+            override fun onFinish() {
+                super.onFinish()
+                checkLifecycle(
+                    Lifecycle.onPrepare,
+                    Lifecycle.onStart,
+                    Lifecycle.onResponseBackground,
+                    Lifecycle.onError,
+                    Lifecycle.onFinish,
+                )
+            }
+        }
+        GET_REQUEST.execute(lifecycleRequestCallback)
+    }
 }
