@@ -21,7 +21,7 @@ class ExampleInstrumentedTest {
     }
 
     @Test
-    fun testResultSuccess() {
+    fun testCancel_onStart() {
         val lifecycleRequestCallback = LifecycleRequestCallback()
         val callback = object : RequestCallback() {
             override fun onStart() {
