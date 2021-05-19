@@ -17,7 +17,7 @@ abstract class BaseRequestImpl() : Request() {
         request.headers(headers.toMap())
         request.readTimeout(readTimeout)
         request.connectTimeout(connectTimeout)
-        request.progress { uploaded, total -> notifyProgressUpload(uploaded, total) }
+        request.progress { uploaded, total -> notifyUploadProgress(uploaded, total) }
 
         val connection = request.connection
         if (connection is HttpsURLConnection) {

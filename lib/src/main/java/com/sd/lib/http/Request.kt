@@ -173,11 +173,11 @@ abstract class Request : IRequest {
     @Throws(Exception::class)
     protected abstract fun doExecute(): IResponse
 
-    protected fun notifyProgressUpload(uploaded: Long, total: Long) {
+    protected fun notifyUploadProgress(uploaded: Long, total: Long) {
         if (_uploadTransmitParam.transmit(total, uploaded)) {
             val copyParam = _uploadTransmitParam.copy()
             HttpUtils.runOnUiThread {
-                uploadCallback?.onProgressUpload(copyParam)
+                uploadCallback?.onUploadProgress(copyParam)
             }
         }
     }
