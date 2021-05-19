@@ -3,6 +3,7 @@ package com.sd.lib.http
 import com.sd.lib.http.callback.IUploadProgressCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.*
+import com.sd.lib.http.parser.IResponseParser
 import com.sd.lib.http.utils.HttpDataHolder
 import com.sd.lib.http.utils.HttpUtils
 import com.sd.lib.http.utils.TransmitParam
@@ -41,6 +42,8 @@ abstract class Request : IRequest {
     override var interceptExecute: Boolean = true
 
     override var interceptResult: Boolean = true
+
+    override var responseParser: IResponseParser? = null
 
     override var uploadProgressCallback: IUploadProgressCallback? = null
 
@@ -150,8 +153,9 @@ abstract class Request : IRequest {
         }
 
         // 将内容解析为实体
+        val parser = responseParser ?: RequestManager.responseParser
         val model = try {
-            RequestManager.responseParser.parse(content, clazz, this)
+            parser.parse(content, clazz, this)
                 ?: throw HttpExceptionParseResponse(message = "parse return null")
         } catch (e: Exception) {
             if (e is HttpException) {
