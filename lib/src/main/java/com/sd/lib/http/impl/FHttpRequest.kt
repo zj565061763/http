@@ -18,7 +18,7 @@ internal class FHttpRequest : HttpRequest {
         try {
             val uri = url().toURI()
             val listCookie = RequestManager.cookieStore.get(uri)
-            if (listCookie == null || listCookie.isEmpty()) return
+            if (listCookie.isEmpty()) return
 
             val cookie = listCookie.joinToString(separator = ";")
             header(HEADER_COOKIE, cookie)
