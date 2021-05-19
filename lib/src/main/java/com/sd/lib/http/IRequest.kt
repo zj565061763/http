@@ -18,8 +18,7 @@ interface IRequest {
     var urlSuffix: String
 
     /** [baseUrl] 和 [urlSuffix] 组拼后的url */
-    val url: String
-        get() = baseUrl + urlSuffix
+    val url: String get() = baseUrl + urlSuffix
 
     /** 设置请求标识 */
     var tag: String?
