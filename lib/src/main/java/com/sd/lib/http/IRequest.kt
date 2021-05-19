@@ -1,6 +1,6 @@
 package com.sd.lib.http
 
-import com.sd.lib.http.callback.IUploadProgressCallback
+import com.sd.lib.http.callback.IUploadCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.interceptor.IResultInterceptor
@@ -49,7 +49,7 @@ interface IRequest {
     var responseParser: IResponseParser?
 
     /** 上传回调 */
-    var uploadCallback: IUploadProgressCallback?
+    var uploadCallback: IUploadCallback?
 
     var sSLSocketFactory: SSLSocketFactory?
 

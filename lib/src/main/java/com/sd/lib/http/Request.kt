@@ -1,6 +1,6 @@
 package com.sd.lib.http
 
-import com.sd.lib.http.callback.IUploadProgressCallback
+import com.sd.lib.http.callback.IUploadCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.*
 import com.sd.lib.http.parser.IResponseParser
@@ -45,7 +45,7 @@ abstract class Request : IRequest {
 
     override var responseParser: IResponseParser? = null
 
-    override var uploadCallback: IUploadProgressCallback? = null
+    override var uploadCallback: IUploadCallback? = null
 
     override var sSLSocketFactory: SSLSocketFactory? = null
 

@@ -69,7 +69,7 @@ abstract class RequestCallback {
         onFinish()
     }
 
-    internal open fun notifyProgressUpload(params: TransmitParam) {
+    internal open fun notifyUploadProgress(params: TransmitParam) {
         HttpUtils.checkMainThread()
         onProgressUpload(params)
     }

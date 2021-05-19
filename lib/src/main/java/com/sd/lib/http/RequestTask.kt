@@ -1,6 +1,6 @@
 package com.sd.lib.http
 
-import com.sd.lib.http.callback.IUploadProgressCallback
+import com.sd.lib.http.callback.IUploadCallback
 import com.sd.lib.http.callback.RequestCallback
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.utils.HttpLog
@@ -25,9 +25,9 @@ internal abstract class RequestTask {
         _request = request
         _requestCallback = requestCallback
 
-        request.uploadCallback = object : IUploadProgressCallback {
+        request.uploadCallback = object : IUploadCallback {
             override fun onProgressUpload(params: TransmitParam) {
-                _requestCallback.notifyProgressUpload(params)
+                _requestCallback.notifyUploadProgress(params)
             }
         }
     }
