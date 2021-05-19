@@ -6,7 +6,7 @@ plugins {
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.sd.www.http.httprequest"
+        applicationId "com.sd.example.http"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
