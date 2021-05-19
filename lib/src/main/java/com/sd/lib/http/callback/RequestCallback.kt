@@ -71,7 +71,7 @@ abstract class RequestCallback {
 
     internal open fun notifyUploadProgress(params: TransmitParam) {
         HttpUtils.checkMainThread()
-        onProgressUpload(params)
+        onUploadProgress(params)
     }
 
     //---------- internal end ----------
@@ -128,7 +128,7 @@ abstract class RequestCallback {
     protected open fun onFinish() {}
 
     /**
-     * 上传回调（UI线程）
+     * 上传进度回调（UI线程）
      */
-    protected open fun onProgressUpload(params: TransmitParam) {}
+    protected open fun onUploadProgress(params: TransmitParam) {}
 }
