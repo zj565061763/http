@@ -45,7 +45,7 @@ abstract class Request : IRequest {
 
     override var responseParser: IResponseParser? = null
 
-    override var uploadProgressCallback: IUploadProgressCallback? = null
+    override var uploadCallback: IUploadProgressCallback? = null
 
     override var sSLSocketFactory: SSLSocketFactory? = null
 
@@ -177,7 +177,7 @@ abstract class Request : IRequest {
         if (_uploadTransmitParam.transmit(total, uploaded)) {
             val copyParam = _uploadTransmitParam.copy()
             HttpUtils.runOnUiThread {
-                uploadProgressCallback?.onProgressUpload(copyParam)
+                uploadCallback?.onProgressUpload(copyParam)
             }
         }
     }

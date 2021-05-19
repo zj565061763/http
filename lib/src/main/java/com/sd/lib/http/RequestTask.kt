@@ -25,7 +25,7 @@ internal abstract class RequestTask {
         _request = request
         _requestCallback = requestCallback
 
-        request.uploadProgressCallback = object : IUploadProgressCallback {
+        request.uploadCallback = object : IUploadProgressCallback {
             override fun onProgressUpload(params: TransmitParam) {
                 _requestCallback.notifyProgressUpload(params)
             }
