@@ -1,6 +1,5 @@
 package com.sd.lib.http.impl
 
-import android.text.TextUtils
 import com.sd.lib.http.ContentType
 import com.sd.lib.http.IPostRequest
 import com.sd.lib.http.IPostRequest.ParamsType
@@ -39,14 +38,18 @@ class PostRequest : BaseRequestImpl(), IPostRequest {
     override fun doExecute(): IResponse {
         val httpRequest = newHttpRequest(url, HttpRequest.METHOD_POST)
 
-        val requestBody = _body
-        if (requestBody != null) {
-            executeBody(requestBody, httpRequest)
-        } else {
-            when (paramsType) {
-                ParamsType.Default -> executeDefault(httpRequest)
-                ParamsType.Json -> executeJson(httpRequest)
+        try {
+            val requestBody = _body
+            if (requestBody != null) {
+                executeBody(requestBody, httpRequest)
+            } else {
+                when (paramsType) {
+                    ParamsType.Default -> executeDefault(httpRequest)
+                    ParamsType.Json -> executeJson(httpRequest)
+                }
             }
+        } catch (e: HttpRequest.HttpRequestException) {
+            throw e.cause ?: e
         }
 
         return Response(httpRequest)
