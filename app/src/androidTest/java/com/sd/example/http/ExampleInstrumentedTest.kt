@@ -1,4 +1,4 @@
-package com.example.result
+package com.sd.example.http
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sd.example.http.utils.*
