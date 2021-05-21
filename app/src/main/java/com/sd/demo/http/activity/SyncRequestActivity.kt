@@ -1,10 +1,10 @@
-package com.sd.example.http.activity
+package com.sd.demo.http.activity
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.sd.example.http.databinding.ActivitySyncRequestBinding
-import com.sd.example.http.model.WeatherModel
+import com.sd.demo.http.databinding.ActivitySyncRequestBinding
+import com.sd.demo.http.model.WeatherModel
 import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.exception.HttpExceptionCancellation
 import com.sd.lib.http.exception.HttpExceptionResultIntercepted

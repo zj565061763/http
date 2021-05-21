@@ -1,4 +1,4 @@
-package com.sd.example.http.utils
+package com.sd.demo.http.utils
 
 import android.util.Log
 import com.sd.lib.http.IRequest

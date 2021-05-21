@@ -1,7 +1,7 @@
-package com.sd.example.http
+package com.sd.demo.http
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.sd.example.http.utils.*
+import com.sd.demo.http.utils.*
 import com.sd.lib.http.impl.GetRequest
 import org.junit.Test
 import org.junit.runner.RunWith

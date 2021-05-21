@@ -1,4 +1,4 @@
-package com.sd.example.http.activity
+package com.sd.demo.http.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +9,7 @@ import com.sd.lib.http.RequestManager
 import com.sd.lib.http.callback.FileRequestCallback
 import com.sd.lib.http.impl.GetRequest
 import com.sd.lib.http.utils.TransmitParam
-import com.sd.example.http.databinding.ActivityDownloadBinding
+import com.sd.demo.http.databinding.ActivityDownloadBinding
 import java.io.File
 
 class DownloadActivity : AppCompatActivity(), View.OnClickListener {
