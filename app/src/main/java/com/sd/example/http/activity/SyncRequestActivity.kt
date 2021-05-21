@@ -9,7 +9,8 @@ import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.exception.HttpExceptionCancellation
 import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.impl.GetRequest
-import com.sd.lib.result.FResult
+import com.sd.lib.result.onFailure
+import com.sd.lib.result.onSuccess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -43,15 +44,17 @@ class SyncRequestActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             val result = request.parseSuspend(WeatherModel::class.java)
-            if (result is FResult.Success<WeatherModel>) {
-                _binding.tvResult.text = result.data.weatherinfo!!.city
-            } else {
-                result as FResult.Failure
-                val desc = when (val exception = result.exception) {
+
+            result.onSuccess {
+                _binding.tvResult.text = it.weatherinfo!!.city
+            }
+
+            result.onFailure {
+                val desc = when (it) {
                     is HttpExceptionCancellation -> "请求被取消"
                     is HttpExceptionResultIntercepted -> "请求结果被拦截"
-                    is HttpException -> exception.getDescFormat(application)
-                    else -> exception.toString()
+                    is HttpException -> it.getDescFormat(application)
+                    else -> it.toString()
                 }
                 _binding.tvResult.text = desc
             }
