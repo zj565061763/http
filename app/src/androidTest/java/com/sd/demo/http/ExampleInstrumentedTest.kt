@@ -20,26 +20,31 @@ class ExampleInstrumentedTest {
     @Test
     fun testNormal() {
         GET_REQUEST.execute(callbackNormal)
+        GET_REQUEST.execute(getProxyCallback(callbackNormal))
     }
 
     @Test
     fun testCancel_onStart() {
         GET_REQUEST.execute(callbackCancel_onStart)
+        GET_REQUEST.execute(getProxyCallback(callbackCancel_onStart))
     }
 
     @Test
     fun testCancel_onResponseBackground() {
         GET_REQUEST.execute(callbackCancel_onResponseBackground)
+        GET_REQUEST.execute(getProxyCallback(callbackCancel_onResponseBackground))
     }
 
     @Test
     fun testCancel_onSuccess() {
         GET_REQUEST.execute(callbackCancel_onSuccess)
+        GET_REQUEST.execute(getProxyCallback(callbackCancel_onSuccess))
     }
 
     @Test
     fun testCancel_onError() {
         GET_REQUEST.execute(callbackCancel_onError)
+        GET_REQUEST.execute(getProxyCallback(callbackCancel_onError))
     }
 
     @Test

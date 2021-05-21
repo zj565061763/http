@@ -4,6 +4,7 @@ import androidx.annotation.CallSuper
 import com.sd.lib.http.IRequest
 import com.sd.lib.http.IResponse
 import com.sd.lib.http.callback.RequestCallback
+import com.sd.lib.http.callback.RequestCallbackProxy
 
 open class LifecycleRequestCallback : RequestCallback() {
     val list = mutableListOf<Lifecycle>()
@@ -12,6 +13,11 @@ open class LifecycleRequestCallback : RequestCallback() {
         val listParams = lifecycle.toList()
         assert(list !== listParams)
         assert(list == listParams)
+    }
+
+    fun checkLifecycle(callback: LifecycleRequestCallback) {
+        assert(list !== callback.list)
+        assert(list == callback.list)
     }
 
     @CallSuper
@@ -60,6 +66,16 @@ open class LifecycleRequestCallback : RequestCallback() {
         super.onFinish()
         list.add(Lifecycle.onFinish)
     }
+}
+
+fun getProxyCallback(callback: LifecycleRequestCallback): RequestCallback {
+    val lastCallback = object : LifecycleRequestCallback() {
+        override fun onFinish() {
+            super.onFinish()
+            callback.checkLifecycle(this)
+        }
+    }
+    return RequestCallbackProxy.get(callback, lastCallback)
 }
 
 val callbackNormal
