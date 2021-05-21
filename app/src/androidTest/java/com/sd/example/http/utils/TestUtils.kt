@@ -62,6 +62,116 @@ open class LifecycleRequestCallback : RequestCallback() {
     }
 }
 
+val callbackNormal = object : LifecycleRequestCallback() {
+    override fun onFinish() {
+        super.onFinish()
+        checkLifecycle(
+            Lifecycle.onPrepare,
+            Lifecycle.onStart,
+            Lifecycle.onResponseBackground,
+            Lifecycle.onSuccessBefore,
+            Lifecycle.onSuccess,
+            Lifecycle.onFinish,
+        )
+    }
+}
+
+val callbackCancel_onStart = object : LifecycleRequestCallback() {
+    override fun onStart() {
+        super.onStart()
+        httpRequestHandler.cancel()
+    }
+
+    override fun onFinish() {
+        super.onFinish()
+        checkLifecycle(
+            Lifecycle.onPrepare,
+            Lifecycle.onStart,
+            Lifecycle.onCancel,
+            Lifecycle.onFinish,
+        )
+    }
+}
+
+val callbackCancel_onResponseBackground = object : LifecycleRequestCallback() {
+    override fun onResponseBackground(response: IResponse) {
+        super.onResponseBackground(response)
+        httpRequestHandler.cancel()
+    }
+
+    override fun onFinish() {
+        super.onFinish()
+        checkLifecycle(
+            Lifecycle.onPrepare,
+            Lifecycle.onStart,
+            Lifecycle.onResponseBackground,
+            Lifecycle.onCancel,
+            Lifecycle.onFinish,
+        )
+    }
+}
+
+val callbackCancel_onSuccess = object : LifecycleRequestCallback() {
+    override fun onSuccessBefore() {
+        super.onSuccessBefore()
+        httpRequestHandler.cancel()
+    }
+
+    override fun onSuccess() {
+        super.onSuccess()
+        httpRequestHandler.cancel()
+    }
+
+    override fun onFinish() {
+        super.onFinish()
+        checkLifecycle(
+            Lifecycle.onPrepare,
+            Lifecycle.onStart,
+            Lifecycle.onResponseBackground,
+            Lifecycle.onSuccessBefore,
+            Lifecycle.onSuccess,
+            Lifecycle.onFinish,
+        )
+    }
+}
+
+val callbackCancel_onError = object : LifecycleRequestCallback() {
+    override fun onError(e: Exception) {
+        super.onError(e)
+        httpRequestHandler.cancel()
+    }
+
+    override fun onFinish() {
+        super.onFinish()
+        checkLifecycle(
+            Lifecycle.onPrepare,
+            Lifecycle.onStart,
+            Lifecycle.onResponseBackground,
+            Lifecycle.onSuccessBefore,
+            Lifecycle.onSuccess,
+            Lifecycle.onFinish,
+        )
+    }
+}
+
+val callbackException_onResponseBackground = object : LifecycleRequestCallback() {
+    override fun onResponseBackground(response: IResponse) {
+        super.onResponseBackground(response)
+        throw RuntimeException("RuntimeException")
+    }
+
+    override fun onFinish() {
+        super.onFinish()
+        checkLifecycle(
+            Lifecycle.onPrepare,
+            Lifecycle.onStart,
+            Lifecycle.onResponseBackground,
+            Lifecycle.onError,
+            Lifecycle.onFinish,
+        )
+    }
+}
+
 enum class Lifecycle {
     onPrepare,
     onStart,

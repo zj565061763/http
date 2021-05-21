@@ -1,9 +1,7 @@
 package com.example.result
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.sd.example.http.utils.Lifecycle
-import com.sd.example.http.utils.LifecycleRequestCallback
-import com.sd.lib.http.IResponse
+import com.sd.example.http.utils.*
 import com.sd.lib.http.impl.GetRequest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,135 +19,31 @@ class ExampleInstrumentedTest {
 
     @Test
     fun testNormal() {
-        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
-            override fun onFinish() {
-                super.onFinish()
-                checkLifecycle(
-                    Lifecycle.onPrepare,
-                    Lifecycle.onStart,
-                    Lifecycle.onResponseBackground,
-                    Lifecycle.onSuccessBefore,
-                    Lifecycle.onSuccess,
-                    Lifecycle.onFinish,
-                )
-            }
-        }
-        GET_REQUEST.execute(lifecycleRequestCallback)
+        GET_REQUEST.execute(callbackNormal)
     }
 
     @Test
     fun testCancel_onStart() {
-        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
-            override fun onStart() {
-                super.onStart()
-                httpRequestHandler.cancel()
-            }
-
-            override fun onFinish() {
-                super.onFinish()
-                checkLifecycle(
-                    Lifecycle.onPrepare,
-                    Lifecycle.onStart,
-                    Lifecycle.onCancel,
-                    Lifecycle.onFinish,
-                )
-            }
-        }
-        GET_REQUEST.execute(lifecycleRequestCallback)
+        GET_REQUEST.execute(callbackCancel_onStart)
     }
 
     @Test
     fun testCancel_onResponseBackground() {
-        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
-            override fun onResponseBackground(response: IResponse) {
-                super.onResponseBackground(response)
-                httpRequestHandler.cancel()
-            }
-
-            override fun onFinish() {
-                super.onFinish()
-                checkLifecycle(
-                    Lifecycle.onPrepare,
-                    Lifecycle.onStart,
-                    Lifecycle.onResponseBackground,
-                    Lifecycle.onCancel,
-                    Lifecycle.onFinish,
-                )
-            }
-        }
-        GET_REQUEST.execute(lifecycleRequestCallback)
+        GET_REQUEST.execute(callbackCancel_onResponseBackground)
     }
 
     @Test
     fun testCancel_onSuccess() {
-        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
-            override fun onSuccessBefore() {
-                super.onSuccessBefore()
-                httpRequestHandler.cancel()
-            }
-
-            override fun onSuccess() {
-                super.onSuccess()
-                httpRequestHandler.cancel()
-            }
-
-            override fun onFinish() {
-                super.onFinish()
-                checkLifecycle(
-                    Lifecycle.onPrepare,
-                    Lifecycle.onStart,
-                    Lifecycle.onResponseBackground,
-                    Lifecycle.onSuccessBefore,
-                    Lifecycle.onSuccess,
-                    Lifecycle.onFinish,
-                )
-            }
-        }
-        GET_REQUEST.execute(lifecycleRequestCallback)
+        GET_REQUEST.execute(callbackCancel_onSuccess)
     }
 
     @Test
     fun testCancel_onError() {
-        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
-            override fun onError(e: Exception) {
-                super.onError(e)
-                httpRequestHandler.cancel()
-            }
-
-            override fun onFinish() {
-                super.onFinish()
-                checkLifecycle(
-                    Lifecycle.onPrepare,
-                    Lifecycle.onStart,
-                    Lifecycle.onResponseBackground,
-                    Lifecycle.onSuccessBefore,
-                    Lifecycle.onSuccess,
-                    Lifecycle.onFinish,
-                )
-            }
-        }
-        GET_REQUEST.execute(lifecycleRequestCallback)
+        GET_REQUEST.execute(callbackCancel_onError)
     }
 
     @Test
     fun testException_onResponseBackground() {
-        val lifecycleRequestCallback = object : LifecycleRequestCallback() {
-            override fun onResponseBackground(response: IResponse) {
-                super.onResponseBackground(response)
-                throw RuntimeException("RuntimeException")
-            }
-
-            override fun onFinish() {
-                super.onFinish()
-                checkLifecycle(
-                    Lifecycle.onPrepare,
-                    Lifecycle.onStart,
-                    Lifecycle.onResponseBackground,
-                    Lifecycle.onError,
-                    Lifecycle.onFinish,
-                )
-            }
-        }
-        GET_REQUEST.execute(lifecycleRequestCallback)
+        GET_REQUEST.execute(callbackException_onResponseBackground)
     }
 }
