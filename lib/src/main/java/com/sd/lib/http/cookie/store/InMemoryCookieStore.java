@@ -84,7 +84,11 @@ public class InMemoryCookieStore implements CookieStore {
     public Map<URI, List<HttpCookie>> copyCookie() {
         lock.lock();
         try {
-            return Collections.unmodifiableMap(uriIndex);
+            final Map<URI, List<HttpCookie>> mapCopy = new HashMap<>();
+            for (Map.Entry<URI, List<HttpCookie>> item : uriIndex.entrySet()) {
+                mapCopy.put(item.getKey(), new ArrayList<>(item.getValue()));
+            }
+            return mapCopy;
         } finally {
             lock.unlock();
         }
