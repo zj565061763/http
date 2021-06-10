@@ -56,10 +56,8 @@ abstract class PersistentCookieStore : ICookieStore {
         GlobalScope.launch {
             val mapCookie = _cookieStore.copyCookie()
             val mapCache = mutableMapOf<URI?, List<SerializableHttpCookie>>()
-
             for ((key, value) in mapCookie) {
-                val listCopy = value.map { SerializableHttpCookie.from(it) }
-                mapCache.put(key, listCopy)
+                mapCache[key] = value.map { SerializableHttpCookie.from(it) }
             }
             saveCacheImpl(mapCache)
         }
