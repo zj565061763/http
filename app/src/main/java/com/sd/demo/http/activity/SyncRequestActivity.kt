@@ -9,8 +9,6 @@ import com.sd.lib.http.exception.HttpException
 import com.sd.lib.http.exception.HttpExceptionCancellation
 import com.sd.lib.http.exception.HttpExceptionResultIntercepted
 import com.sd.lib.http.impl.GetRequest
-import com.sd.lib.result.onFailure
-import com.sd.lib.result.onSuccess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
