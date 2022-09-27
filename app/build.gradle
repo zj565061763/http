@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace 'com.sd.demo.http'
     compileSdk 32
     defaultConfig {
         minSdk 21

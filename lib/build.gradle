@@ -9,6 +9,7 @@ def libArtifactId = "http"
 def libVersionName = "1.3.5-beta03"
 
 android {
+    namespace 'com.sd.lib.http'
     compileSdk 32
     defaultConfig {
         minSdk 21
